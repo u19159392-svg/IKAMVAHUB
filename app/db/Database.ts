@@ -1,25 +1,60 @@
 import * as SQLite from 'expo-sqlite';
 
-// Open the database (creates it if it doesn't exist)
 const db = SQLite.openDatabaseSync('ikamvahub.db');
 
-// Initialize tables
 export const initDatabase = async () => {
   try {
     await db.execAsync(`
+      -- USERS TABLE (Person 3)
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
+        password TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
+      -- PROFILES TABLE (Person 4)
       CREATE TABLE IF NOT EXISTS profiles (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
         bio TEXT,
         profile_pic TEXT,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        phone TEXT,
+        location TEXT,
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+      );
+
+      -- TASKS TABLE (Person 6)
+      CREATE TABLE IF NOT EXISTS tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT,
+        priority TEXT DEFAULT 'medium',
+        status TEXT DEFAULT 'pending',
+        due_date TEXT,
+        user_id INTEGER NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+      );
+
+      -- SETTINGS TABLE (Person 6)
+      CREATE TABLE IF NOT EXISTS settings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        notifications_enabled INTEGER DEFAULT 1,
+        dark_mode INTEGER DEFAULT 0,
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+      );
+
+      -- NOTIFICATIONS TABLE (Person 6)
+      CREATE TABLE IF NOT EXISTS notifications (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        title TEXT NOT NULL,
+        message TEXT NOT NULL,
+        read INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       );
     `);
@@ -29,12 +64,12 @@ export const initDatabase = async () => {
   }
 };
 
-// User CRUD operations
-export const createUser = async (name: string, email: string) => {
+// ==================== USER CRUD (Person 3) ====================
+export const createUser = async (name: string, email: string, password?: string) => {
   try {
     const result = await db.runAsync(
-      'INSERT INTO users (name, email) VALUES (?, ?)',
-      [name, email]
+      'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
+      [name, email, password || '']
     );
     return result.lastInsertRowId;
   } catch (error) {
@@ -45,20 +80,26 @@ export const createUser = async (name: string, email: string) => {
 
 export const getUsers = async () => {
   try {
-    const users = await db.getAllAsync('SELECT * FROM users');
-    return users;
+    return await db.getAllAsync('SELECT * FROM users');
   } catch (error) {
     console.error('❌ Get users error:', error);
     return [];
   }
 };
 
+export const getUserById = async (id: number) => {
+  try {
+    const result = await db.getAllAsync('SELECT * FROM users WHERE id = ?', [id]);
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error('❌ Get user error:', error);
+    return null;
+  }
+};
+
 export const updateUser = async (id: number, name: string, email: string) => {
   try {
-    await db.runAsync(
-      'UPDATE users SET name = ?, email = ? WHERE id = ?',
-      [name, email, id]
-    );
+    await db.runAsync('UPDATE users SET name = ?, email = ? WHERE id = ?', [name, email, id]);
     return true;
   } catch (error) {
     console.error('❌ Update user error:', error);
@@ -72,6 +113,164 @@ export const deleteUser = async (id: number) => {
     return true;
   } catch (error) {
     console.error('❌ Delete user error:', error);
+    return false;
+  }
+};
+
+// ==================== PROFILE CRUD (Person 4) ====================
+export const createProfile = async (data: any) => {
+  try {
+    const result = await db.runAsync(
+      'INSERT INTO profiles (user_id, bio, profile_pic, phone, location) VALUES (?, ?, ?, ?, ?)',
+      [data.user_id, data.bio || '', data.profile_pic || '', data.phone || '', data.location || '']
+    );
+    return result.lastInsertRowId;
+  } catch (error) {
+    console.error('❌ Create profile error:', error);
+    return null;
+  }
+};
+
+export const getProfileByUserId = async (userId: number) => {
+  try {
+    const result = await db.getAllAsync('SELECT * FROM profiles WHERE user_id = ?', [userId]);
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error('❌ Get profile error:', error);
+    return null;
+  }
+};
+
+export const updateProfile = async (userId: number, data: any) => {
+  try {
+    await db.runAsync(
+      'UPDATE profiles SET bio = ?, profile_pic = ?, phone = ?, location = ? WHERE user_id = ?',
+      [data.bio, data.profile_pic, data.phone, data.location, userId]
+    );
+    return true;
+  } catch (error) {
+    console.error('❌ Update profile error:', error);
+    return false;
+  }
+};
+
+export const deleteProfile = async (userId: number) => {
+  try {
+    await db.runAsync('DELETE FROM profiles WHERE user_id = ?', [userId]);
+    return true;
+  } catch (error) {
+    console.error('❌ Delete profile error:', error);
+    return false;
+  }
+};
+
+// ==================== TASK CRUD (Person 6) ====================
+export const createTask = async (data: any) => {
+  try {
+    const result = await db.runAsync(
+      'INSERT INTO tasks (title, description, priority, status, due_date, user_id) VALUES (?, ?, ?, ?, ?, ?)',
+      [data.title, data.description || '', data.priority || 'medium', data.status || 'pending', data.due_date || '', data.user_id]
+    );
+    return result.lastInsertRowId;
+  } catch (error) {
+    console.error('❌ Create task error:', error);
+    return null;
+  }
+};
+
+export const getTasksByUser = async (userId: number) => {
+  try {
+    return await db.getAllAsync('SELECT * FROM tasks WHERE user_id = ? ORDER BY created_at DESC', [userId]);
+  } catch (error) {
+    console.error('❌ Get tasks error:', error);
+    return [];
+  }
+};
+
+export const updateTaskStatus = async (id: number, status: string) => {
+  try {
+    await db.runAsync('UPDATE tasks SET status = ? WHERE id = ?', [status, id]);
+    return true;
+  } catch (error) {
+    console.error('❌ Update task error:', error);
+    return false;
+  }
+};
+
+export const deleteTask = async (id: number) => {
+  try {
+    await db.runAsync('DELETE FROM tasks WHERE id = ?', [id]);
+    return true;
+  } catch (error) {
+    console.error('❌ Delete task error:', error);
+    return false;
+  }
+};
+
+// ==================== SETTINGS CRUD (Person 6) ====================
+export const getSettings = async (userId: number) => {
+  try {
+    const result = await db.getAllAsync('SELECT * FROM settings WHERE user_id = ?', [userId]);
+    if (result.length === 0) {
+      // Create default settings if none exist
+      await db.runAsync(
+        'INSERT INTO settings (user_id, notifications_enabled, dark_mode) VALUES (?, ?, ?)',
+        [userId, 1, 0]
+      );
+      return { notifications_enabled: 1, dark_mode: 0 };
+    }
+    return result[0];
+  } catch (error) {
+    console.error('❌ Get settings error:', error);
+    return { notifications_enabled: 1, dark_mode: 0 };
+  }
+};
+
+export const updateSettings = async (userId: number, data: any) => {
+  try {
+    await db.runAsync(
+      'UPDATE settings SET notifications_enabled = ?, dark_mode = ? WHERE user_id = ?',
+      [data.notifications_enabled, data.dark_mode, userId]
+    );
+    return true;
+  } catch (error) {
+    console.error('❌ Update settings error:', error);
+    return false;
+  }
+};
+
+// ==================== NOTIFICATION CRUD (Person 6) ====================
+export const createNotification = async (userId: number, title: string, message: string) => {
+  try {
+    const result = await db.runAsync(
+      'INSERT INTO notifications (user_id, title, message) VALUES (?, ?, ?)',
+      [userId, title, message]
+    );
+    return result.lastInsertRowId;
+  } catch (error) {
+    console.error('❌ Create notification error:', error);
+    return null;
+  }
+};
+
+export const getNotificationsByUser = async (userId: number) => {
+  try {
+    return await db.getAllAsync(
+      'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC',
+      [userId]
+    );
+  } catch (error) {
+    console.error('❌ Get notifications error:', error);
+    return [];
+  }
+};
+
+export const markNotificationAsRead = async (id: number) => {
+  try {
+    await db.runAsync('UPDATE notifications SET read = 1 WHERE id = ?', [id]);
+    return true;
+  } catch (error) {
+    console.error('❌ Mark notification error:', error);
     return false;
   }
 };
