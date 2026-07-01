@@ -79,6 +79,22 @@ export default function HomeScreen() {
           Tap here to test the database (add, view, update, delete users)
         </ThemedText>
       </ThemedView>
+      {/* SETTINGS & NOTIFICATIONS BUTTONS */}
+      <ThemedView style={styles.stepContainer}>
+        <TouchableOpacity
+          style={styles.debugButton}
+          onPress={() => router.push('/settings')}
+        >
+          <ThemedText style={styles.debugButtonText}>Settings</ThemedText>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.debugButton}
+          onPress={() => router.push('/notifications')}
+        >
+          <ThemedText style={styles.debugButtonText}>Notifications</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
     </ParallaxScrollView>
   );
 }
