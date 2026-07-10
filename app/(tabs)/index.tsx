@@ -1,4 +1,4 @@
-import { Image } from 'expo-image';
+import { Image } from 'expo-image'git add
 import { useRouter } from 'expo-router';
 import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import SetupScreen from '../UserSetupPage';
@@ -177,7 +177,7 @@ import { getInternalInstanceHandleFromPublicInstance } from 'react-native/types_
 import { startHeadlessTask } from 'react-native/types_generated/Libraries/ReactNative/AppRegistryImpl';
 
 void main() {
-  runApp(MyApp());
+  runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -196,7 +196,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home"),
+        title: new Text("Home"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -208,10 +208,10 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => LoginScreen()),
+                  MaterialPageRoute(builder: (_) => new LoginScreen()),
                 );
               },
-              child: Text("Login"),
+              child: new Text("Login"),
             ),
 
             SizedBox(height: 10),
@@ -220,10 +220,10 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => SignupScreen()),
+                  MaterialPageRoute(builder: (_) => new SignupScreen()),
                 );
               },
-              child: Text("Sign Up"),
+              child: new Text("Sign Up"),
             ),
 
             SizedBox(height: 10),
@@ -232,10 +232,10 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => ProfileScreen()),
+                  MaterialPageRoute(builder: (_) => new ProfileScreen()),
                 );
               },
-              child: Text("Profile"),
+              child: new Text("Profile"),
             ),
 
             SizedBox(height: 10),
@@ -244,10 +244,10 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => EditProfileScreen()),
+                  MaterialPageRoute(builder: (_) => new EditProfileScreen()),
                 );
               },
-              child: Text("Edit Profile"),
+              child: new Text("Edit Profile"),
             ),
 
             SizedBox(height: 10),
@@ -256,10 +256,10 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => TasksScreen()),
+                  MaterialPageRoute(builder: (_) => new TasksScreen()),
                 );
               },
-              child: Text("Tasks"),
+              child: new Text("Tasks"),
             ),
           ],
         ),
@@ -272,8 +272,8 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Login")),
-      body: Center(child: Text("Login Screen")),
+      appBar: AppBar(title: new Text("Login")),
+      body: Center(child: new Text("Login Screen")),
     );
   }
 }
@@ -282,8 +282,8 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Sign Up")),
-      body: Center(child: Text("Signup Screen")),
+      appBar: AppBar(title: new Text("Sign Up")),
+      body: Center(child: new Text("Signup Screen")),
     );
   }
 }
@@ -292,8 +292,8 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Profile")),
-      body: Center(child: Text("Profile Screen")),
+      appBar: AppBar(title: new Text("Profile")),
+      body: Center(child: new Text("Profile Screen")),
     );
   }
 }
@@ -302,8 +302,8 @@ class EditProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Edit Profile")),
-      body: Center(child: Text("Edit Profile Screen")),
+      appBar: AppBar(title: new Text("Edit Profile")),
+      body: Center(child: new Text("Edit Profile Screen")),
     );
   }
 }
@@ -312,7 +312,66 @@ class TasksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Tasks")),
-      body: Center(child: Text("Tasks Screen")),
+      appBar: AppBar(title: new Text("Tasks")),
+      body: Center(child: new Text("Tasks Screen")),
     );
+  }
+
+function main() {
+    throw new Error('Function not implemented.');
+  }
+
+
+function runApp(arg0: any) {
+    throw new Error('Function not implemented.');
+  }
+
+
+function override(target: undefined, context: ClassFieldDecoratorContext<MyApp, any> & { name: 'Widget'; private: false; static: false; }): void | ((this: MyApp, value: any) => any) {
+    throw new Error('Function not implemented.');
+  }
+
+
+function MaterialApp(debugShowCheckedModeBanner: any, arg1: boolean, title: any, arg3: string, home: any, arg5: React.JSX.Element) {
+    throw new Error('Function not implemented.');
+  }
+
+
+function Scaffold(appBar: any, arg1: any, body: any, arg3: any) {
+    throw new Error('Function not implemented.');
+  }
+
+
+function AppBar(title: any, arg1: any): any {
+    throw new Error('Function not implemented.');
+  }
+
+
+function Padding(padding: any): any {
+    throw new Error('Function not implemented.');
+  }
+
+
+function Column(crossAxisAlignment: any, stretch: any, children: any, arg3: any[]) {
+    throw new Error('Function not implemented.');
+  }
+
+
+function ElevatedButton(onPressed: any, arg1: () => void, child: any, arg3: any): any {
+    throw new Error('Function not implemented.');
+  }
+
+
+function MaterialPageRoute(builder: any, arg1: (_: any) => any): any {
+    throw new Error('Function not implemented.');
+  }
+
+
+function SizedBox(height: any, arg1: number): any {
+    throw new Error('Function not implemented.');
+  }
+
+
+function Center(child: any, arg1: any): any {
+    throw new Error('Function not implemented.');
   }
