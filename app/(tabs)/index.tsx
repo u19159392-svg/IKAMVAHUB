@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import SetupScreen from '../UserSetupPage';
 
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
@@ -10,6 +11,7 @@ import { Link } from 'expo-router';
 
 export default function HomeScreen() {
   const router = useRouter();
+  return <SetupScreen />;
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -78,6 +80,22 @@ export default function HomeScreen() {
         <ThemedText>
           Tap here to test the database (add, view, update, delete users)
         </ThemedText>
+      </ThemedView>
+      {/* SETTINGS & NOTIFICATIONS BUTTONS */}
+      <ThemedView style={styles.stepContainer}>
+        <TouchableOpacity
+          style={styles.debugButton}
+          onPress={() => router.push('/settings')}
+        >
+          <ThemedText style={styles.debugButtonText}>Settings</ThemedText>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.debugButton}
+          onPress={() => router.push('/notifications')}
+        >
+          <ThemedText style={styles.debugButtonText}>Notifications</ThemedText>
+        </TouchableOpacity>
       </ThemedView>
     </ParallaxScrollView>
   );
