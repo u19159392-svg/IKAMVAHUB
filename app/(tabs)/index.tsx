@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import SetupScreen from '../UserSetupPage';
 
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
@@ -10,6 +11,7 @@ import { Link } from 'expo-router';
 
 export default function HomeScreen() {
   const router = useRouter();
+  return <SetupScreen />;
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
