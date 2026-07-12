@@ -7,8 +7,9 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
+    ScrollView,
 } from "react-native";
-
+ 
     export default function SetupScreen(){
         const router=useRouter();
 
