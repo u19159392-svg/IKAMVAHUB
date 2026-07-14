@@ -324,12 +324,40 @@ export const seedSchools = async () => {
   }
 };
 
-// ==================== SCHOOLS CRUD ====================
+// ==================== SCHOOL FUNCTIONS ====================
+
+// Get all schools
 export const getSchools = async () => {
   try {
-    return await db.getAllAsync('SELECT * FROM schools ORDER BY name');
+    return await db.getAllAsync('SELECT * FROM schools');
   } catch (error) {
     console.error('❌ Get schools error:', error);
+    return [];
+  }
+};
+
+// Search schools by name
+export const searchSchools = async (query: string) => {
+  try {
+    return await db.getAllAsync(
+      'SELECT * FROM schools WHERE name LIKE ?',
+      [`%${query}%`]
+    );
+  } catch (error) {
+    console.error('❌ Search schools error:', error);
+    return [];
+  }
+};
+
+// Filter schools by province and type
+export const filterSchools = async (province: string, type: string) => {
+  try {
+    return await db.getAllAsync(
+      'SELECT * FROM schools WHERE province LIKE ? AND type LIKE ?',
+      [`%${province}%`, `%${type}%`]
+    );
+  } catch (error) {
+    console.error('❌ Filter schools error:', error);
     return [];
   }
 };

@@ -1,17 +1,17 @@
-import React, { useState } from "react";
 import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import {
+  FontAwesome5,
   Ionicons,
   MaterialIcons,
-  FontAwesome5,
 } from "@expo/vector-icons";
+import React, { useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 
 import { useRouter } from 'expo-router';
@@ -51,6 +51,12 @@ export default function SetupScreen() {
         ))}
       </View>
 
+<TouchableOpacity
+        style={styles.schoolFinderButton}
+        onPress={() => router.push('/schools')}
+      >
+        <Text style={styles.schoolFinderButtonText}>🔍 School Finder</Text>
+      </TouchableOpacity>
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>
           {step ===1 && "Personal Information"}
@@ -244,6 +250,19 @@ backButtonText: {
     paddingTop: 60,
   },
 
+  schoolFinderButton: {
+    backgroundColor: '#14B8A6',
+    marginHorizontal: 25,
+    marginBottom: 15,
+    padding: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  schoolFinderButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   logo: {
     fontSize: 22,
     fontWeight: "700",

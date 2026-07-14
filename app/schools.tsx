@@ -9,11 +9,14 @@ import {
     View,
 } from "react-native";
 
-import { getSchools, searchSchools } from "./db/Database";
+import { filterSchools, getSchools, searchSchools } from "./db/Database";
+
+const SCHOOL_TYPES = ["All", "Public", "Private"];
 
 export default function Schools() {
     const [schools, setSchools] = useState<any[]>([]);
     const [query, setQuery] = useState("");
+    const [schoolType, setSchoolType] = useState("All");
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -27,20 +30,38 @@ export default function Schools() {
         setLoading(false);
     };
 
-    const handleSearch = async (text: string) => {
-        setQuery(text);
+    // Central function that decides which DB call to make
+    // based on current search text + filter state
+    const refresh = async (text: string, selectedType: string) => {
         setLoading(true);
-        if (text.trim() === "") {
-            const data = await getSchools();
-            setSchools(data);
-        } else {
-            const results = await searchSchools(text);
-            setSchools(results);
+        try {
+            if (text.trim() !== "") {
+                const results = await searchSchools(text);
+                setSchools(results);
+            } else if (selectedType !== "All") {
+              const results = await filterSchools("", selectedType);
+                setSchools(results);
+            } else {
+                const data = await getSchools();
+                setSchools(data);
+            }
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
-    const renderSchool = ({ item }: {item: any}) => (
+    const handleSearch = (text: string) => {
+        setQuery(text);
+        refresh(text, schoolType);
+    };
+
+    const handleTypeSelect = (item: string) => {
+        setSchoolType(item);
+        setQuery(""); // clear search so filter takes effect
+        refresh("", item);
+    };
+
+    const renderSchool = ({ item }: { item: any }) => (
         <TouchableOpacity style={styles.card}>
             <Text style={styles.schoolName}>{item.name}</Text>
             <Text style={styles.cardText}>Province: {item.province}</Text>
@@ -52,7 +73,7 @@ export default function Schools() {
         <View style={styles.container}>
             <Text style={styles.title}>Schools</Text>
 
-            {/* 🔍 Search Bar */}
+            {/* Task 4: Search bar */}
             <TextInput
                 style={styles.searchBar}
                 placeholder="Search schools..."
@@ -60,6 +81,31 @@ export default function Schools() {
                 onChangeText={handleSearch}
             />
 
+            {/* Task 5: Filter buttons (School Type only) */}
+            <Text style={styles.heading}>School Type</Text>
+            <View style={styles.buttonRow}>
+                {SCHOOL_TYPES.map((item) => (
+                    <TouchableOpacity
+                        key={item}
+                        style={[
+                            styles.filterButton,
+                            schoolType === item && styles.activeButton,
+                        ]}
+                        onPress={() => handleTypeSelect(item)}
+                    >
+                        <Text
+                            style={[
+                                styles.buttonText,
+                                schoolType === item && styles.activeButtonText,
+                            ]}
+                        >
+                            {item}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+
+            {/* Task 6: School cards */}
             {loading ? (
                 <ActivityIndicator size="large" color="#00ACC1" />
             ) : schools.length === 0 ? (
@@ -96,6 +142,36 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
         marginBottom: 12,
         backgroundColor: "#fff",
+    },
+    heading: {
+        fontSize: 16,
+        fontWeight: "bold",
+        marginHorizontal: 16,
+        marginBottom: 8,
+    },
+    buttonRow: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        marginHorizontal: 16,
+        marginBottom: 16,
+    },
+    filterButton: {
+        backgroundColor: "#D9EAF7",
+        paddingHorizontal: 14,
+        paddingVertical: 8,
+        borderRadius: 20,
+        marginRight: 8,
+        marginBottom: 8,
+    },
+    activeButton: {
+        backgroundColor: "#00ACC1",
+    },
+    buttonText: {
+        color: "#000",
+        fontWeight: "600",
+    },
+    activeButtonText: {
+        color: "#fff",
     },
     card: {
         backgroundColor: "#FFFFFF",
