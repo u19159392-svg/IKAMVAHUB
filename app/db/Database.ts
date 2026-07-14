@@ -57,111 +57,16 @@ export const initDatabase = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       );
-
-      /* Table for schools */
-      export const schools = [
-  {
-    id: 1,
-    name: "Baleni Secondary School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Mthatha"
-  },
-  {
-    id: 2,
-    name: "Tyelimhlophe Secondary School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Butterworth"
-  },
-  {
-    id: 3,
-    name: "Toleni Secondary School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Ngqeleni"
-  },
-  {
-    id: 4,
-    name: "Bonxa High School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "East London"
-  },
-  {
-    id: 5,
-    name: "Dumsi Senior Secondary School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Dutywa"
-  },
-  {
-    id: 6,
-    name: "Zibokwana High School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Libode"
-  },
-  {
-    id: 7,
-    name: "Dangwana High School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Qumbu"
-  },
-  {
-    id: 8,
-    name: "Zwelitsha High Secondary School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Zwelitsha"
-  },
-  {
-    id: 9,
-    name: "Mbodleli High School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Mthatha"
-  },
-  {
-    id: 10,
-    name: "Mfazwe Tech High School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Ngcobo"
-  },
-  {
-    id: 11,
-    name: "Mpondombini Secondary School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Flagstaff"
-  },
-  {
-    id: 12,
-    name: "Mvenyane High School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Bizana"
-  },
-  {
-    id: 13,
-    name: "Nzululwazi High School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Lusikisiki"
-  },
-  {
-    id: 14,
-    name: "Nomaqwathekana Secondary School",
-    province: "Eastern Cape",
-    type: "Public",
-    location: "Mount Frere"
-  }
-];
-
-
-
+      -- SCHOOLS TABLE
+      CREATE TABLE IF NOT EXISTS schools (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        province TEXT NOT NULL,
+        type TEXT NOT NULL,
+        location TEXT,
+        contact TEXT,
+        email TEXT
+      );
     `);
     console.log('✅ Database initialized successfully');
   } catch (error) {
@@ -380,6 +285,44 @@ export const markNotificationAsRead = async (id: number) => {
   }
 };
 
+// ==================== SCHOOLS SEED DATA ====================
+export const seedSchools = async () => {
+  try {
+    const existing = await db.getAllAsync('SELECT id FROM schools LIMIT 1');
+    if (existing.length > 0) {
+      console.log('ℹ️ Schools already seeded, skipping');
+      return;
+    }
+
+    const schools = [
+      ['Baleni Secondary School', 'Eastern Cape', 'Public', 'Mthatha', '', ''],
+      ['Tyelimhlophe Secondary School', 'Eastern Cape', 'Public', 'Butterworth', '', ''],
+      ['Toleni Secondary School', 'Eastern Cape', 'Public', 'Ngqeleni', '', ''],
+      ['Bonxa High School', 'Eastern Cape', 'Public', 'East London', '', ''],
+      ['Dumsi Senior Secondary School', 'Eastern Cape', 'Public', 'Dutywa', '', ''],
+      ['Zibokwana High School', 'Eastern Cape', 'Public', 'Libode', '', ''],
+      ['Dangwana High School', 'Eastern Cape', 'Public', 'Qumbu', '', ''],
+      ['Zwelitsha High Secondary School', 'Eastern Cape', 'Public', 'Zwelitsha', '', ''],
+      ['Mbodleli High School', 'Eastern Cape', 'Public', 'Mthatha', '', ''],
+      ['Mfazwe Tech High School', 'Eastern Cape', 'Public', 'Ngcobo', '', ''],
+      ['Mpondombini Secondary School', 'Eastern Cape', 'Public', 'Flagstaff', '', ''],
+      ['Mvenyane High School', 'Eastern Cape', 'Public', 'Bizana', '', ''],
+      ['Nzululwazi High School', 'Eastern Cape', 'Public', 'Lusikisiki', '', ''],
+      ['Nomaqwathekana Secondary School', 'Eastern Cape', 'Public', 'Mount Frere', '', ''],
+    ];
+
+    for (const school of schools) {
+      await db.runAsync(
+        'INSERT INTO schools (name, province, type, location, contact, email) VALUES (?, ?, ?, ?, ?, ?)',
+        school
+      );
+    }
+
+    console.log('✅ Schools seeded successfully');
+  } catch (error) {
+    console.error('❌ Seed schools error:', error);
+  }
+};
 
 // ==================== SCHOOLS CRUD ====================
 export const getSchools = async () => {
