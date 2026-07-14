@@ -57,6 +57,16 @@ export const initDatabase = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       );
+      -- SCHOOLS TABLE
+CREATE TABLE IF NOT EXISTS schools (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  province TEXT,
+  type TEXT,
+  location TEXT,
+  contact TEXT,
+  email TEXT
+);
     `);
     console.log('✅ Database initialized successfully');
   } catch (error) {
@@ -274,5 +284,43 @@ export const markNotificationAsRead = async (id: number) => {
     return false;
   }
 };
+// ==================== SCHOOL FUNCTIONS ====================
+
+// Get all schools
+export const getSchools = async () => {
+  try {
+    return await db.getAllAsync('SELECT * FROM schools');
+  } catch (error) {
+    console.error('❌ Get schools error:', error);
+    return [];
+  }
+};
+
+// Search schools by name
+export const searchSchools = async (query: string) => {
+  try {
+    return await db.getAllAsync(
+      'SELECT * FROM schools WHERE name LIKE ?',
+      [`%${query}%`]
+    );
+  } catch (error) {
+    console.error('❌ Search schools error:', error);
+    return [];
+  }
+};
+
+// Filter schools by province and type
+export const filterSchools = async (province: string, type: string) => {
+  try {
+    return await db.getAllAsync(
+      'SELECT * FROM schools WHERE province LIKE ? AND type LIKE ?',
+      [`%${province}%`, `%${type}%`]
+    );
+  } catch (error) {
+    console.error('❌ Filter schools error:', error);
+    return [];
+  }
+};
+
 
 export default db;
