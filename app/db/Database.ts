@@ -322,5 +322,4 @@ export const filterSchools = async (province: string, type: string) => {
   }
 };
 
-
 export default db;
