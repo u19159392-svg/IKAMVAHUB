@@ -13,7 +13,11 @@ import {
   FontAwesome5,
 } from "@expo/vector-icons";
 
+
+import { useRouter } from 'expo-router';
 export default function SetupScreen() {
+  const router = useRouter();
+  const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
@@ -30,23 +34,38 @@ export default function SetupScreen() {
         <Text style={styles.subtitle}>
           Let's set up your profile
         </Text>
+        <Text style={{fontSize: 20, color: "red",
+          fontWeight: "bold" }}>
+            Current step:{step}
+          </Text>
+        
 
-        <View style={styles.progress}>
-          <View style={styles.activeDot} />
-          <View style={styles.line} />
-          <View style={styles.dot} />
-          <View style={styles.line} />
-          <View style={styles.dot} />
-          <View style={styles.line} />
-          <View style={styles.dot} />
-        </View>
+        {[1, 2, 3, 4].map((item) => (
+        <View 
+        key={item}
+        style={[
+          styles.dot,
+          item <= step && styles.activeDot,
+        ]}
+        />
+        ))}
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.sectionTitle}>Personal Information</Text>
+        <Text style={styles.sectionTitle}>
+          {step ===1 && "Personal Information"}
+          {step ===2 && "School Information"}
+          {step ===3 && "Interests & Accessibility Information"}  
+          {step ===4 && "Profile Setup Complete!"} 
+        </Text>        
+        <Text style={styles.subtitle}>step {step} of 4</Text>
 
+        {/* STEP 1 */}
+        {step === 1 && (
+          <>
         <View style={styles.inputContainer}>
-          <Ionicons name="person-outline" size={20} color="#14B8A6" />
+          <Ionicons name="person-outline"
+           size={20} color="#14B8A6" />
           <TextInput
             placeholder="Full Name"
             style={styles.input}
@@ -56,7 +75,8 @@ export default function SetupScreen() {
         </View>
 
         <View style={styles.inputContainer}>
-          <MaterialIcons name="cake" size={20} color="#14B8A6" />
+          <MaterialIcons name="cake" size={20}
+           color="#14B8A6" />
           <TextInput
             placeholder="Age"
             keyboardType="numeric"
@@ -67,7 +87,8 @@ export default function SetupScreen() {
         </View>
 
         <View style={styles.inputContainer}>
-          <Ionicons name="male-female-outline" size={20} color="#14B8A6" />
+          <Ionicons name="male-female-outline"
+           size={20} color="#14B8A6" />
           <TextInput
             placeholder="Gender"
             style={styles.input}
@@ -75,9 +96,15 @@ export default function SetupScreen() {
             onChangeText={setGender}
           />
         </View>
+        </>
+        )}  
 
+        {/* STEP 2 */}
+        {step === 2 && (
+          <>
         <View style={styles.inputContainer}>
-          <Ionicons name="school-outline" size={20} color="#14B8A6" />
+          <Ionicons name="school-outline"
+           size={20} color="#14B8A6" />
           <TextInput
             placeholder="School"
             style={styles.input}
@@ -95,7 +122,13 @@ export default function SetupScreen() {
             onChangeText={setGrade}
           />
         </View>
+        </>
+        )}
 
+
+        {/* STEP 3 */}
+        {step === 3 && (
+          <>
         <View style={styles.inputContainer}>
           <Ionicons name="briefcase-outline" size={20} color="#14B8A6" />
           <TextInput
@@ -105,8 +138,82 @@ export default function SetupScreen() {
             onChangeText={setCareer}
           />
         </View>
+        </>
+        )}
 
-        <TouchableOpacity style={styles.button}>
+        {/* STEP 4 */}
+        {step === 4 && (
+          <>
+          <Text style= {{fontSize: 18, 
+            marginBottom: 10 }}>
+              Review your information
+            </Text>
+          
+            <Text> Name: {name}</Text>
+            <Text> Age: {age}</Text>
+            <Text> Gender: {gender}</Text>
+            <Text> School: {school}</Text>
+            <Text> Grade: {grade}</Text>
+            <Text> Career Interest: {career}</Text>
+          </>
+        )}
+
+        {step == 1 && (
+          <>
+          {/* Full Name */ }
+          {/* Age */ }
+          {/* Gender */ }     
+          </>
+        )}
+
+        {step == 2 && (
+          <>
+          {/* School */ }
+          {/* Grade */ }     
+          </>
+        )}
+
+        {step == 3 && (
+          <>
+          {/* Career Interest */ }     
+          </>
+        )}
+
+        {step == 4 && (
+          <>
+            <Text> Name: {name}</Text>
+            <Text> Age: {age}</Text>
+            <Text> Gender: {gender}</Text>
+            <Text> School: {school}</Text>
+            <Text> Grade: {grade}</Text>
+            <Text> Career Interest: {career}</Text>
+          </>
+        )}
+
+        {step >1 &&(
+          <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => setStep(step - 1)}
+        >
+          <Text style={styles.backButtonText}>← 
+            Back</Text>
+        </TouchableOpacity> 
+        )}
+
+
+
+
+        <TouchableOpacity style={styles.button}
+
+        onPress={() => {
+          if (step < 4) {
+            setStep(step + 1);
+          } else {  
+          router.push('/UserProfilePage');
+          }
+          }}
+          // Here you can handle the submission of the form, e.g., save the data or navigate to another screen
+        >
           <Text style={styles.buttonText}>Continue →</Text>
         </TouchableOpacity>
       </View>
@@ -119,6 +226,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F4F7FB",
   },
+
+backButton: {
+  alignItems: "center",
+  marginTop: 15,
+},
+
+backButtonText: {
+  fontSize: 16,
+  fontWeight: "600",
+  color: "#2563EB",
+},
+
 
   header: {
     padding: 25,
