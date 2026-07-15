@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
 import {
     ActivityIndicator,
     FlatList,
@@ -14,6 +15,8 @@ import { filterSchools, getSchools, searchSchools } from "./db/Database";
 const SCHOOL_TYPES = ["All", "Public", "Private"];
 
 export default function Schools() {
+    const router = useRouter();
+
     const [schools, setSchools] = useState<any[]>([]);
     const [query, setQuery] = useState("");
     const [schoolType, setSchoolType] = useState("All");
@@ -62,7 +65,20 @@ export default function Schools() {
     };
 
     const renderSchool = ({ item }: { item: any }) => (
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity 
+        style={styles.card}
+        onPress ={() =>
+            router.push({
+               pathname: "/SchoolDetails",
+               params: {
+            id: item.id.toString(),
+            name: item.name,
+            province: item.province,
+            type: item.type,
+        },
+      })
+    }
+    >
             <Text style={styles.schoolName}>{item.name}</Text>
             <Text style={styles.cardText}>Province: {item.province}</Text>
             <Text style={styles.cardText}>Type: {item.type}</Text>

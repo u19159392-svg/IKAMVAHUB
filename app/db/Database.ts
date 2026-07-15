@@ -67,7 +67,20 @@ export const initDatabase = async () => {
         contact TEXT,
         email TEXT
       );
-    `);
+      --SCHOOL DETAILS TABLE 
+      CREATE TABLE IF NOT EXISTS school_details (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      school_id INTEGER,
+      facilities TEXT,
+      subjects_offered TEXT,
+      );
+      --SCHOOL CONTACTS TABLE
+      CREATE TABLE IF NOT EXISTS school_contacts(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      school_is INTEGER,
+      phone TEXT,
+      address TEXT,
+  `);
     console.log('✅ Database initialized successfully');
   } catch (error) {
     console.error('❌ Database init error:', error);
@@ -359,6 +372,43 @@ export const filterSchools = async (province: string, type: string) => {
   } catch (error) {
     console.error('❌ Filter schools error:', error);
     return [];
+  }
+};
+
+
+// ==================== SCHOOL DETAILS FUNCTIONS ====================
+
+// Get full school details by ID
+export const getSchoolById = async (id:number) => {
+  try {
+    const result = await db.getAllAsync(
+      `SELECT s.*, d.facilities, d.subjects_offered
+       FROM schools s
+       LEFT JOIN school_details d
+       ON s.id = d.school_id
+       WHERE s.id = ?`,
+      [id]
+    );
+
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("❌ Get school by ID error:", error);
+    return null;
+  }
+};
+
+// Get school contact details
+export const getSchoolContacts = async (schoolId: number) => {
+  try {
+    const result = await db.getAllAsync(
+      "SELECT phone, address FROM school_contacts WHERE school_id = ?",
+      [schoolId]
+    );
+
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("❌ Get school contacts error:", error);
+    return null;
   }
 };
 
