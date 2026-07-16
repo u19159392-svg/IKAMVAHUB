@@ -11,16 +11,20 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [isDark, setIsDark] = useState(false);
-  const [userId] = useState(1); // Replace with actual user ID later
+  const [userId] = useState(1);
 
   useEffect(() => {
     loadTheme();
   }, []);
 
   const loadTheme = async () => {
-    const settings = await getSettings(userId);
-    if (settings) {
-      setIsDark(settings.dark_mode === 1);
+    try {
+      const settings = await getSettings(userId);
+      if (settings && typeof settings.dark_mode === 'number') {
+        setIsDark(settings.dark_mode === 1);
+      }
+    } catch (error) {
+      console.error('❌ Load theme error:', error);
     }
   };
 
@@ -55,3 +59,5 @@ export const useTheme = () => {
   }
   return context;
 };
+
+export default ThemeProvider;
