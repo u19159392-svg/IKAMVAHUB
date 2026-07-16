@@ -59,20 +59,21 @@ export const initDatabase = async () => {
       );
       -- SCHOOLS TABLE
       CREATE TABLE IF NOT EXISTS schools (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        province TEXT NOT NULL,
-        type TEXT NOT NULL,
-        location TEXT,
-        contact TEXT,
-        email TEXT
-      );
+         id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  province TEXT NOT NULL,
+  type TEXT NOT NULL,
+  location TEXT,
+  contact TEXT,
+  email TEXT,
+  subjects_offered TEXT
+);
       --SCHOOL DETAILS TABLE 
       CREATE TABLE IF NOT EXISTS school_details (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       school_id INTEGER,
       facilities TEXT,
-      subjects_offered TEXT,
+      subjects_offered TEXT
       );
       --SCHOOL CONTACTS TABLE
       CREATE TABLE IF NOT EXISTS school_contacts(
