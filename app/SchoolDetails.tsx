@@ -49,6 +49,7 @@ export default function SchoolDetails() {
       <Text style={styles.info}>Province: {school.province}</Text>
       <Text style={styles.info}>Location: {school.location || 'N/A'}</Text>
 
+
       <View style={styles.divider} />
        
        <Text style={styles.sectionTitle}>🏫 School Information</Text>
@@ -86,19 +87,49 @@ export default function SchoolDetails() {
           // Bold the label (e.g., "Languages:", "Subjects:", "Programs:")
           const [label, ...rest] = line.split(': ');
           const content = rest.join(': ');
+          console.log("School Object:", school)
           return (
             <View key={index} style={styles.subjectItem}>
               <Text style={styles.subjectLabel}>{label}:</Text>
               <Text style={styles.subjectContent}>{content}</Text>
             </View>
+
+            
           );
         })
+
+        
       ) : (
         <Text style={styles.noData}>No subject information available</Text>
       )}
+
+  
+
+        <View style={styles.divider} />
+
+<Text style={styles.sectionTitle}>
+  ⚽ Sports, Extracurricular, Services & Amenities
+</Text>
+
+<Text style={styles.subjectLabel}>Sports</Text>
+<Text style={styles.subjectContent}>
+  {school.sports || "No information available"}
+</Text>
+
+<Text style={styles.subjectLabel}>Extracurricular</Text>
+<Text style={styles.subjectContent}>
+  {school.extracurricular || "No information available"}
+</Text>
+
+<Text style={styles.subjectLabel}>Services & Amenities</Text>
+<Text style={styles.subjectContent}>
+  {school.services_amenities || "No information available"}
+</Text>
+      
     </ScrollView>
   );
 }
+  
 
     const styles = StyleSheet.create({
         container: {
