@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -12,15 +12,56 @@ import {
 
 import { filterSchools, getSchools, searchSchools } from "./db/Database";
 
-const SCHOOL_TYPES = ["All", "Public", "Private"];
+const SCHOOL_TYPES = ["All", "Public"];
 
+const PROVINCES = [
+  "All",
+  "Eastern Cape",
+  "Free State",
+  "KwaZulu-Natal",
+];
+
+const SPORTS = [
+  "All",
+  "Soccer",
+  "Rugby",
+  "Cricket",
+  "Netball",
+  "Athletics",
+];
+
+const EXTRACURRICULAR = [
+  "All",
+  "Debate",
+  "Choir",
+  "Drama",
+  "Chess",
+  "Science Club",
+];
+
+const FACILITIES = [
+  "All",
+  "Library",
+  "Computer Laboratory",
+  "Science Laboratory",
+  "Sports Field",
+  "Hostel",
+  "School Hall",
+];
 export default function Schools() {
     const router = useRouter();
 
     const [schools, setSchools] = useState<any[]>([]);
-    const [query, setQuery] = useState("");
-    const [schoolType, setSchoolType] = useState("All");
-    const [loading, setLoading] = useState(false);
+const [query, setQuery] = useState("");
+
+// Filters
+const [province, setProvince] = useState("All");
+const [schoolType, setSchoolType] = useState("All");
+const [sport, setSport] = useState("All");
+const [activity, setActivity] = useState("All");
+const [facility, setFacility] = useState("All");
+
+const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         loadSchools();
@@ -120,6 +161,98 @@ export default function Schools() {
                     </TouchableOpacity>
                 ))}
             </View>
+            <Text style={styles.heading}>Province</Text>
+
+<View style={styles.buttonRow}>
+  {PROVINCES.map((item) => (
+    <TouchableOpacity
+      key={item}
+      style={[
+        styles.filterButton,
+        province === item && styles.activeButton,
+      ]}
+      onPress={() => setProvince(item)}
+    >
+      <Text
+        style={[
+          styles.buttonText,
+          province === item && styles.activeButtonText,
+        ]}
+      >
+        {item}
+      </Text>
+    </TouchableOpacity>
+  ))}
+</View>
+<Text style={styles.heading}>Sports</Text>
+
+<View style={styles.buttonRow}>
+  {SPORTS.map((item) => (
+    <TouchableOpacity
+      key={item}
+      style={[
+        styles.filterButton,
+        sport === item && styles.activeButton,
+      ]}
+      onPress={() => setSport(item)}
+    >
+      <Text
+        style={[
+          styles.buttonText,
+          sport === item && styles.activeButtonText,
+        ]}
+      >
+        {item}
+      </Text>
+    </TouchableOpacity>
+  ))}
+</View>
+<Text style={styles.heading}>Extracurricular Activities</Text>
+
+<View style={styles.buttonRow}>
+  {EXTRACURRICULAR.map((item) => (
+    <TouchableOpacity
+      key={item}
+      style={[
+        styles.filterButton,
+        activity === item && styles.activeButton,
+      ]}
+      onPress={() => setActivity(item)}
+    >
+      <Text
+        style={[
+          styles.buttonText,
+          activity === item && styles.activeButtonText,
+        ]}
+      >
+        {item}
+      </Text>
+    </TouchableOpacity>
+  ))}
+</View>
+<Text style={styles.heading}>Services & Amenities</Text>
+
+<View style={styles.buttonRow}>
+  {FACILITIES.map((item) => (
+    <TouchableOpacity
+      key={item}
+      style={[
+        styles.filterButton,
+        facility === item && styles.activeButton,
+      ]}
+      onPress={() => setFacility(item)}
+    >
+      <Text
+        style={[
+          styles.buttonText,
+          facility === item && styles.activeButtonText,
+        ]}
+      >
+        {item}
+      </Text>
+    </TouchableOpacity>
+  ))}
+</View>
 
             {/* Task 6: School cards */}
             {loading ? (
