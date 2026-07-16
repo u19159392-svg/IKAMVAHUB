@@ -300,11 +300,12 @@ export const markNotificationAsRead = async (id: number) => {
 // ==================== SCHOOLS SEED DATA ====================
 export const seedSchools = async () => {
   try {
-    const existing = await db.getAllAsync('SELECT id FROM schools LIMIT 1');
-    if (existing.length > 0) {
-      console.log('ℹ️ Schools already seeded, skipping');
-      return;
-    }
+    // Temporarily skip the check to force reseed
+    // const existing = await db.getAllAsync('SELECT id FROM schools LIMIT 1');
+    // if (existing.length > 0) {
+    //   console.log('ℹ️ Schools already seeded, skipping');
+    //   return;
+    // }
 
     const schools = [
       ['Baleni Secondary School', 'Eastern Cape', 'Public', 'Bizana', '', ''],
