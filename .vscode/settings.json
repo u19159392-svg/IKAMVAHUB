@@ -1,0 +1,8 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit",
+    "source.sortMembers": "explicit"
+  },
+  "cmake.sourceDirectory": "C:/Users/maboz/IKAMVAHUB/node_modules/react-native/ReactCommon/jsitooling"
+}
