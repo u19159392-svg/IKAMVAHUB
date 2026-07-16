@@ -68,19 +68,38 @@ export const initDatabase = async () => {
         email TEXT
       );
       --SCHOOL DETAILS TABLE 
-      CREATE TABLE IF NOT EXISTS school_details (
+      CREATE TABLE IF NOT EXISTS SchoolDetails (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       school_id INTEGER,
       facilities TEXT,
-      subjects_offered TEXT,
+      subjects_offered TEXT
+      principal TEXT,
+      quintile INTEGER,
+      emis TEXT,
+      grades TEXT,
+      learners INTEGER,
+      teachers INTEGER
       );
+
       --SCHOOL CONTACTS TABLE
       CREATE TABLE IF NOT EXISTS school_contacts(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      school_is INTEGER,
+      school_id INTEGER,
       phone TEXT,
-      address TEXT,
+      address TEXT
+    );
+    
+    --APPLICATIONS INFO TABLE 
+    CREATE TABLE IF NOT EXISTS 
+    application_info(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    school_id INTEGER,
+    application_method TEXT,
+    documents TEXT
+    );
+
   `);
+
     console.log('✅ Database initialized successfully');
   } catch (error) {
     console.error('❌ Database init error:', error);
@@ -382,9 +401,9 @@ export const filterSchools = async (province: string, type: string) => {
 export const getSchoolById = async (id:number) => {
   try {
     const result = await db.getAllAsync(
-      `SELECT s.*, d.facilities, d.subjects_offered
+      `SELECT s.*, d.facilities, d.subjects_offered, d.principal, d.quintile, d.emis, d.grades, d.learners, d.teachers
        FROM schools s
-       LEFT JOIN school_details d
+       LEFT JOIN SchoolDetails d
        ON s.id = d.school_id
        WHERE s.id = ?`,
       [id]
@@ -411,5 +430,75 @@ export const getSchoolContacts = async (schoolId: number) => {
     return null;
   }
 };
+  
+// ===========SCHOOL DETAILS FUNCTIONS ========
+export const insertSchoolDetails = async () => {
+  try {
+    await db.execAsync(`
+      INSERT OR IGNORE INTO SchoolDetails
+      (
+        school_id,
+        facilities,
+        subjects_offered,
+        principal,
+        quintile,
+        emis,
+        grades,
+        learners,
+        teachers
+      )
+      VALUES
+      (1, 'Classrooms; limited rural infrastructure typical of Quintile 1 schools', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'T. Mbane', 1, '200500013', 'Grade 8-12', 861, 29),
+      (2, 'Classrooms; agricultural demonstration/practical areas', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'Z.Ndamase', 1, '200501285', 'Grade 8-12', 510, 20),
+      (3, 'Standard classrooms; rural school infrastructure', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'D.Mtwesi', 1, '200501198', 'Grade 8-12', 540, 21),
+      (4, 'Classrooms; government-owned buildings and land', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'N.Mkhize', 2, '200500094', 'Grade 8-12', 580, 42),
+      (5, 'Standard government school facilities', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'S. Ntloko', 1, '200500121', 'Grade 8-12', 480, 22),
+      (6, 'Classrooms; government-owned buildings and land', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'Mr. S. Madikizela', 1, '200501322', 'Grade 8-12', 553, 24),
+      (7, 'Classrooms; government-owned buildings;grounds', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'Mfihlo N.S.(Acting)', 1, '200500119', 'Grade 8-12', 1013, 31),
+      (8, 'Standard government classrooms and grounds', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'T.G. Dzebedzebe', 1, '200501339', 'Grade 8-12', 620, 24),
+      (9, 'Classrooms; government-owned buildings and land;manages own maintenance', 'Compulsory: isiXhosa; English; Mathematics or Mathematics Literacy; Life Orientation; Optional(choose 3 from 25): Life Sciences; Geography;History; Agricultural Sciences; Physical Sciences; Accounting; Business Studies; Economics; Tourism; Consumer Studies and more', 'Dangwana P.W.', 2, '200500383', 'Grade 10-12', 1288, 32),
+      (10, 'Technical workshops; classrooms; practical labs for engineering/technical subjects', 'isiXhosa; English; Mathematics or Mathematics Literacy; Life Orientation; plus technical subjects: Civil Technology; Electrical Technology; Mechanical Technology; Engineering Graphics & Design (EGD); Technical Sciences(CAPS NSC curriculum)', 'B.B. Mtutuka', 1, '200501377', 'Grade 8-12', 750, 28),
+      (11, 'Standard government classrooms', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'L.Goniwe', 1, '200500384', 'Grade 8-12', 520, 21),
+      (12, 'Standard government school facilities', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'P.Dyantyi', 1, '200501460', 'Grade 8-12', 560, 22),
+      (13, 'Classrooms; government- owned buildings and land', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'Malingozi N.I.', 1, '200501459', 'Grade 8-12', 653, 21),
+      (14, 'Standard government school facilities', 'isiXhosa; English; Mathematics or Mathematics Literacy; Life Orientation; and elective subjects per CAPS NSC curriculum', 'Lukhozi Nr', 1, '200501457', 'Grade 8-12', 535, 21);
+    `);
 
+    console.log("✅ School details inserted");
+  } catch (error) {
+    console.error("❌ Insert school details error:", error);
+  }
+};
+
+
+//Applications Functions 
+export const getApplicationsInfor = async (schoolId: number) => {
+  try {
+    const result = await db.getAllAsync(
+      'SELECT * FROM application_info WHERE school_id =?',[schoolId]);
+
+    return result.length >0 ? result [0]: null;
+  }catch (error){
+    console.error('❌Get application info error', error);
+    return null;
+  }
+  };
+
+  export const insertApplicationInfo = async () => {
+  try {
+    await db.execAsync(`
+      INSERT OR IGNORE INTO application_info
+      (school_id, application_method, documents)
+      VALUES
+      (1, 'In Person', 'School results Grade 7, ID, Birth Certificate, Proof of residence'),
+      (2, 'In Person', 'School results Grade 7, ID, Birth Certificate, Proof of residence'),
+      (3, 'In Person', 'School results Grade 7, ID, Birth Certificate, Proof of residence');
+    `);
+
+    console.log("✅ Application info added");
+  } catch (error) {
+    console.error("❌ Insert error:", error);
+  }
+};
+  
 export default db;

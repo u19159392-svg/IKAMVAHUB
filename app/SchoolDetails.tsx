@@ -26,6 +26,13 @@ export default function SchoolDetails( ) {
             <Text style={styles.info}>{school?.province}</Text>
             <Text style={styles.info}>{school?.address}</Text>
             <Text style={styles.info}>{school?.contactNumber}</Text>
+
+            <Text style={styles.info}>Principal: {school?.principal}</Text>
+            <Text style={styles.info}>Quintile: {school?.quintile}</Text>
+            <Text style={styles.info}>EMIS: {school?.emis}</Text>
+            <Text style={styles.info}>Grades: {school?.grades}</Text>
+            <Text style={styles.info}>Learners: {school?.learners}</Text>
+            <Text style={styles.info}>Teachers: {school?.teachers}</Text>
         </View>
     );
 }
