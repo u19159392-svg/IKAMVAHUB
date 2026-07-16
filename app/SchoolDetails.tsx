@@ -50,6 +50,34 @@ export default function SchoolDetails() {
       <Text style={styles.info}>Location: {school.location || 'N/A'}</Text>
 
       <View style={styles.divider} />
+       
+       <Text style={styles.sectionTitle}>🏫 School Information</Text>
+
+<Text style={styles.info}>
+  Principal: {school.principal || "Not Available"}
+</Text>
+
+<Text style={styles.info}>
+  Quintile: {school.quintile || "Not Available"}
+</Text>
+
+<Text style={styles.info}>
+  EMIS: {school.emis || "Not Available"}
+</Text>
+
+<Text style={styles.info}>
+  Grades: {school.grades || "Not Available"}
+</Text>
+
+<Text style={styles.info}>
+  Learners: {school.learners || "Not Available"}
+</Text>
+
+<Text style={styles.info}>
+  Teachers: {school.teachers || "Not Available"}
+</Text>
+
+      <View style={styles.divider} />
 
       {/* Task 6: Subjects Offered Section */}
       <Text style={styles.sectionTitle}>📚 Subjects Offered</Text>

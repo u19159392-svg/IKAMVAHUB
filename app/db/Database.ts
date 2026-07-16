@@ -1,5 +1,4 @@
 import * as SQLite from 'expo-sqlite';
-
 const db = SQLite.openDatabaseSync('ikamvahub.db');
 
 export const initDatabase = async () => {
@@ -70,30 +69,42 @@ export const initDatabase = async () => {
         email TEXT,
         subjects_offered TEXT
       );
-<<<<<<< HEAD
+
       --SCHOOL DETAILS TABLE 
+      DROP TABLE IF EXISTS SchoolDetails;
+
       CREATE TABLE IF NOT EXISTS SchoolDetails (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       school_id INTEGER,
       facilities TEXT,
-      subjects_offered TEXT
+      subjects_offered TEXT,
       principal TEXT,
       quintile INTEGER,
       emis TEXT,
       grades TEXT,
       learners INTEGER,
-      teachers INTEGER
+      teachers INTEGER,
+      sports TEXT,
+      extracurricular TEXT,
+      services TEXT, 
+      amenities TEXT,
+      FOREIGN KEY (school_id) REFERENCES schools 
+      (id)ON DELETE CASCADE
       );
 
       --SCHOOL CONTACTS TABLE
+      DROP TABLE IF EXISTS school_contacts;
       CREATE TABLE IF NOT EXISTS school_contacts(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       school_id INTEGER,
       phone TEXT,
-      address TEXT
+      address TEXT,
+      FOREIGN KEY (school_id) REFERENCES 
+      schools(id) ON DELETE CASCADE
     );
     
     --APPLICATIONS INFO TABLE 
+    DROP TABLE IF EXISTS application_info;
     CREATE TABLE IF NOT EXISTS 
     application_info(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -104,21 +115,7 @@ export const initDatabase = async () => {
 
   `);
 
-=======
 
-      -- SCHOOL CONTACTS TABLE
-      DROP TABLE IF EXISTS school_details;
-      CREATE TABLE IF NOT EXISTS school_contacts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        school_id INTEGER,
-        phone TEXT,
-        address TEXT,
-        email TEXT,
-        website TEXT,
-        FOREIGN KEY (school_id) REFERENCES schools (id) ON DELETE CASCADE
-      );
-    `);
->>>>>>> 293d15180539ebf95d8028ab49ba4f37ca318ef7
     console.log('✅ Database initialized successfully');
   } catch (error) {
     console.error('❌ Database init error:', error);
@@ -433,7 +430,7 @@ export const filterSchools = async (province: string, type: string) => {
 
 export const getSchoolById = async (id: number) => {
   try {
-<<<<<<< HEAD
+    
     const result = await db.getAllAsync(
       `SELECT s.*, d.facilities, d.subjects_offered, d.principal, d.quintile, d.emis, d.grades, d.learners, d.teachers
        FROM schools s
@@ -443,9 +440,6 @@ export const getSchoolById = async (id: number) => {
       [id]
     );
 
-=======
-    const result = await db.getAllAsync('SELECT * FROM schools WHERE id = ?', [id]);
->>>>>>> 293d15180539ebf95d8028ab49ba4f37ca318ef7
     return result.length > 0 ? result[0] : null;
   } catch (error) {
     console.error('❌ Get school by ID error:', error);
@@ -477,23 +471,27 @@ export const insertSchoolDetails = async () => {
         emis,
         grades,
         learners,
-        teachers
+        teachers,
+        sports,
+        extracurricular,
+        services,
+        amenities
       )
       VALUES
-      (1, 'Classrooms; limited rural infrastructure typical of Quintile 1 schools', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'T. Mbane', 1, '200500013', 'Grade 8-12', 861, 29),
-      (2, 'Classrooms; agricultural demonstration/practical areas', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'Z.Ndamase', 1, '200501285', 'Grade 8-12', 510, 20),
-      (3, 'Standard classrooms; rural school infrastructure', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'D.Mtwesi', 1, '200501198', 'Grade 8-12', 540, 21),
-      (4, 'Classrooms; government-owned buildings and land', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'N.Mkhize', 2, '200500094', 'Grade 8-12', 580, 42),
-      (5, 'Standard government school facilities', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'S. Ntloko', 1, '200500121', 'Grade 8-12', 480, 22),
-      (6, 'Classrooms; government-owned buildings and land', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'Mr. S. Madikizela', 1, '200501322', 'Grade 8-12', 553, 24),
-      (7, 'Classrooms; government-owned buildings;grounds', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'Mfihlo N.S.(Acting)', 1, '200500119', 'Grade 8-12', 1013, 31),
-      (8, 'Standard government classrooms and grounds', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'T.G. Dzebedzebe', 1, '200501339', 'Grade 8-12', 620, 24),
-      (9, 'Classrooms; government-owned buildings and land;manages own maintenance', 'Compulsory: isiXhosa; English; Mathematics or Mathematics Literacy; Life Orientation; Optional(choose 3 from 25): Life Sciences; Geography;History; Agricultural Sciences; Physical Sciences; Accounting; Business Studies; Economics; Tourism; Consumer Studies and more', 'Dangwana P.W.', 2, '200500383', 'Grade 10-12', 1288, 32),
-      (10, 'Technical workshops; classrooms; practical labs for engineering/technical subjects', 'isiXhosa; English; Mathematics or Mathematics Literacy; Life Orientation; plus technical subjects: Civil Technology; Electrical Technology; Mechanical Technology; Engineering Graphics & Design (EGD); Technical Sciences(CAPS NSC curriculum)', 'B.B. Mtutuka', 1, '200501377', 'Grade 8-12', 750, 28),
-      (11, 'Standard government classrooms', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'L.Goniwe', 1, '200500384', 'Grade 8-12', 520, 21),
-      (12, 'Standard government school facilities', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'P.Dyantyi', 1, '200501460', 'Grade 8-12', 560, 22),
-      (13, 'Classrooms; government- owned buildings and land', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'Malingozi N.I.', 1, '200501459', 'Grade 8-12', 653, 21),
-      (14, 'Standard government school facilities', 'isiXhosa; English; Mathematics or Mathematics Literacy; Life Orientation; and elective subjects per CAPS NSC curriculum', 'Lukhozi Nr', 1, '200501457', 'Grade 8-12', 535, 21);
+      (1, 'Classrooms; limited rural infrastructure typical of Quintile 1 schools', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'T. Mbane', 1, '200500013', 'Grade 8-12', 861, 29, 'Soccer','Cultural activities; community engagement programs','No-fee school: Government funded; stationery and textbooks provided'),
+      (2, 'Classrooms; agricultural demonstration/practical areas', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'Z.Ndamase', 1, '200501285', 'Grade 8-12', 510, 20,'Soccer; Netball','Agricultural projects ; school garden/farm activities ;community environmental programs','No-fee school: Government-funded textbooks and stationery'),
+      (3, 'Standard classrooms; rural school infrastructure', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'D.Mtwesi', 1, '200501198', 'Grade 8-12', 540, 21,''Soccer; Netball','Cultural activities ; community participation','No-fee school: Government-funded '),
+      (4, 'Classrooms; government-owned buildings and land', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'N.Mkhize', 2, '200500094', 'Grade 8-12', 580, 42,'Soccer; Netball','Cultural programs ;community projects','Government-funded; receives up to R1602 per learner from Department of Education'),
+      (5, 'Standard government school facilities', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'S. Ntloko', 1, '200500121', 'Grade 8-12', 480, 22,'Soccer; Netball','Cultural activities','No-fee school: Government-funded school'),
+      (6, 'Classrooms; government-owned buildings and land', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'Mr. S. Madikizela', 1, '200501322', 'Grade 8-12', 553, 24,'Soccer; Netball','Cultural events;community involvement activities','No-fee school:Section 21 school- manages its own stationery;textbooks and maintenance budget'),
+      (7, 'Classrooms; government-owned buildings;grounds', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'Mfihlo N.S.(Acting)', 1, '200500119', 'Grade 8-12', 1013, 31,'Soccer; Netball(the school's Facebook page states it offers the best education)','Cultural and community activities;the school has an active social media presence(Facebook:Dangwana SSS-1714 followers','No-fee school: Government-funded; EI District:Alfred Nzo West; Former Transkei School'),
+      (8, 'Standard government classrooms and grounds', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'T.G. Dzebedzebe', 1, '200501339', 'Grade 8-12', 620, 24,'Soccer; Netball','Cultural and community activities','No-fee school: Government-funded school;Alfred Nzo West District'),
+      (9, 'Classrooms; government-owned buildings and land;manages own maintenance', 'Compulsory: isiXhosa; English; Mathematics or Mathematics Literacy; Life Orientation; Optional(choose 3 from 25): Life Sciences; Geography;History; Agricultural Sciences; Physical Sciences; Accounting; Business Studies; Economics; Tourism; Consumer Studies and more', 'Dangwana P.W.', 2, '200500383', 'Grade 10-12', 1288, 32,'Soccer; Netball','School cultural events; community programs','No-fee school: Section 21 financial management; Circuit:ANW Ntenetyana'),
+      (10, 'Technical workshops; classrooms; practical labs for engineering/technical subjects', 'isiXhosa; English; Mathematics or Mathematics Literacy; Life Orientation; plus technical subjects: Civil Technology; Electrical Technology; Mechanical Technology; Engineering Graphics & Design (EGD); Technical Sciences(CAPS NSC curriculum)', 'B.B. Mtutuka', 1, '200501377', 'Grade 8-12', 750, 28,'Soccer; Netball and technical/vocational enrichment activities','Technical workshops;practical demonstrations; skills development activities','No-fee school: Government-funded; Ntabankulu Local Municipality'),
+      (11, 'Standard government classrooms', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'L.Goniwe', 1, '200500384', 'Grade 8-12', 520, 21,'Soccer; Netball','Cultural activities; community programs','No-fee school: Government-funded '),
+      (12, 'Standard government school facilities', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'P.Dyantyi', 1, '200501460', 'Grade 8-12', 560, 22,'Soccer; Netball','Cultural and community activities','No-fee school: Government-funded '),
+      (13, 'Classrooms; government- owned buildings and land', 'isiXhosa; English; Mathematics/Mathematics Literacy; Life Orientation; Life Sciences; Geography; History; Agricultural Sciences; Physical Sciences(CAPS NSC curriculum)', 'Malingozi N.I.', 1, '200501459', 'Grade 8-12', 653, 21,'Soccer; Netball','Cultural events; community involvement','No-fee school:Umzimvubu Local Municipality Government-funded '),
+      (14, 'Standard government school facilities', 'isiXhosa; English; Mathematics or Mathematics Literacy; Life Orientation; and elective subjects per CAPS NSC curriculum', 'Lukhozi Nr', 1, '200501457', 'Grade 8-12', 535, 21,'Soccer; Netball(standard Eastern Cape rural school offerings)','Cultural and community activities','No-fee school: Government-funded');
     `);
 
     console.log("✅ School details inserted");

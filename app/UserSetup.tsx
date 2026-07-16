@@ -1,9 +1,18 @@
+import React, {useEffect,useState} from "react";
+import{
+  initDatabase,
+  seedSchools,
+  insertSchoolDetails,
+  insertApplicationInfo,
+} from "./db/Database";
+
+
+
 import {
   FontAwesome5,
   Ionicons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import React, { useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -24,6 +33,24 @@ export default function SetupScreen() {
   const [school, setSchool] = useState("");
   const [grade, setGrade] = useState("");
   const [career, setCareer] = useState("");
+
+  useEffect(()=>{
+    const setupDatabase = async () =>{
+      try{
+        await initDatabase();
+        await seedSchools();
+        await insertSchoolDetails();
+        await insertApplicationInfo();
+
+        console.log("✅ Database ready");
+    } catch (error) {
+      console.error("Database setup failed:", error);
+        }
+      };
+
+      setupDatabase();
+    }, []);
+  
 
   return (
     <ScrollView style={styles.container}>
