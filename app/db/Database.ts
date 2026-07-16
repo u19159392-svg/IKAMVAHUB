@@ -57,7 +57,9 @@ export const initDatabase = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       );
+
       -- SCHOOLS TABLE
+      DROP TABLE IF EXISTS schools;
       CREATE TABLE IF NOT EXISTS schools (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -65,8 +67,10 @@ export const initDatabase = async () => {
         type TEXT NOT NULL,
         location TEXT,
         contact TEXT,
-        email TEXT
+        email TEXT,
+        subjects_offered TEXT
       );
+<<<<<<< HEAD
       --SCHOOL DETAILS TABLE 
       CREATE TABLE IF NOT EXISTS SchoolDetails (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -100,6 +104,21 @@ export const initDatabase = async () => {
 
   `);
 
+=======
+
+      -- SCHOOL CONTACTS TABLE
+      DROP TABLE IF EXISTS school_details;
+      CREATE TABLE IF NOT EXISTS school_contacts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        school_id INTEGER,
+        phone TEXT,
+        address TEXT,
+        email TEXT,
+        website TEXT,
+        FOREIGN KEY (school_id) REFERENCES schools (id) ON DELETE CASCADE
+      );
+    `);
+>>>>>>> 293d15180539ebf95d8028ab49ba4f37ca318ef7
     console.log('✅ Database initialized successfully');
   } catch (error) {
     console.error('❌ Database init error:', error);
@@ -250,18 +269,17 @@ export const deleteTask = async (id: number) => {
 };
 
 // ==================== SETTINGS CRUD (Person 6) ====================
-export const getSettings = async (userId: number) => {
+export const getSettings = async (userId: number): Promise<{ notifications_enabled: number; dark_mode: number }> => {
   try {
     const result = await db.getAllAsync('SELECT * FROM settings WHERE user_id = ?', [userId]);
     if (result.length === 0) {
-      // Create default settings if none exist
       await db.runAsync(
         'INSERT INTO settings (user_id, notifications_enabled, dark_mode) VALUES (?, ?, ?)',
         [userId, 1, 0]
       );
       return { notifications_enabled: 1, dark_mode: 0 };
     }
-    return result[0];
+    return result[0] as { notifications_enabled: number; dark_mode: number };
   } catch (error) {
     console.error('❌ Get settings error:', error);
     return { notifications_enabled: 1, dark_mode: 0 };
@@ -320,26 +338,27 @@ export const markNotificationAsRead = async (id: number) => {
 // ==================== SCHOOLS SEED DATA ====================
 export const seedSchools = async () => {
   try {
-    const existing = await db.getAllAsync('SELECT id FROM schools LIMIT 1');
-    if (existing.length > 0) {
-      console.log('ℹ️ Schools already seeded, skipping');
-      return;
-    }
+    // Temporarily skip the check to force reseed
+    // const existing = await db.getAllAsync('SELECT id FROM schools LIMIT 1');
+    // if (existing.length > 0) {
+    //   console.log('ℹ️ Schools already seeded, skipping');
+    //   return;
+    // }
 
     const schools = [
-      ['Baleni Secondary School', 'Eastern Cape', 'Public', 'Mthatha', '', ''],
-      ['Tyelimhlophe Secondary School', 'Eastern Cape', 'Public', 'Butterworth', '', ''],
-      ['Toleni Secondary School', 'Eastern Cape', 'Public', 'Ngqeleni', '', ''],
-      ['Bonxa High School', 'Eastern Cape', 'Public', 'East London', '', ''],
-      ['Dumsi Senior Secondary School', 'Eastern Cape', 'Public', 'Dutywa', '', ''],
-      ['Zibokwana High School', 'Eastern Cape', 'Public', 'Libode', '', ''],
-      ['Dangwana High School', 'Eastern Cape', 'Public', 'Qumbu', '', ''],
-      ['Zwelitsha High Secondary School', 'Eastern Cape', 'Public', 'Zwelitsha', '', ''],
-      ['Mbodleli High School', 'Eastern Cape', 'Public', 'Mthatha', '', ''],
-      ['Mfazwe Tech High School', 'Eastern Cape', 'Public', 'Ngcobo', '', ''],
-      ['Mpondombini Secondary School', 'Eastern Cape', 'Public', 'Flagstaff', '', ''],
-      ['Mvenyane High School', 'Eastern Cape', 'Public', 'Bizana', '', ''],
-      ['Nzululwazi High School', 'Eastern Cape', 'Public', 'Lusikisiki', '', ''],
+      ['Baleni Secondary School', 'Eastern Cape', 'Public', 'Bizana', '', ''],
+      ['Tyelimhlophe Secondary School', 'Eastern Cape', 'Public', 'Mount Frere', '', ''],
+      ['Toleni Secondary School', 'Eastern Cape', 'Public', 'Mount Frere', '', ''],
+      ['Bonxa High School', 'Eastern Cape', 'Public', 'Tabankulu', '', ''],
+      ['Dumsi Senior Secondary School', 'Eastern Cape', 'Public', 'Mount Frere', '', ''],
+      ['Zibokwana High School', 'Eastern Cape', 'Public', 'Mount Frere', '', ''],
+      ['Dangwana High School', 'Eastern Cape', 'Public', 'Mount Frere', '', ''],
+      ['Zwelitsha High Secondary School', 'Eastern Cape', 'Public', 'Mount Frere', '', ''],
+      ['Mbodleli High School', 'Eastern Cape', 'Public', 'Mount Frere', '', ''],
+      ['Mfazwe Tech High School', 'Eastern Cape', 'Public', 'Tabankulu', '', ''],
+      ['Mpondombini Secondary School', 'Eastern Cape', 'Public', 'Mount Frere', '', ''],
+      ['Mvenyane High School', 'Eastern Cape', 'Public', 'Mount Frere', '', ''],
+      ['Nzululwazi High School', 'Eastern Cape', 'Public', 'Mount Frere', '', ''],
       ['Nomaqwathekana Secondary School', 'Eastern Cape', 'Public', 'Mount Frere', '', ''],
     ];
 
@@ -350,6 +369,31 @@ export const seedSchools = async () => {
       );
     }
 
+    // ===== SUBJECTS OFFERED (Languages, Subjects, Programs) =====
+    const schoolSubjects = [
+      ['Baleni Secondary School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences, Physical Sciences\nPrograms: NSC CAPS curriculum (Gr 8-12)'],
+      ['Tyelimhlophe Secondary School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Agricultural Sciences, Agricultural Technology, Life Sciences, Geography\nPrograms: NSC CAPS curriculum with Agricultural specialisation (Gr 8-12)'],
+      ['Toleni Secondary School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences\nPrograms: NSC CAPS curriculum (Gr 8-12)'],
+      ['Bonxa High School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Accounting, Life Sciences, Geography, History, Agricultural Sciences\nPrograms: NSC CAPS curriculum with Accounting (Gr 8-12)'],
+      ['Dumsi Senior Secondary School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History\nPrograms: NSC CAPS curriculum (Gr 8-12)'],
+      ['Zibokwana High School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences\nPrograms: NSC CAPS curriculum (Gr 8-12)'],
+      ['Dangwana High School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences\nPrograms: NSC CAPS curriculum (Gr 8-12)'],
+      ['Zwelitsha High Secondary School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences\nPrograms: NSC CAPS curriculum (Gr 8-12)'],
+      ['Mbodleli High School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Compulsory: Mathematics, Mathematical Literacy, Life Orientation. Optional (choose 3): Life Sciences, Geography, History, Agricultural Sciences, Physical Sciences, Accounting, Business Studies, Economics, Tourism, Consumer Studies\nPrograms: NSC CAPS curriculum (Gr 10-12)'],
+      ['Mfazwe Tech High School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Civil Technology, Electrical Technology, Mechanical Technology, Engineering Graphics & Design (EGD), Technical Sciences\nPrograms: NSC CAPS curriculum with Comprehensive Technical specialisation (Gr 8-12)'],
+      ['Mpondombini Secondary School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences\nPrograms: NSC CAPS curriculum (Gr 8-12)'],
+      ['Mvenyane High School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences\nPrograms: NSC CAPS curriculum (Gr 8-12)'],
+      ['Nzululwazi High School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences\nPrograms: NSC CAPS curriculum (Gr 8-12)'],
+      ['Nomaqwathekana Secondary School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, and elective subjects per CAPS\nPrograms: NSC CAPS curriculum'],
+    ];
+
+    for (const [name, subjects] of schoolSubjects) {
+      await db.runAsync(
+        'UPDATE schools SET subjects_offered = ? WHERE name = ?',
+        [subjects, name]
+      );
+    }
+
     console.log('✅ Schools seeded successfully');
   } catch (error) {
     console.error('❌ Seed schools error:', error);
@@ -357,8 +401,6 @@ export const seedSchools = async () => {
 };
 
 // ==================== SCHOOL FUNCTIONS ====================
-
-// Get all schools
 export const getSchools = async () => {
   try {
     return await db.getAllAsync('SELECT * FROM schools');
@@ -368,20 +410,15 @@ export const getSchools = async () => {
   }
 };
 
-// Search schools by name
 export const searchSchools = async (query: string) => {
   try {
-    return await db.getAllAsync(
-      'SELECT * FROM schools WHERE name LIKE ?',
-      [`%${query}%`]
-    );
+    return await db.getAllAsync('SELECT * FROM schools WHERE name LIKE ?', [`%${query}%`]);
   } catch (error) {
     console.error('❌ Search schools error:', error);
     return [];
   }
 };
 
-// Filter schools by province and type
 export const filterSchools = async (province: string, type: string) => {
   try {
     return await db.getAllAsync(
@@ -394,12 +431,9 @@ export const filterSchools = async (province: string, type: string) => {
   }
 };
 
-
-// ==================== SCHOOL DETAILS FUNCTIONS ====================
-
-// Get full school details by ID
-export const getSchoolById = async (id:number) => {
+export const getSchoolById = async (id: number) => {
   try {
+<<<<<<< HEAD
     const result = await db.getAllAsync(
       `SELECT s.*, d.facilities, d.subjects_offered, d.principal, d.quintile, d.emis, d.grades, d.learners, d.teachers
        FROM schools s
@@ -409,24 +443,22 @@ export const getSchoolById = async (id:number) => {
       [id]
     );
 
+=======
+    const result = await db.getAllAsync('SELECT * FROM schools WHERE id = ?', [id]);
+>>>>>>> 293d15180539ebf95d8028ab49ba4f37ca318ef7
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("❌ Get school by ID error:", error);
+    console.error('❌ Get school by ID error:', error);
     return null;
   }
 };
 
-// Get school contact details
 export const getSchoolContacts = async (schoolId: number) => {
   try {
-    const result = await db.getAllAsync(
-      "SELECT phone, address FROM school_contacts WHERE school_id = ?",
-      [schoolId]
-    );
-
+    const result = await db.getAllAsync('SELECT * FROM school_contacts WHERE school_id = ?', [schoolId]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("❌ Get school contacts error:", error);
+    console.error('❌ Get school contacts error:', error);
     return null;
   }
 };
