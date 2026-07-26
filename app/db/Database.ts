@@ -1,5 +1,4 @@
 import * as SQLite from 'expo-sqlite';
-import { isSearchBarAvailableForCurrentPlatform } from 'react-native-screens';
 const db = SQLite.openDatabaseSync('ikamvahub.db');
 
 export const initDatabase = async () => {
