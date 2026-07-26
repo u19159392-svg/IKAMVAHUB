@@ -1,4 +1,5 @@
 import * as SQLite from 'expo-sqlite';
+import { isSearchBarAvailableForCurrentPlatform } from 'react-native-screens';
 const db = SQLite.openDatabaseSync('ikamvahub.db');
 
 export const initDatabase = async () => {
@@ -431,7 +432,8 @@ export const getSchoolById = async (id: number) => {
   try {
     
     const result = await db.getAllAsync(
-      `SELECT s.*, d.facilities, d.subjects_offered, d.principal, d.quintile, d.emis, d.grades, d.learners, d.teachers, d.sports, d.extracurricular, d.services_amenities
+      `SELECT s.*,s.name,s.type,s.location,
+       d.facilities, d.subjects_offered, d.principal, d.quintile, d.emis, d.grades, d.learners, d.teachers, d.sports, d.extracurricular, d.services_amenities,d.languages, d.programs, d.about
        FROM schools s
        LEFT JOIN SchoolDetails d
        ON s.id = d.school_id
@@ -530,4 +532,28 @@ export const getApplicationsInfor = async (schoolId: number) => {
   }
 };
   
+// ===== SCHOOL DETAAILS TABLE=====
+await db.execAsync(`
+CREATE TABLE IF NOT EXISTS SchoolDetails(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  school_id INTEGER,
+  facilities TEXT,
+  subjects_offered TEXT,
+
+  principal TEXT,
+  emis TEXT,
+  grades TEXT,
+  learners INTEGER,
+  teachers INTEGER,
+  quintile TEXT,
+
+  sports TEXT,
+  services TEXT,
+
+  languages TEXT,
+  programs TEXT,
+
+  about TEXT
+);
+`);
 export default db;
