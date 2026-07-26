@@ -38,7 +38,6 @@ const EXTRACURRICULAR = [
   "Chess",
   "Science Club",
 ];
-
 const FACILITIES = [
   "All",
   "Library",
@@ -108,19 +107,20 @@ const [loading, setLoading] = useState(false);
     const renderSchool = ({ item }: { item: any }) => (
         <TouchableOpacity 
         style={styles.card}
-        onPress ={() =>
-            router.push({
-               pathname: "/SchoolDetails",
-               params: {
+       onPress={() =>
+    router.push({
+        pathname: "/SchoolDetails",
+        params: {
             id: item.id.toString(),
             name: item.name,
             province: item.province,
             type: item.type,
         },
-      })
-    }
+    })
+}
     >
-            <Text style={styles.schoolName}>{item.name}</Text>
+      
+      <Text style={styles.schoolName}>{item.name}</Text>
             <Text style={styles.cardText}>Province: {item.province}</Text>
             <Text style={styles.cardText}>Type: {item.type}</Text>
         </TouchableOpacity>
