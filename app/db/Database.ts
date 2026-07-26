@@ -358,4 +358,5 @@ export const getSubjectById = async (id: number) => {
     return null;
   }
 };
+
 export default db;

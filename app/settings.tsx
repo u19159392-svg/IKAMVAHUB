@@ -13,7 +13,7 @@ export default function Settings() {
   // Load notification setting from database
   useEffect(() => {
     loadSettings();
-  }, []);
+  }, );
 
   const loadSettings = async () => {
     const settings = await getSettings(userId);
