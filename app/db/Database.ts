@@ -321,5 +321,43 @@ export const filterSchools = async (province: string, type: string) => {
     return [];
   }
 };
+// ==================== SUBJECT FUNCTIONS ====================
 
+// Get all subjects
+export const getSubjects = async () => {
+  try {
+    return await db.getAllAsync('SELECT * FROM subjects');
+  } catch (error) {
+    console.error('❌ Get subjects error:', error);
+    return [];
+  }
+};
+
+// Get subjects by stream (Science, Arts, Commerce)
+export const getSubjectsByStream = async (stream: string) => {
+  try {
+    return await db.getAllAsync(
+      'SELECT * FROM subjects WHERE stream = ?',
+      [stream]
+    );
+  } catch (error) {
+    console.error('❌ Get subjects by stream error:', error);
+    return [];
+  }
+};
+
+// Get one subject by ID
+export const getSubjectById = async (id: number) => {
+  try {
+    const result = await db.getAllAsync(
+      'SELECT * FROM subjects WHERE id = ?',
+      [id]
+    );
+
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error('❌ Get subject error:', error);
+    return null;
+  }
+};
 export default db;
