@@ -1,11 +1,8 @@
-import React, {useEffect,useState} from "react";
-import{
+import React, { useEffect, useState } from "react";
+import {
   initDatabase,
   seedSchools,
-  insertSchoolDetails,
-  insertApplicationInfo,
 } from "./db/Database";
-
 
 
 import {
@@ -35,12 +32,10 @@ export default function SetupScreen() {
   const [career, setCareer] = useState("");
 
   useEffect(()=>{
-    const setupDatabase = async () =>{
+      const setupDatabase = async () =>{
       try{
         await initDatabase();
         await seedSchools();
-        await insertSchoolDetails();
-        await insertApplicationInfo();
 
         console.log("✅ Database ready");
     } catch (error) {
