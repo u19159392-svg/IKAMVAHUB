@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getSettings, updateSettings } from '../db/Database';
 
 type ThemeContextType = {
   isDark: boolean;
@@ -19,29 +18,30 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   const loadTheme = async () => {
     try {
-      const settings = await getSettings(userId);
-      if (settings && typeof settings.dark_mode === 'number') {
-        setIsDark(settings.dark_mode === 1);
-      }
+      // Theme persistence is temporarily disabled until the Database module is fixed.
     } catch (error) {
       console.error('❌ Load theme error:', error);
     }
   };
 
+  const persistSettings = async (_userId: number, _settings: { notifications_enabled: number; dark_mode: number; }) => {
+    // No-op persistence until the Database module is available.
+  };
+
   const toggleDarkMode = async () => {
     const newValue = !isDark;
     setIsDark(newValue);
-    await updateSettings(userId, { 
-      notifications_enabled: 1, 
-      dark_mode: newValue ? 1 : 0 
+    await persistSettings(userId, {
+      notifications_enabled: 1,
+      dark_mode: newValue ? 1 : 0,
     });
   };
 
   const setDarkMode = async (value: boolean) => {
     setIsDark(value);
-    await updateSettings(userId, { 
-      notifications_enabled: 1, 
-      dark_mode: value ? 1 : 0 
+    await persistSettings(userId, {
+      notifications_enabled: 1,
+      dark_mode: value ? 1 : 0,
     });
   };
 

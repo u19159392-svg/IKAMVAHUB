@@ -1,16 +1,27 @@
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
-import { filterSchools, getSchools, searchSchools } from "./db/Database";
+// Dynamically import Database to avoid parse-time errors if the module has issues
+let filterSchools: any;
+let getSchools: any;
+let searchSchools: any;
+const ensureDbLoaded = async () => {
+  if (!getSchools || !searchSchools || !filterSchools) {
+    const db = await import("./db/Database");
+    getSchools = db.getSchools;
+    searchSchools = db.searchSchools;
+    filterSchools = db.filterSchools;
+  }
+};
 
 const SCHOOL_TYPES = ["All", "Public"];
 
@@ -19,6 +30,12 @@ const PROVINCES = [
   "Eastern Cape",
   "Free State",
   "KwaZulu-Natal",
+  "Limpopo",
+  "Mpumalanga",
+  "North West",
+  "Northern Cape",
+  "Western Cape",
+
 ];
 
 const SPORTS = [
@@ -63,6 +80,7 @@ const [facility, setFacility] = useState("All");
 const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        ensureDbLoaded();
         loadSchools();
     }, []);
 
@@ -264,6 +282,8 @@ const [loading, setLoading] = useState(false);
                     data={schools}
                     keyExtractor={(item: any) => item.id.toString()}
                     renderItem={renderSchool}
+                    style={{ flex:1}}
+                    contentContainerStyle={{ paddingBottom: 20 }}
                 />
             )}
         </View>
@@ -274,7 +294,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#F5F5F5",
-        paddingTop: 10,
+        paddingTop: 16,
     },
     title: {
         fontSize: 24,

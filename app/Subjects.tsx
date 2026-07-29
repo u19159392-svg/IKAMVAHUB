@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { getSubjectsByStream } from "./db/Database";
 type Stream = "Science" | "Arts" | "Commerce";
 
 interface Subject {
@@ -14,6 +13,21 @@ interface Subject {
   name: string;
   stream: Stream;
 }
+
+const allSubjects: Subject[] = [
+  { id: 1, name: "Biology", stream: "Science" },
+  { id: 2, name: "Chemistry", stream: "Science" },
+  { id: 3, name: "Physics", stream: "Science" },
+  { id: 4, name: "History", stream: "Arts" },
+  { id: 5, name: "Literature", stream: "Arts" },
+  { id: 6, name: "Economics", stream: "Commerce" },
+  { id: 7, name: "Accounting", stream: "Commerce" },
+];
+
+const getSubjectsByStream = async (stream: Stream): Promise<Subject[]> => {
+  return allSubjects.filter((subject) => subject.stream === stream);
+};
+
 export default function SubjectsScreen() {
   const [selectedStream, setSelectedStream] =
     useState<Stream>("Science");
@@ -24,8 +38,8 @@ export default function SubjectsScreen() {
     loadSubjects("Science");
   }, []);
 
-  const loadSubjects = (stream: Stream) => {
-    const data = getSubjectsByStream(stream);
+  const loadSubjects = async (stream: Stream) => {
+    const data = await getSubjectsByStream(stream);
     setSubjects(data);
   };
 

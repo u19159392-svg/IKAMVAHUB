@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { initDatabase, seedSchools } from './db/Database';
+// Dynamically import database module to avoid static parse errors during bundling
 import { ThemeProvider, useTheme } from './theme/ThemeContext';
 
 function RootLayout() {
@@ -29,8 +29,9 @@ export default function Layout() {
 
   useEffect(() => {
     const setup = async () => {
-      await initDatabase();
-      await seedSchools();
+      const db = await import('./db/Database');
+      if (db?.initDatabase) await db.initDatabase();
+      if (db?.seedSchools) await db.seedSchools();
       setDbReady(true);
     };
     setup();
