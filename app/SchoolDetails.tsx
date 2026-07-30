@@ -1,19 +1,29 @@
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
-import { getSchoolById } from "./db/Database";
+import { getSchoolById, getSchoolContacts } from "./db/Database";
 
 export default function SchoolDetails() {
   const { id } = useLocalSearchParams();
   const [school, setSchool] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+const [contacts, setContacts] = useState<any>(null);
 
   useEffect(() => {
     const loadSchool = async () => {
-      const data = await getSchoolById(Number(id));
-      setSchool(data);
-      setLoading(false);
-    };
+  const data = await getSchoolById(Number(id));
+  setSchool(data);
+
+  try {
+    const contactData = await getSchoolContacts(Number(id));
+    setContacts(contactData);
+  } catch (contactError) {
+    console.log("ℹ️ Contacts not available yet:", contactError);
+    setContacts(null);
+  }
+
+  setLoading(false);
+};
     loadSchool();
   }, [id]);
 
@@ -80,6 +90,14 @@ export default function SchoolDetails() {
 
       <View style={styles.divider} />
 
+      {/* Task 5: Facilities Section */}
+      <Text style={styles.sectionTitle}>🏫 Facilities</Text>
+      <Text style={styles.subjectContent}>
+        {school.facilities || "No facilities information available"}
+      </Text>
+
+      <View style={styles.divider} />
+
       {/* Task 6: Subjects Offered Section */}
       <Text style={styles.sectionTitle}>📚 Subjects Offered</Text>
       {lines.length > 0 ? (
@@ -124,6 +142,31 @@ export default function SchoolDetails() {
 <Text style={styles.subjectLabel}>Services & Amenities</Text>
 <Text style={styles.subjectContent}>
   {school.services_amenities || "No information available"}
+</Text>
+<View style={styles.divider} />
+
+<Text style={styles.sectionTitle}>📖 About This School</Text>
+<Text style={styles.subjectContent}>
+  {school.about || "No description available yet."}
+</Text>
+
+<View style={styles.divider} />
+
+<Text style={styles.sectionTitle}>📞 Contact Details</Text>
+
+<Text style={styles.subjectLabel}>Phone</Text>
+<Text style={styles.subjectContent}>
+  {contacts?.phone || "Not available"}
+</Text>
+
+<Text style={styles.subjectLabel}>Email</Text>
+<Text style={styles.subjectContent}>
+  {contacts?.email || "Not available"}
+</Text>
+
+<Text style={styles.subjectLabel}>Address</Text>
+<Text style={styles.subjectContent}>
+  {contacts?.address || "Not available"}
 </Text>
       
     </ScrollView>

@@ -366,7 +366,7 @@ export const seedSchools = async () => {
   }
 };
 export default db;
-/ ==================== SCHOOL FUNCTIONS ====================
+// ==================== SCHOOL FUNCTIONS ====================
 
 export const getSchools = async () => {
   try {
