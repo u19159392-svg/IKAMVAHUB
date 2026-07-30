@@ -1,4 +1,3 @@
-import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -6,364 +5,104 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 
-// Dynamically import Database to avoid parse-time errors if the module has issues
-let filterSchools: any;
-let getSchools: any;
-let searchSchools: any;
-const ensureDbLoaded = async () => {
-  if (!getSchools || !searchSchools || !filterSchools) {
-    const db = await import("./db/Database");
-    getSchools = db.getSchools;
-    searchSchools = db.searchSchools;
-    filterSchools = db.filterSchools;
-  }
-};
+import SchoolCard from "./components/SchoolCard";
+import { getSchools, searchSchools } from "./db/Database";
 
-const SCHOOL_TYPES = ["All", "Public"];
-
-const PROVINCES = [
-  "All",
-  "Eastern Cape",
-  "Free State",
-  "KwaZulu-Natal",
-  "Limpopo",
-  "Mpumalanga",
-  "North West",
-  "Northern Cape",
-  "Western Cape",
-
-];
-
-const SPORTS = [
-  "All",
-  "Soccer",
-  "Rugby",
-  "Cricket",
-  "Netball",
-  "Athletics",
-];
-
-const EXTRACURRICULAR = [
-  "All",
-  "Debate",
-  "Choir",
-  "Drama",
-  "Chess",
-  "Science Club",
-];
-const FACILITIES = [
-  "All",
-  "Library",
-  "Computer Laboratory",
-  "Science Laboratory",
-  "Sports Field",
-  "Hostel",
-  "School Hall",
-];
 export default function Schools() {
-    const router = useRouter();
+  const [schools, setSchools] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
-    const [schools, setSchools] = useState<any[]>([]);
-const [query, setQuery] = useState("");
+  useEffect(() => {
+    loadSchools();
+  }, []);
 
-// Filters
-const [province, setProvince] = useState("All");
-const [schoolType, setSchoolType] = useState("All");
-const [sport, setSport] = useState("All");
-const [activity, setActivity] = useState("All");
-const [facility, setFacility] = useState("All");
+  const loadSchools = async () => {
+    setLoading(true);
 
-const [loading, setLoading] = useState(false);
+    try {
+      const data = await getSchools();
+      setSchools(data);
+    } catch (error) {
+      console.log(error);
+    }
 
-    useEffect(() => {
-        ensureDbLoaded();
-        loadSchools();
-    }, []);
+    setLoading(false);
+  };
 
-    const loadSchools = async () => {
-        setLoading(true);
-        const data = await getSchools();
-        setSchools(data);
-        setLoading(false);
-    };
+  const handleSearch = async (text: string) => {
+    setSearch(text);
 
-    // Central function that decides which DB call to make
-    // based on current search text + filter state
-    const refresh = async (text: string, selectedType: string) => {
-        setLoading(true);
-        try {
-            if (text.trim() !== "") {
-                const results = await searchSchools(text);
-                setSchools(results);
-            } else if (selectedType !== "All") {
-              const results = await filterSchools("", selectedType);
-                setSchools(results);
-            } else {
-                const data = await getSchools();
-                setSchools(data);
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
+    if (text.trim() === "") {
+      loadSchools();
+      return;
+    }
 
-    const handleSearch = (text: string) => {
-        setQuery(text);
-        refresh(text, schoolType);
-    };
+    const results = await searchSchools(text);
+    setSchools(results);
+  };
 
-    const handleTypeSelect = (item: string) => {
-        setSchoolType(item);
-        setQuery(""); // clear search so filter takes effect
-        refresh("", item);
-    };
+  return (
+    <View style={styles.container}>
 
-    const renderSchool = ({ item }: { item: any }) => (
-        <TouchableOpacity 
-        style={styles.card}
-       onPress={() =>
-    router.push({
-        pathname: "/SchoolDetails",
-        params: {
-            id: item.id.toString(),
-            name: item.name,
-            province: item.province,
-            type: item.type,
-        },
-    })
-}
-    >
-      
-      <Text style={styles.schoolName}>{item.name}</Text>
-            <Text style={styles.cardText}>Province: {item.province}</Text>
-            <Text style={styles.cardText}>Type: {item.type}</Text>
-        </TouchableOpacity>
-    );
-
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Schools</Text>
-
-            {/* Task 4: Search bar */}
-            <TextInput
-                style={styles.searchBar}
-                placeholder="Search schools..."
-                value={query}
-                onChangeText={handleSearch}
-            />
-
-            {/* Task 5: Filter buttons (School Type only) */}
-            <Text style={styles.heading}>School Type</Text>
-            <View style={styles.buttonRow}>
-                {SCHOOL_TYPES.map((item) => (
-                    <TouchableOpacity
-                        key={item}
-                        style={[
-                            styles.filterButton,
-                            schoolType === item && styles.activeButton,
-                        ]}
-                        onPress={() => handleTypeSelect(item)}
-                    >
-                        <Text
-                            style={[
-                                styles.buttonText,
-                                schoolType === item && styles.activeButtonText,
-                            ]}
-                        >
-                            {item}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-            <Text style={styles.heading}>Province</Text>
-
-<View style={styles.buttonRow}>
-  {PROVINCES.map((item) => (
-    <TouchableOpacity
-      key={item}
-      style={[
-        styles.filterButton,
-        province === item && styles.activeButton,
-      ]}
-      onPress={() => setProvince(item)}
-    >
-      <Text
-        style={[
-          styles.buttonText,
-          province === item && styles.activeButtonText,
-        ]}
-      >
-        {item}
+      <Text style={styles.title}>
+        Schools
       </Text>
-    </TouchableOpacity>
-  ))}
-</View>
-<Text style={styles.heading}>Sports</Text>
 
-<View style={styles.buttonRow}>
-  {SPORTS.map((item) => (
-    <TouchableOpacity
-      key={item}
-      style={[
-        styles.filterButton,
-        sport === item && styles.activeButton,
-      ]}
-      onPress={() => setSport(item)}
-    >
-      <Text
-        style={[
-          styles.buttonText,
-          sport === item && styles.activeButtonText,
-        ]}
-      >
-        {item}
-      </Text>
-    </TouchableOpacity>
-  ))}
-</View>
-<Text style={styles.heading}>Extracurricular Activities</Text>
+      <TextInput
+        style={styles.search}
+        placeholder="Search a school..."
+        value={search}
+        onChangeText={handleSearch}
+      />
 
-<View style={styles.buttonRow}>
-  {EXTRACURRICULAR.map((item) => (
-    <TouchableOpacity
-      key={item}
-      style={[
-        styles.filterButton,
-        activity === item && styles.activeButton,
-      ]}
-      onPress={() => setActivity(item)}
-    >
-      <Text
-        style={[
-          styles.buttonText,
-          activity === item && styles.activeButtonText,
-        ]}
-      >
-        {item}
-      </Text>
-    </TouchableOpacity>
-  ))}
-</View>
-<Text style={styles.heading}>Services & Amenities</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0097A7" />
+      ) : (
+        <FlatList
+          data={schools}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <SchoolCard school={item} />
+          )}
+          contentContainerStyle={{
+            paddingBottom: 40,
+          }}
+        />
+      )}
 
-<View style={styles.buttonRow}>
-  {FACILITIES.map((item) => (
-    <TouchableOpacity
-      key={item}
-      style={[
-        styles.filterButton,
-        facility === item && styles.activeButton,
-      ]}
-      onPress={() => setFacility(item)}
-    >
-      <Text
-        style={[
-          styles.buttonText,
-          facility === item && styles.activeButtonText,
-        ]}
-      >
-        {item}
-      </Text>
-    </TouchableOpacity>
-  ))}
-</View>
-
-            {/* Task 6: School cards */}
-            {loading ? (
-                <ActivityIndicator size="large" color="#00ACC1" />
-            ) : schools.length === 0 ? (
-                <Text style={styles.noResults}>No schools found</Text>
-            ) : (
-                <FlatList
-                    data={schools}
-                    keyExtractor={(item: any) => item.id.toString()}
-                    renderItem={renderSchool}
-                    style={{ flex:1}}
-                    contentContainerStyle={{ paddingBottom: 20 }}
-                />
-            )}
-        </View>
-    );
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#F5F5F5",
-        paddingTop: 16,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: "bold",
-        marginBottom: 16,
-        textAlign: "center",
-    },
-    searchBar: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        marginHorizontal: 16,
-        marginBottom: 12,
-        backgroundColor: "#fff",
-    },
-    heading: {
-        fontSize: 16,
-        fontWeight: "bold",
-        marginHorizontal: 16,
-        marginBottom: 8,
-    },
-    buttonRow: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        marginHorizontal: 16,
-        marginBottom: 16,
-    },
-    filterButton: {
-        backgroundColor: "#D9EAF7",
-        paddingHorizontal: 14,
-        paddingVertical: 8,
-        borderRadius: 20,
-        marginRight: 8,
-        marginBottom: 8,
-    },
-    activeButton: {
-        backgroundColor: "#00ACC1",
-    },
-    buttonText: {
-        color: "#000",
-        fontWeight: "600",
-    },
-    activeButtonText: {
-        color: "#fff",
-    },
-    card: {
-        backgroundColor: "#FFFFFF",
-        marginHorizontal: 16,
-        marginVertical: 8,
-        padding: 16,
-        borderRadius: 8,
-        elevation: 3,
-    },
-    schoolName: {
-        fontSize: 18,
-        fontWeight: "bold",
-        color: "#00ACC1",
-        marginBottom: 6,
-    },
-    cardText: {
-        fontSize: 15,
-        color: "#555",
-        marginBottom: 4,
-    },
-    noResults: {
-        textAlign: "center",
-        marginTop: 20,
-        color: "#888",
-    },
+
+  container: {
+    flex: 1,
+    backgroundColor: "#F5F7FA",
+    paddingTop: 20,
+  },
+
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#00838F",
+  },
+
+  search: {
+    backgroundColor: "#fff",
+    marginHorizontal: 15,
+    marginBottom: 15,
+    borderRadius: 12,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+
 });
