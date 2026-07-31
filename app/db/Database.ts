@@ -120,6 +120,14 @@ export const initDatabase = async () => {
         jobs_available TEXT,
         factories TEXT
       );
+      -- CAREER-SUBJECT RELATION TABLE
+CREATE TABLE IF NOT EXISTS career_subjects (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  career_id INTEGER,
+  subject_id INTEGER,
+  FOREIGN KEY (career_id) REFERENCES careers(id),
+  FOREIGN KEY (subject_id) REFERENCES subjects(id)
+);
     `);
 
     // ===== SEED DATA =====
