@@ -9,38 +9,102 @@ import {
 } from "react-native";
 
 // TYPES
+type TaskType =
+  | "School"
+  | "Bursary"
+  | "University"
+  | "Mentorship";
+
 type Task = {
   id: string;
   title: string;
-  type: "School" | "Bursary";
-  priority: "low" | "medium" | "high";
+  type: TaskType;
   dueDate: string;
   completed: boolean;
 };
 
-// DATA (FROM YOUR PROJECT)
+// ✅ ALL SCHOOLS (24)
 const schools = [
   "Baleni Secondary School",
   "Tyelimhlophe Secondary School",
   "Toleni Secondary School",
+  "Nomaqwatekana High School",
+  "Zwelitsha High Secondary School",
+  "Bonxa High School",
+  "Dumsi Senior Secondary School",
+  "Mfazwe Tech High School",
+  "Mpondombini Secondary School",
+  "Mvenyane High School",
+  "Mount Frere High School",
+  "Ludeke High School",
+  "Dangwana High School",
+  "Cabazi High School",
+  "Mpendla High School",
+  "Ntenetyana High School",
+  "Tabankulu High School",
+  "Bizana High School",
+  "Amadiba Secondary School",
+  "Lugangeni Secondary School",
+  "Mvuzo Secondary School",
+  "Ntlamvini High School",
+  "Umzimvubu Secondary School",
+  "Eastern Cape Tech High School",
 ];
 
+// BURSARIES
 const bursaries = [
+  "NSFAS",
   "Vodacom Bursary",
   "Capitec Bank Bursary",
   "MTN Bursary",
   "Standard Bank Bursary",
+  "Sasol Bursary",
+  "Transnet Bursary",
+  "Shoprite Bursary",
 ];
 
-// MAIN COMPONENT
+// UNIVERSITIES
+const universities = [
+  "University of Pretoria",
+  "University of Cape Town",
+  "University of Johannesburg",
+  "Walter Sisulu University",
+  "Nelson Mandela University",
+];
+
+// MENTORSHIP
+const mentorships = [
+  "Career Guidance Program",
+  "Coding Mentorship",
+  "University Prep Mentorship",
+  "Business Mentorship",
+];
+
 export default function TasksScreen() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [showForm, setShowForm] = useState(false);
 
-  const [selectedType, setSelectedType] = useState<"School" | "Bursary">("School");
+  const [selectedType, setSelectedType] =
+    useState<TaskType>("School");
+
   const [selectedItem, setSelectedItem] = useState("");
-  const [priority, setPriority] = useState<"low" | "medium" | "high">("low");
   const [dueDate, setDueDate] = useState("");
+
+  // GET ITEMS BASED ON TYPE
+  const getItems = () => {
+    switch (selectedType) {
+      case "School":
+        return schools;
+      case "Bursary":
+        return bursaries;
+      case "University":
+        return universities;
+      case "Mentorship":
+        return mentorships;
+      default:
+        return [];
+    }
+  };
 
   // ADD TASK
   const addTask = () => {
@@ -50,7 +114,6 @@ export default function TasksScreen() {
       id: Date.now().toString(),
       title: `Apply to ${selectedItem}`,
       type: selectedType,
-      priority,
       dueDate,
       completed: false,
     };
@@ -59,7 +122,6 @@ export default function TasksScreen() {
 
     setSelectedItem("");
     setDueDate("");
-    setPriority("low");
     setShowForm(false);
   };
 
@@ -77,24 +139,15 @@ export default function TasksScreen() {
     setTasks(tasks.filter((t) => t.id !== id));
   };
 
-  // PRIORITY COLOR
-  const getColor = (priority: string) => {
-    if (priority === "high") return "#ff4d4d";
-    if (priority === "medium") return "#ffa500";
-    return "#4CAF50";
-  };
-
   const completedCount = tasks.filter((t) => t.completed).length;
 
   return (
     <View style={styles.container}>
-      {/* HEADER */}
       <Text style={styles.header}>Tasks</Text>
       <Text style={styles.sub}>
-        Track your school & bursary applications
+        Track applications (schools, bursaries, university, mentorship)
       </Text>
 
-      {/* SUMMARY */}
       <Text style={styles.summary}>
         {completedCount} completed | {tasks.length - completedCount} remaining
       </Text>
@@ -110,28 +163,32 @@ export default function TasksScreen() {
       {/* FORM */}
       {showForm && (
         <View style={styles.form}>
-          {/* TYPE SELECT */}
           <Text style={styles.label}>Select Type:</Text>
+
           <View style={styles.row}>
-            {["School", "Bursary"].map((type) => (
-              <TouchableOpacity
-                key={type}
-                style={[
-                  styles.selectBtn,
-                  selectedType === type && styles.selected,
-                ]}
-                onPress={() =>
-                  setSelectedType(type as "School" | "Bursary")
-                }
-              >
-                <Text>{type}</Text>
-              </TouchableOpacity>
-            ))}
+            {["School", "Bursary", "University", "Mentorship"].map(
+              (type) => (
+                <TouchableOpacity
+                  key={type}
+                  style={[
+                    styles.selectBtn,
+                    selectedType === type && styles.selected,
+                  ]}
+                  onPress={() =>
+                    setSelectedType(type as TaskType)
+                  }
+                >
+                  <Text>{type}</Text>
+                </TouchableOpacity>
+              )
+            )}
           </View>
 
-          {/* ITEMS */}
-          <Text style={styles.label}>Select {selectedType}:</Text>
-          {(selectedType === "School" ? schools : bursaries).map((item) => (
+          <Text style={styles.label}>
+            Select {selectedType}:
+          </Text>
+
+          {getItems().map((item) => (
             <TouchableOpacity
               key={item}
               style={[
@@ -144,17 +201,6 @@ export default function TasksScreen() {
             </TouchableOpacity>
           ))}
 
-          {/* PRIORITY */}
-          <TextInput
-            placeholder="Priority (low / medium / high)"
-            style={styles.input}
-            value={priority}
-            onChangeText={(text) =>
-              setPriority(text as "low" | "medium" | "high")
-            }
-          />
-
-          {/* DATE */}
           <TextInput
             placeholder="Due Date (YYYY-MM-DD)"
             style={styles.input}
@@ -173,12 +219,7 @@ export default function TasksScreen() {
         data={tasks}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View
-            style={[
-              styles.card,
-              { borderLeftColor: getColor(item.priority) },
-            ]}
-          >
+          <View style={styles.card}>
             <Text style={[styles.title, item.completed && styles.completed]}>
               {item.title}
             </Text>
@@ -237,12 +278,13 @@ const styles = StyleSheet.create({
 
   label: { fontWeight: "bold", marginTop: 5 },
 
-  row: { flexDirection: "row", marginBottom: 10 },
+  row: { flexDirection: "row", flexWrap: "wrap" },
 
   selectBtn: {
     padding: 10,
     backgroundColor: "#ddd",
     marginRight: 5,
+    marginBottom: 5,
     borderRadius: 5,
   },
 
@@ -254,7 +296,7 @@ const styles = StyleSheet.create({
   },
 
   selected: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#007bff",
   },
 
   input: {
@@ -265,7 +307,7 @@ const styles = StyleSheet.create({
   },
 
   saveBtn: {
-    backgroundColor: "green",
+    backgroundColor: "#007bff",
     padding: 12,
     marginTop: 10,
     alignItems: "center",
@@ -277,7 +319,6 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
-    borderLeftWidth: 6,
   },
 
   title: { fontWeight: "bold", fontSize: 16 },
@@ -295,7 +336,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 
-  complete: { color: "green" },
+  complete: { color: "#007bff" },
 
   delete: { color: "red" },
 });
