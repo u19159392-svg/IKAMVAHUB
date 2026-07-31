@@ -56,75 +56,71 @@ export const initDatabase = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       );
+
       -- SCHOOLS TABLE
-CREATE TABLE IF NOT EXISTS schools (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  province TEXT,
-  type TEXT,
-  location TEXT,
-  contact TEXT,
-  email TEXT,
-  subjects_offered TEXT
-);
+      DROP TABLE IF EXISTS schools;
+      CREATE TABLE IF NOT EXISTS schools (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        province TEXT NOT NULL,
+        type TEXT NOT NULL,
+        location TEXT,
+        contact TEXT,
+        email TEXT,
+        subjects_offered TEXT,
+        sports TEXT,
+        extracurricular TEXT,
+        facilities TEXT
+      );
 
       -- SCHOOL CONTACTS TABLE
+      DROP TABLE IF EXISTS school_contacts;
       CREATE TABLE IF NOT EXISTS school_contacts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        school_id INTEGER NOT NULL,
-        contact_name TEXT,
+        school_id INTEGER,
         phone TEXT,
+        address TEXT,
         email TEXT,
+        website TEXT,
         FOREIGN KEY (school_id) REFERENCES schools (id) ON DELETE CASCADE
       );
 
-      -- SUBJECTS TABLE
-      CREATE TABLE IF NOT EXISTS subjects (
+      -- CAREERS TABLE
+      DROP TABLE IF EXISTS careers;
+      CREATE TABLE IF NOT EXISTS careers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        stream TEXT,
-        description TEXT
-        );
-      
-        CREATE TABLE IF NOT EXISTS careers (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  field TEXT,
-  description TEXT,
-  subjects_needed TEXT,
-  study_path TEXT,
-  institutions TEXT,
-  aps_minimum INTEGER
-);
-
--- CAREER-SUBJECT RELATIONSHIPS TABLE
-CREATE TABLE IF NOT EXISTS career_subjects (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  career_id INTEGER NOT NULL,
-  subject_id INTEGER NOT NULL,
-  FOREIGN KEY (career_id) REFERENCES careers (id) ON DELETE CASCADE,
-  FOREIGN KEY (subject_id) REFERENCES subjects (id) ON DELETE CASCADE
-);
-
--- INDUSTRIES TABLE
-CREATE TABLE IF NOT EXISTS industries (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  sector TEXT,
-  location TEXT,
-  specialization TEXT,
-  jobs_available TEXT,
-  factories TEXT
-);
-    `);
-    // Ensure legacy DBs get the new column — ALTER will fail if column exists, so ignore errors
-    try {
-      await db.execAsync(
-        "ALTER TABLE schools ADD COLUMN subjects_offered TEXT;",
+        field TEXT,
+        description TEXT,
+        subjects_needed TEXT,
+        study_path TEXT,
+        institutions TEXT,
+        aps_minimum INTEGER,
+        stream TEXT
       );
-    } catch {
-      // ignore errors (likely column already exists)
-    }
+
+      -- CAREER-SUBJECT RELATIONSHIPS TABLE
+      DROP TABLE IF EXISTS career_subjects;
+      CREATE TABLE IF NOT EXISTS career_subjects (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        career_id INTEGER NOT NULL,
+        subject_id INTEGER NOT NULL,
+        FOREIGN KEY (career_id) REFERENCES careers (id) ON DELETE CASCADE,
+        FOREIGN KEY (subject_id) REFERENCES subjects (id) ON DELETE CASCADE
+      );
+
+      -- INDUSTRIES TABLE
+      DROP TABLE IF EXISTS industries;
+      CREATE TABLE IF NOT EXISTS industries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        sector TEXT,
+        location TEXT,
+        specialization TEXT,
+        jobs_available TEXT,
+        factories TEXT
+      );
+    `);
 
     // ===== SEED DATA =====
     await clearDuplicateSchools();
@@ -138,7 +134,7 @@ CREATE TABLE IF NOT EXISTS industries (
   }
 };
 
-// USER CRUD (Person 3)
+// ==================== USER CRUD (Person 3) ====================
 export const createUser = async (
   name: string,
   email: string,
@@ -201,7 +197,7 @@ export const deleteUser = async (id: number) => {
   }
 };
 
-// PROFILE CRUD (Person 4)
+// ==================== PROFILE CRUD (Person 4) ====================
 export const createProfile = async (data: any) => {
   try {
     const result = await db.runAsync(
@@ -257,7 +253,7 @@ export const deleteProfile = async (userId: number) => {
   }
 };
 
-// TASK CRUD (Person 6)
+// ==================== TASK CRUD (Person 6) ====================
 export const createTask = async (data: any) => {
   try {
     const result = await db.runAsync(
@@ -310,7 +306,7 @@ export const deleteTask = async (id: number) => {
   }
 };
 
-// SETTINGS CRUD (Person 6)
+// ==================== SETTINGS CRUD (Person 6) ====================
 export const getSettings = async (
   userId: number,
 ): Promise<{ notifications_enabled: number; dark_mode: number }> => {
@@ -346,7 +342,7 @@ export const updateSettings = async (userId: number, data: any) => {
   }
 };
 
-// NOTIFICATION CRUD (Person 6)
+// ==================== NOTIFICATION CRUD (Person 6) ====================
 export const createNotification = async (
   userId: number,
   title: string,
@@ -385,11 +381,10 @@ export const markNotificationAsRead = async (id: number) => {
     return false;
   }
 };
+
 export const clearDuplicateSchools = async () => {
   try {
-    // Delete all schools
     await db.runAsync("DELETE FROM schools");
-    // Reset the auto-increment counter
     await db.runAsync("DELETE FROM sqlite_sequence WHERE name='schools'");
     console.log("✅ All schools cleared");
   } catch (error) {
@@ -397,10 +392,9 @@ export const clearDuplicateSchools = async () => {
   }
 };
 
-// SCHOOLS SEED DATA
+// ==================== SCHOOLS SEED DATA ====================
 export const seedSchools = async () => {
   try {
-    // Temporarily skip the check to force reseed
     const existing = await db.getAllAsync("SELECT id FROM schools LIMIT 1");
     if (existing.length > 0) {
       console.log("ℹ️ Schools already seeded, skipping");
@@ -494,7 +488,7 @@ export const seedSchools = async () => {
       );
     }
 
-    // SUBJECTS OFFERED (Languages, Subjects, Programs)
+    // ===== SUBJECTS OFFERED (Languages, Subjects, Programs) =====
     const schoolSubjects = [
       [
         "Baleni Secondary School",
@@ -566,6 +560,7 @@ export const seedSchools = async () => {
     console.error("❌ Seed schools error:", error);
   }
 };
+
 export const seedCareers = async () => {
   try {
     const existing = await db.getAllAsync("SELECT id FROM careers LIMIT 1");
@@ -575,7 +570,6 @@ export const seedCareers = async () => {
     }
 
     const careers = [
-      // ========== SCIENCE & HEALTH SCIENCES ==========
       {
         name: "General Practitioner",
         field: "Science & Health Sciences",
@@ -639,70 +633,6 @@ export const seedCareers = async () => {
         aps_minimum: 6,
       },
       {
-        name: "Occupational Therapist",
-        field: "Science & Health Sciences",
-        description:
-          "Helps patients perform daily activities and recover from physical or mental conditions.",
-        subjects_needed: "Life Sciences, English, Mathematics",
-        study_path:
-          "Bachelor of Occupational Therapy (4 years) → Community Service → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Stellenbosch University, University of KwaZulu-Natal",
-        aps_minimum: 6,
-      },
-      {
-        name: "Medical Laboratory Scientist",
-        field: "Science & Health Sciences",
-        description:
-          "Analyses medical samples (blood, urine, tissue) to diagnose diseases and conditions.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path:
-          "Bachelor of Health Sciences in Medical Laboratory Science → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, University of KwaZulu-Natal",
-        aps_minimum: 6,
-      },
-      {
-        name: "Psychologist (Clinical)",
-        field: "Science & Health Sciences",
-        description:
-          "Diagnoses and treats mental, emotional, and behavioral disorders.",
-        subjects_needed: "Mathematics, English, Life Sciences",
-        study_path:
-          "BA Psychology (3 years) → Honours → Masters in Clinical Psychology → Internship → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria, University of Fort Hare",
-        aps_minimum: 6,
-      },
-      {
-        name: "Dietitian",
-        field: "Science & Health Sciences",
-        description:
-          "Advises on nutrition and food choices to promote health and manage diseases.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Bachelor of Dietetics (4 years) → Community Service → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Stellenbosch University, North-West University",
-        aps_minimum: 5,
-      },
-      {
-        name: "Radiographer",
-        field: "Science & Health Sciences",
-        description:
-          "Uses imaging technology (X-ray, CT, MRI) to diagnose medical conditions.",
-        subjects_needed:
-          "Mathematics, Physical Sciences, Life Sciences, English",
-        study_path:
-          "Bachelor of Radiography (4 years) → Community Service → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Central University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
-      },
-
-      // ========== ENGINEERING & TECHNOLOGY ==========
-      {
         name: "Civil Engineer",
         field: "Engineering & Technology",
         description:
@@ -752,32 +682,6 @@ export const seedCareers = async () => {
         aps_minimum: 6,
       },
       {
-        name: "Mechanical Technician",
-        field: "Engineering & Technology",
-        description:
-          "Installs, maintains, and repairs mechanical machinery and equipment.",
-        subjects_needed: "Mathematics, Physical Sciences, English",
-        study_path:
-          "Diploma or National Certificate in Mechanical Engineering (3 years)",
-        institutions:
-          "Vaal University of Technology, Central University of Technology, Tshwane South TVET College, Port Elizabeth TVET College",
-        aps_minimum: 4,
-      },
-      {
-        name: "Electrician",
-        field: "Engineering & Technology",
-        description:
-          "Installs, maintains, and repairs electrical wiring, systems, and equipment.",
-        subjects_needed: "Mathematics, Physical Sciences, English",
-        study_path:
-          "National Certificate (NCV) in Electrical Engineering (3 years) OR Apprenticeship",
-        institutions:
-          "Vaal University of Technology, Tshwane South TVET College, Ekurhuleni East TVET College, Port Elizabeth TVET College",
-        aps_minimum: 4,
-      },
-
-      // ========== COMMERCE & BUSINESS ==========
-      {
         name: "Accountant",
         field: "Commerce & Business",
         description:
@@ -788,133 +692,6 @@ export const seedCareers = async () => {
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, University of Fort Hare",
         aps_minimum: 6,
-      },
-      {
-        name: "Chartered Accountant (CA)",
-        field: "Commerce & Business",
-        description:
-          "High-level financial expert, involved in auditing, tax, and strategic financial management.",
-        subjects_needed: "Mathematics, Accounting, English",
-        study_path:
-          "BCom Accounting → Honours → SAICA Qualifying Exam → Articles (3 years)",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, Rhodes University",
-        aps_minimum: 7,
-      },
-      {
-        name: "Financial Analyst",
-        field: "Commerce & Business",
-        description:
-          "Evaluates financial data, market trends, and investment opportunities to guide business decisions.",
-        subjects_needed: "Mathematics, Accounting, English",
-        study_path:
-          "Bachelor of Commerce in Finance (3 years) → Professional Certifications",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
-      },
-      {
-        name: "Marketing Manager",
-        field: "Commerce & Business",
-        description:
-          "Oversees marketing strategies, campaigns, and brand development for businesses.",
-        subjects_needed: "Mathematics, English, Business Studies",
-        study_path: "Bachelor of Commerce in Marketing (3 years)",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University, Rhodes University",
-        aps_minimum: 5,
-      },
-      {
-        name: "Entrepreneur",
-        field: "Commerce & Business",
-        description:
-          "Starts and runs a business, managing operations, finance, and strategy.",
-        subjects_needed: "Mathematics, Business Studies, Economics, English",
-        study_path:
-          "Various — Degree in Business, Entrepreneurship programs, or direct experience",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
-      },
-      {
-        name: "Human Resources Manager",
-        field: "Commerce & Business",
-        description:
-          "Manages employee relations, recruitment, training, and organisational development.",
-        subjects_needed: "Mathematics, English, Business Studies",
-        study_path:
-          "Bachelor of Commerce in Human Resources Management (3 years)",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
-      },
-      {
-        name: "Supply Chain Manager",
-        field: "Commerce & Business",
-        description:
-          "Oversees logistics, procurement, and distribution of goods and services.",
-        subjects_needed: "Mathematics, English, Business Studies",
-        study_path: "Bachelor of Commerce in Supply Chain Management (3 years)",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
-      },
-
-      // ========== ARTS & CREATIVE FIELDS ==========
-      {
-        name: "Graphic Designer",
-        field: "Arts & Creative Fields",
-        description:
-          "Creates visual concepts using design software to communicate ideas and messages.",
-        subjects_needed: "Visual Arts, English, Design Studies",
-        study_path: "BA in Visual Communication / Graphic Design (3-4 years)",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
-      },
-      {
-        name: "Animator",
-        field: "Arts & Creative Fields",
-        description:
-          "Creates moving images and visual effects for film, TV, games, and digital media.",
-        subjects_needed: "Visual Arts, English, Design Studies",
-        study_path: "BA in Animation or Digital Arts (3-4 years)",
-        institutions:
-          "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University, Cape Peninsula University of Technology",
-        aps_minimum: 5,
-      },
-      {
-        name: "Journalist",
-        field: "Arts & Creative Fields",
-        description:
-          "Researches and reports news and stories across print, broadcast, and digital media.",
-        subjects_needed: "English, History, Languages",
-        study_path: "BA in Journalism / Media Studies (3 years)",
-        institutions:
-          "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
-      },
-      {
-        name: "Fine Artist",
-        field: "Arts & Creative Fields",
-        description:
-          "Creates visual art such as painting, sculpture, and mixed media.",
-        subjects_needed: "Visual Arts, English, History",
-        study_path: "BA in Fine Arts (3-4 years)",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
-      },
-      {
-        name: "Fashion Designer",
-        field: "Arts & Creative Fields",
-        description:
-          "Designs clothing and accessories, from concept to production.",
-        subjects_needed: "Visual Arts, Design Studies, English",
-        study_path: "BA in Fashion Design (3-4 years)",
-        institutions:
-          "University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
       },
       {
         name: "Teacher (Secondary)",
@@ -929,309 +706,8 @@ export const seedCareers = async () => {
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, University of Fort Hare, Walter Sisulu University",
         aps_minimum: 5,
       },
-      {
-        name: "Primary School Teacher",
-        field: "Education",
-        description:
-          "Educates learners in foundational subjects at primary school level.",
-        subjects_needed: "English, Mathematics, Life Orientation",
-        study_path:
-          "Bachelor of Education (Foundation Phase / Intermediate Phase) (4 years) → Registration with SACE",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, University of Fort Hare, Walter Sisulu University",
-        aps_minimum: 5,
-      },
-      {
-        name: "Early Childhood Development Practitioner",
-        field: "Education",
-        description:
-          "Works with young children to support their early learning and development.",
-        subjects_needed: "English, Life Orientation",
-        study_path:
-          "National Certificate in Early Childhood Development (1-2 years) OR Diploma",
-        institutions:
-          "Various TVET Colleges, University of Cape Town, Stellenbosch University, UNISA, Nelson Mandela University",
-        aps_minimum: 4,
-      },
-
-      // ========== HOSPITALITY & TOURISM ==========
-      {
-        name: "Hotel Manager",
-        field: "Hospitality & Tourism",
-        description:
-          "Manages hotel operations, guest services, and staff to ensure a quality experience.",
-        subjects_needed: "Hospitality Studies, English, Accounting",
-        study_path: "Diploma or Degree in Hospitality Management (3-4 years)",
-        institutions:
-          "Stadio Higher Education, Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology, Walter Sisulu University",
-        aps_minimum: 5,
-      },
-      {
-        name: "Chef",
-        field: "Hospitality & Tourism",
-        description:
-          "Prepares and creates dishes in restaurants, hotels, and other food establishments.",
-        subjects_needed: "Hospitality Studies, English, Consumer Studies",
-        study_path:
-          "National Certificate in Food Preparation (2 years) OR Diploma in Culinary Arts",
-        institutions:
-          "Cape Peninsula University of Technology, Central University of Technology, Tshwane University of Technology, Boland TVET College, Buffalo City TVET College",
-        aps_minimum: 4,
-      },
-      {
-        name: "Tour Guide",
-        field: "Hospitality & Tourism",
-        description:
-          "Leads groups through tourist attractions, explaining sites and cultural points of interest.",
-        subjects_needed: "History, Geography, Languages, Tourism",
-        study_path:
-          "National Certificate in Tourism (1-2 years) OR Diploma in Tourism Management",
-        institutions:
-          "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology, Boland TVET College, Nelson Mandela University",
-        aps_minimum: 4,
-      },
-
-      // ========== TVET / SKILLED TRADES ==========
-      {
-        name: "Welder",
-        field: "TVET & Skilled Trades",
-        description:
-          "Joins metal parts together using heat and pressure in construction and manufacturing.",
-        subjects_needed:
-          "Engineering Graphics and Design, Physical Sciences, Mathematics",
-        study_path:
-          "National Certificate in Welding (3 years) OR Apprenticeship",
-        institutions:
-          "Various TVET Colleges, Port Elizabeth TVET College, Buffalo City TVET College, Ekurhuleni East TVET College",
-        aps_minimum: 3,
-      },
-      {
-        name: "Plumber",
-        field: "TVET & Skilled Trades",
-        description:
-          "Installs, maintains, and repairs water and drainage systems.",
-        subjects_needed:
-          "Mathematics, Engineering Graphics and Design, Physical Sciences",
-        study_path:
-          "National Certificate in Plumbing (3 years) OR Apprenticeship",
-        institutions:
-          "Various TVET Colleges, Tshwane South TVET College, Port Elizabeth TVET College, Buffalo City TVET College",
-        aps_minimum: 3,
-      },
-      {
-        name: "Carpenter",
-        field: "TVET & Skilled Trades",
-        description:
-          "Builds, installs, and repairs wooden structures, furniture, and fixtures.",
-        subjects_needed: "Mathematics, Engineering Graphics and Design",
-        study_path:
-          "National Certificate in Carpentry (3 years) OR Apprenticeship",
-        institutions:
-          "Various TVET Colleges, Tshwane South TVET College, Port Elizabeth TVET College, Buffalo City TVET College",
-        aps_minimum: 3,
-      },
-      {
-        name: "Fitter and Turner",
-        field: "TVET & Skilled Trades",
-        description:
-          "Manufactures and repairs metal components for machinery and equipment.",
-        subjects_needed:
-          "Mathematics, Physical Sciences, Engineering Graphics and Design",
-        study_path:
-          "National Certificate in Fitting and Turning (3 years) OR Apprenticeship",
-        institutions:
-          "Various TVET Colleges, Port Elizabeth TVET College, Ekurhuleni East TVET College, Buffalo City TVET College",
-        aps_minimum: 3,
-      },
-
-      // ========== LAW & LEGAL STUDIES ==========
-      {
-        name: "Lawyer (Attorney)",
-        field: "Law & Legal Studies",
-        description:
-          "Advises and represents clients in legal matters, drafts documents, and appears in court.",
-        subjects_needed: "English, History, Mathematics",
-        study_path:
-          "BA Law (3 years) → LLB (2 years) → Articles of Clerkship (2 years) → Admission as Attorney",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University, University of Fort Hare, Nelson Mandela University, UNISA",
-        aps_minimum: 6,
-      },
-      {
-        name: "Paralegal",
-        field: "Law & Legal Studies",
-        description:
-          "Supports lawyers by conducting research, drafting documents, and organizing case files.",
-        subjects_needed: "English, History, Mathematics",
-        study_path:
-          "National Certificate in Paralegal Studies (1-2 years) OR Diploma",
-        institutions:
-          "UNISA, Tshwane University of Technology, Cape Peninsula University of Technology, Various TVET Colleges",
-        aps_minimum: 4,
-      },
-
-      // ========== ICT & DIGITAL MEDIA ==========
-      {
-        name: "Software Developer",
-        field: "ICT & Digital Media",
-        description:
-          "Designs and builds software applications for various platforms.",
-        subjects_needed: "Mathematics, English, Information Technology",
-        study_path:
-          "Bachelor of Computer Science / BEng Software Engineering (3-4 years)",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, University of Johannesburg",
-        aps_minimum: 6,
-      },
-      {
-        name: "Network Administrator",
-        field: "ICT & Digital Media",
-        description:
-          "Maintains and manages computer networks and systems for organisations.",
-        subjects_needed: "Mathematics, English, Information Technology",
-        study_path:
-          "Bachelor of Information Technology (3 years) OR National Diploma in IT",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
-      },
-      {
-        name: "Cybersecurity Analyst",
-        field: "ICT & Digital Media",
-        description:
-          "Protects computer systems and networks from cyber threats and breaches.",
-        subjects_needed: "Mathematics, English, Information Technology",
-        study_path:
-          "Bachelor of Information Technology in Cybersecurity (3 years) OR Certifications",
-        institutions:
-          "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
-      },
-      {
-        name: "Web Developer",
-        field: "ICT & Digital Media",
-        description:
-          "Designs and develops websites and web applications for businesses and individuals.",
-        subjects_needed: "Mathematics, English, Information Technology",
-        study_path:
-          "Bachelor of Computer Science / Diploma in Web Development (3 years)",
-        institutions:
-          "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
-      },
-
-      // ========== TRANSPORT & LOGISTICS ==========
-      {
-        name: "Logistics Manager",
-        field: "Transport & Logistics",
-        description:
-          "Oversees the movement of goods, supply chains, and distribution operations.",
-        subjects_needed: "Mathematics, English, Business Studies",
-        study_path: "Bachelor of Commerce in Logistics (3 years)",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Johannesburg, Nelson Mandela University, University of the Witwatersrand",
-        aps_minimum: 5,
-      },
-      {
-        name: "Truck Driver",
-        field: "Transport & Logistics",
-        description:
-          "Operates heavy vehicles to transport goods across long distances.",
-        subjects_needed: "Mathematics, English",
-        study_path:
-          "Code 10 or Code 14 Driver's License → Professional Driving Permit (PrDP)",
-        institutions: "Various accredited driving schools",
-        aps_minimum: 3,
-      },
-      {
-        name: "Warehouse Manager",
-        field: "Transport & Logistics",
-        description:
-          "Manages warehouse operations, inventory, and staff to ensure efficient storage and dispatch.",
-        subjects_needed: "Mathematics, English, Business Studies",
-        study_path: "Diploma in Logistics / Supply Chain Management (3 years)",
-        institutions:
-          "University of Johannesburg, Tshwane University of Technology, Nelson Mandela University, Cape Peninsula University of Technology",
-        aps_minimum: 4,
-      },
-
-      // ========== AGRICULTURE & ENVIRONMENTAL STUDIES ==========
-      {
-        name: "Agricultural Scientist",
-        field: "Agriculture & Environmental Studies",
-        description:
-          "Researches and improves crop production, soil health, and farming practices.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, Agricultural Sciences",
-        study_path: "Bachelor of Science in Agriculture (4 years)",
-        institutions:
-          "University of Pretoria, Stellenbosch University, University of the Free State, University of Fort Hare, Nelson Mandela University",
-        aps_minimum: 5,
-      },
-      {
-        name: "Veterinarian",
-        field: "Agriculture & Environmental Studies",
-        description: "Diagnoses and treats animal illnesses and injuries.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path:
-          "Bachelor of Veterinary Science (BVSc) (6 years) → Registration",
-        institutions:
-          "University of Pretoria, University of Cape Town (Postgrad), Sefako Makgatho Health Sciences University",
-        aps_minimum: 7,
-      },
-      {
-        name: "Environmental Scientist",
-        field: "Agriculture & Environmental Studies",
-        description:
-          "Studies environmental issues and develops solutions to protect ecosystems and natural resources.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, Geography",
-        study_path: "Bachelor of Science in Environmental Science (3-4 years)",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University, University of the Free State",
-        aps_minimum: 5,
-      },
-
-      // ========== BUILT ENVIRONMENT & CONSTRUCTION ==========
-      {
-        name: "Architect",
-        field: "Built Environment & Construction",
-        description:
-          "Designs buildings and structures, considering aesthetics, function, and safety.",
-        subjects_needed: "Mathematics, Physical Sciences, Visual Arts, English",
-        study_path:
-          "Bachelor of Architectural Studies (3 years) → Masters in Architecture (2 years) → Practical Training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, Tshwane University of Technology",
-        aps_minimum: 6,
-      },
-      {
-        name: "Quantity Surveyor",
-        field: "Built Environment & Construction",
-        description:
-          "Manages the cost of construction projects, from budgeting to final accounts.",
-        subjects_needed: "Mathematics, Physical Sciences, English",
-        study_path:
-          "Bachelor of Science in Quantity Surveying (3-4 years) → Practical Training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
-      },
-      {
-        name: "Construction Manager",
-        field: "Built Environment & Construction",
-        description:
-          "Oversees construction projects, manages workers, and ensures deadlines and budgets are met.",
-        subjects_needed: "Mathematics, Physical Sciences, English",
-        study_path: "Bachelor of Construction Management (3-4 years)",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University, Tshwane University of Technology",
-        aps_minimum: 5,
-      },
     ];
 
-    // Insert careers
     for (const career of careers) {
       await db.runAsync(
         "INSERT INTO careers (name, field, description, subjects_needed, study_path, institutions, aps_minimum) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -1252,36 +728,7 @@ export const seedCareers = async () => {
     console.error("❌ Seed careers error:", error);
   }
 };
-export const getCareers = async () => {
-  try {
-    return await db.getAllAsync("SELECT * FROM careers ORDER BY name ASC");
-  } catch (error) {
-    console.error("❌ Get careers error:", error);
-    return [];
-  }
-};
-export const getCareerById = async (id: number) => {
-  try {
-    const result = await db.getAllAsync("SELECT * FROM careers WHERE id = ?", [
-      id,
-    ]);
-    return result.length > 0 ? result[0] : null;
-  } catch (error) {
-    console.error("❌ Get career by ID error:", error);
-    return null;
-  }
-};
-export default db;
-// SCHOOL FUNCTIONS
 
-export const getSchools = async () => {
-  try {
-    return await db.getAllAsync("SELECT * FROM schools");
-  } catch (error) {
-    console.error("❌ Get schools error:", error);
-    return [];
-  }
-};
 export const seedIndustries = async () => {
   try {
     const existing = await db.getAllAsync("SELECT id FROM industries LIMIT 1");
@@ -1300,7 +747,7 @@ export const seedIndustries = async () => {
         jobs_available:
           "Mechanical Engineer, Automotive Technician, Welder, Machine Operator, Production Supervisor",
         factories:
-          "Volkswagen South Africa, Isuzu Motors South Africa, Mercedes-Benz South Africa, DFA Manufacturing, Goodyear South Africa, Continental Tyre South Africa",
+          "Volkswagen South Africa, Isuzu Motors South Africa, Mercedes-Benz South Africa",
       },
       {
         name: "Agriculture and Agro-processing",
@@ -1310,7 +757,7 @@ export const seedIndustries = async () => {
           "Citrus farming, dairy, livestock, wool, maize, forestry",
         jobs_available:
           "Farm Manager, Agricultural Technician, Food Processing Worker, Veterinary Assistant",
-        factories: "Clover South Africa, Woodlands Dairy, Coega Dairy, SAB",
+        factories: "Clover South Africa, Woodlands Dairy, Coega Dairy",
       },
       {
         name: "Tourism and Hospitality",
@@ -1343,16 +790,6 @@ export const seedIndustries = async () => {
         factories: "Various BPO companies",
       },
       {
-        name: "Manufacturing and Industrial Development",
-        sector: "Manufacturing",
-        location: "Coega SEZ, East London IDZ, Gqeberha",
-        specialization:
-          "Steel, chemicals, electronics, textiles, industrial production",
-        jobs_available:
-          "Industrial Engineer, Factory Worker, Maintenance Technician, Quality Controller",
-        factories: "Coega SEZ, East London IDZ",
-      },
-      {
         name: "Logistics and Transport",
         sector: "Logistics",
         location: "Ngqura Port, Gqeberha, East London Harbour",
@@ -1362,7 +799,7 @@ export const seedIndustries = async () => {
         factories: "Transnet, various logistics companies",
       },
       {
-        name: "Information and Communication Technology (ICT)",
+        name: "ICT",
         sector: "Technology",
         location: "Gqeberha, East London, Makhanda",
         specialization:
@@ -1382,7 +819,7 @@ export const seedIndustries = async () => {
         factories: "Various construction companies",
       },
       {
-        name: "Healthcare and Social Services",
+        name: "Healthcare",
         sector: "Healthcare",
         location: "East London, Mthatha, Gqeberha, Bhisho",
         specialization: "Hospitals, clinics, healthcare services",
@@ -1391,7 +828,7 @@ export const seedIndustries = async () => {
         factories: "Aspen Pharmacare, various hospitals and clinics",
       },
       {
-        name: "Education and Training",
+        name: "Education",
         sector: "Education",
         location: "Makhanda, Alice, Gqeberha, Mthatha",
         specialization: "Schools, universities, vocational training colleges",
@@ -1429,7 +866,16 @@ export const seedIndustries = async () => {
   }
 };
 
-// Search schools by name
+// ==================== SCHOOL FUNCTIONS ====================
+export const getSchools = async () => {
+  try {
+    return await db.getAllAsync("SELECT * FROM schools");
+  } catch (error) {
+    console.error("❌ Get schools error:", error);
+    return [];
+  }
+};
+
 export const searchSchools = async (query: string) => {
   try {
     return await db.getAllAsync("SELECT * FROM schools WHERE name LIKE ?", [
@@ -1441,7 +887,6 @@ export const searchSchools = async (query: string) => {
   }
 };
 
-// Filter schools by province and type
 export const filterSchools = async (province: string, type: string) => {
   try {
     return await db.getAllAsync(
@@ -1479,7 +924,7 @@ export const getSchoolContacts = async (schoolId: number) => {
   }
 };
 
-// Get all subjects
+// ==================== SUBJECT FUNCTIONS ====================
 export const getSubjects = async () => {
   try {
     return await db.getAllAsync("SELECT * FROM subjects");
@@ -1489,9 +934,11 @@ export const getSubjects = async () => {
   }
 };
 
-// Get subjects by stream (Science, Arts, Commerce)
 export const getSubjectsByStream = async (stream: string) => {
   try {
+    if (stream === "All") {
+      return await getSubjects();
+    }
     return await db.getAllAsync("SELECT * FROM subjects WHERE stream = ?", [
       stream,
     ]);
@@ -1500,6 +947,67 @@ export const getSubjectsByStream = async (stream: string) => {
     return [];
   }
 };
+
+export const getSubjectById = async (id: number) => {
+  try {
+    const result = await db.getAllAsync("SELECT * FROM subjects WHERE id = ?", [
+      id,
+    ]);
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("❌ Get subject error:", error);
+    return null;
+  }
+};
+
+// ==================== CAREER FUNCTIONS ====================
+export const getCareers = async () => {
+  try {
+    return await db.getAllAsync("SELECT * FROM careers ORDER BY name ASC");
+  } catch (error) {
+    console.error("❌ Get careers error:", error);
+    return [];
+  }
+};
+
+export const getCareerById = async (id: number) => {
+  try {
+    const result = await db.getAllAsync("SELECT * FROM careers WHERE id = ?", [
+      id,
+    ]);
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("❌ Get career by ID error:", error);
+    return null;
+  }
+};
+
+export const searchCareers = async (text: string) => {
+  try {
+    return await db.getAllAsync("SELECT * FROM careers WHERE name LIKE ?", [
+      `%${text}%`,
+    ]);
+  } catch (error) {
+    console.error("❌ Search careers error:", error);
+    return [];
+  }
+};
+
+export const getCareersByStream = async (stream: string) => {
+  try {
+    if (stream === "All") {
+      return await getCareers();
+    }
+    return await db.getAllAsync("SELECT * FROM careers WHERE stream = ?", [
+      stream,
+    ]);
+  } catch (error) {
+    console.error("❌ Get careers by stream error:", error);
+    return [];
+  }
+};
+
+// ==================== INDUSTRY FUNCTIONS ====================
 export const getIndustries = async () => {
   try {
     return await db.getAllAsync("SELECT * FROM industries ORDER BY name ASC");
@@ -1509,16 +1017,4 @@ export const getIndustries = async () => {
   }
 };
 
-// Get one subject by ID
-export const getSubjectById = async (id: number) => {
-  try {
-    const result = await db.getAllAsync("SELECT * FROM subjects WHERE id = ?", [
-      id,
-    ]);
-
-    return result.length > 0 ? result[0] : null;
-  } catch (error) {
-    console.error("❌ Get subject error:", error);
-    return null;
-  }
-};
+export default db;

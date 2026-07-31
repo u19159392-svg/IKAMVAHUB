@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import {
-    FlatList,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
-import CareerCard from "../CareerCard";
+import { CareerCard } from "../../components/CareerCard";
 
 import {
-    getCareers,
-    getCareersByStream,
-    searchCareers,
+  getCareers,
+  getCareersByStream,
+  searchCareers,
 } from "../db/Database";
 
 const STREAMS = [
