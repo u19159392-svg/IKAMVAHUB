@@ -1,5 +1,7 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { Platform, StyleSheet, TouchableOpacity } from "react-native";
 
 import { HelloWave } from "@/components/hello-wave";
@@ -9,6 +11,28 @@ import { ThemedView } from "@/components/themed-view";
 
 export default function HomeScreen() {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkSetup = async () => {
+      try {
+        const setupDone = await AsyncStorage.getItem("setupDone");
+        if (setupDone !== "true") {
+          router.replace("/UserSetup");
+        }
+      } catch (error) {
+        console.error("Error checking setup status:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkSetup();
+  }, [router]);
+
+  if (loading) {
+    return null;
+  }
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}

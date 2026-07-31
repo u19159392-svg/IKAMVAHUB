@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
-import { getNotificationsByUser, markNotificationAsRead } from './db/Database';
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { getNotificationsByUser, markNotificationAsRead } from "./db/Database";
 
 const CURRENT_USER_ID = 1;
 
@@ -26,7 +26,9 @@ export default function NotificationsScreen() {
 
   useEffect(() => {
     async function loadNotifications() {
-      const result = await getNotificationsByUser(CURRENT_USER_ID) as NotificationItem[] | null;
+      const result = (await getNotificationsByUser(CURRENT_USER_ID)) as
+        | NotificationItem[]
+        | null;
       setNotifications(result || []);
       setLoading(false);
     }
@@ -40,9 +42,7 @@ export default function NotificationsScreen() {
 
     if (success) {
       setNotifications((previousList) =>
-        previousList.map((n) =>
-          n.id === item.id ? { ...n, read: 1 } : n
-        )
+        previousList.map((n) => (n.id === item.id ? { ...n, read: 1 } : n)),
       );
     }
   }
@@ -94,8 +94,8 @@ export default function NotificationsScreen() {
 const styles = StyleSheet.create({
   centered: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   container: {
     flex: 1,
@@ -104,45 +104,45 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 22,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: 16,
   },
   card: {
     padding: 12,
     borderRadius: 10,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     marginBottom: 10,
   },
   unreadCard: {
-    backgroundColor: '#eaf2ff',
+    backgroundColor: "#eaf2ff",
   },
   cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   title: {
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: 15,
   },
   dot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#2563eb',
+    backgroundColor: "#2563eb",
   },
   message: {
     marginTop: 4,
-    color: '#444',
+    color: "#444",
   },
   date: {
     marginTop: 6,
     fontSize: 12,
-    color: '#888',
+    color: "#888",
   },
   emptyText: {
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 32,
-    color: '#888',
+    color: "#888",
   },
 });

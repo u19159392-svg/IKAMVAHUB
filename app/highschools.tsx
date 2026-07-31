@@ -9,9 +9,7 @@ export default function HighSchools() {
         alignItems: "center",
       }}
     >
-      <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-        High Schools
-      </Text>
+      <Text style={{ fontSize: 24, fontWeight: "bold" }}>High Schools</Text>
     </View>
   );
 }

@@ -44,10 +44,7 @@ export default function SubjectsScreen() {
         {STREAMS.map((stream) => (
           <TouchableOpacity
             key={stream}
-            style={[
-              styles.tab,
-              selectedStream === stream && styles.activeTab,
-            ]}
+            style={[styles.tab, selectedStream === stream && styles.activeTab]}
             onPress={() => loadSubjectsByStream(stream)}
           >
             <Text
