@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
-    FlatList,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { getSubjectsByStream } from "./db/Database";
+
 type Stream = "Science" | "Arts" | "Commerce";
 
 interface Subject {
@@ -14,39 +16,21 @@ interface Subject {
   stream: Stream;
 }
 
-const allSubjects: Subject[] = [
-  { id: 1, name: "Biology", stream: "Science" },
-  { id: 2, name: "Chemistry", stream: "Science" },
-  { id: 3, name: "Physics", stream: "Science" },
-  { id: 4, name: "History", stream: "Arts" },
-  { id: 5, name: "Literature", stream: "Arts" },
-  { id: 6, name: "Economics", stream: "Commerce" },
-  { id: 7, name: "Accounting", stream: "Commerce" },
-];
-
-const getSubjectsByStream = async (stream: Stream): Promise<Subject[]> => {
-  return allSubjects.filter((subject) => subject.stream === stream);
-};
+const STREAMS: Stream[] = ["Science", "Arts", "Commerce"];
 
 export default function SubjectsScreen() {
-  const [selectedStream, setSelectedStream] =
-    useState<Stream>("Science");
-
+  const [selectedStream, setSelectedStream] = useState<Stream>("Science");
   const [subjects, setSubjects] = useState<Subject[]>([]);
 
-  useEffect(() => {
-    loadSubjects("Science");
-  }, []);
-
-  const loadSubjects = async (stream: Stream) => {
-    const data = await getSubjectsByStream(stream);
-    setSubjects(data);
-  };
-
-  const handleStreamPress = (stream: Stream) => {
+  const loadSubjectsByStream = async (stream: Stream) => {
     setSelectedStream(stream);
-    loadSubjects(stream);
+    const data = await getSubjectsByStream(stream);
+    setSubjects(data as Subject[]);
   };
+
+  useEffect(() => {
+    loadSubjectsByStream("Science");
+  }, []);
 
   const renderSubject = ({ item }: { item: Subject }) => (
     <View style={styles.subjectCard}>
@@ -56,66 +40,27 @@ export default function SubjectsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Stream Filter Tabs */}
-
       <View style={styles.tabsContainer}>
-        <TouchableOpacity
-          style={[
-            styles.tab,
-            selectedStream === "Science" && styles.activeTab,
-          ]}
-          onPress={() => handleStreamPress("Science")}
-        >
-          <Text
+        {STREAMS.map((stream) => (
+          <TouchableOpacity
+            key={stream}
             style={[
-              styles.tabText,
-              selectedStream === "Science" &&
-                styles.activeTabText,
+              styles.tab,
+              selectedStream === stream && styles.activeTab,
             ]}
+            onPress={() => loadSubjectsByStream(stream)}
           >
-            Science
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.tab,
-            selectedStream === "Arts" && styles.activeTab,
-          ]}
-          onPress={() => handleStreamPress("Arts")}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              selectedStream === "Arts" &&
-                styles.activeTabText,
-            ]}
-          >
-            Arts
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.tab,
-            selectedStream === "Commerce" &&
-              styles.activeTab,
-          ]}
-          onPress={() => handleStreamPress("Commerce")}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              selectedStream === "Commerce" &&
-                styles.activeTabText,
-            ]}
-          >
-            Commerce
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={[
+                styles.tabText,
+                selectedStream === stream && styles.activeTabText,
+              ]}
+            >
+              {stream}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
-
-      {/* Subject List */}
 
       <FlatList
         data={subjects}

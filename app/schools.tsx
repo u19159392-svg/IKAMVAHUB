@@ -8,29 +8,32 @@ import {
   View,
 } from "react-native";
 
-import SchoolCard from "./components/SchoolCard";
+import SchoolCard from "../components/SchoolCard";
 import { getSchools, searchSchools } from "./db/Database";
 
 export default function Schools() {
   const [schools, setSchools] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  // removed unused subjects state
 
-  useEffect(() => {
-    loadSchools();
-  }, []);
 
   const loadSchools = async () => {
-    setLoading(true);
-
     try {
+      setLoading(true);
+
+      console.log("Loading schools...");
+
       const data = await getSchools();
+
+      console.log("Schools:", data);
+
       setSchools(data);
     } catch (error) {
-      console.log(error);
+      console.log("LOAD ERROR:", error);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const handleSearch = async (text: string) => {
@@ -45,6 +48,11 @@ export default function Schools() {
     setSchools(results);
   };
 
+  useEffect(() => {
+    loadSchools();
+  }, []);
+
+// removed unused stream/subject related code
   return (
     <View style={styles.container}>
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { createUser, deleteUser, getUsers, initDatabase, seedSchools, insertSchoolDetails, insertApplicationInfo, updateUser } from './db/Database';
+import { createUser, deleteUser, getUsers, initDatabase, seedSchools, updateUser } from './db/Database';
 
 export default function DebugScreen() {
   const [users, setUsers] = useState<any[]>([]);
@@ -8,8 +8,6 @@ export default function DebugScreen() {
   const handleInit = async () => {
     await initDatabase();
     await seedSchools ();
-    await insertSchoolDetails();
-    await insertApplicationInfo();
     
     console.log('✅ Database initialized');
   };
