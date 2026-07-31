@@ -56,50 +56,50 @@ export const initDatabase = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       );
-      -- SCHOOLS TABLE
-CREATE TABLE IF NOT EXISTS schools (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  province TEXT,
-  type TEXT,
-  location TEXT,
-  contact TEXT,
-  email TEXT,
-  subjects_offered TEXT
-);
 
+      -- SCHOOLS TABLE
+      DROP TABLE IF EXISTS schools;
+      CREATE TABLE IF NOT EXISTS schools (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    province TEXT NOT NULL,
+    type TEXT NOT NULL,
+    location TEXT,
+    contact TEXT,
+    email TEXT,
+    subjects_offered TEXT,
+    sports TEXT,
+    extracurricular TEXT,
+    facilities TEXT
+);
       -- SCHOOL CONTACTS TABLE
+      DROP TABLE IF EXISTS school_contacts;
       CREATE TABLE IF NOT EXISTS school_contacts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        school_id INTEGER NOT NULL,
-        contact_name TEXT,
+        school_id INTEGER,
         phone TEXT,
+        address TEXT,
         email TEXT,
+        website TEXT,
         FOREIGN KEY (school_id) REFERENCES schools (id) ON DELETE CASCADE
       );
 
-      -- SUBJECTS TABLE
-      CREATE TABLE IF NOT EXISTS subjects (
+      -- CAREERS TABLE
+      DROP TABLE IF EXISTS careers;
+      CREATE TABLE IF NOT EXISTS careers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
+        name TEXT,
         stream TEXT,
-        description TEXT
+        aps INTEGER
       );
     `);
-    // Ensure legacy DBs get the new column — ALTER will fail if column exists, so ignore errors
-    try {
-      await db.execAsync('ALTER TABLE schools ADD COLUMN subjects_offered TEXT;');
-    } catch {
-      // ignore errors (likely column already exists)
-    }
-
     console.log('✅ Database initialized successfully');
   } catch (error) {
     console.error('❌ Database init error:', error);
   }
 };
 
-// USER CRUD (Person 3)
+// ==================== USER CRUD (Person 3) ====================
 export const createUser = async (name: string, email: string, password?: string) => {
   try {
     const result = await db.runAsync(
@@ -152,7 +152,7 @@ export const deleteUser = async (id: number) => {
   }
 };
 
-// PROFILE CRUD (Person 4) 
+// ==================== PROFILE CRUD (Person 4) ====================
 export const createProfile = async (data: any) => {
   try {
     const result = await db.runAsync(
@@ -199,7 +199,7 @@ export const deleteProfile = async (userId: number) => {
   }
 };
 
-// TASK CRUD (Person 6) 
+// ==================== TASK CRUD (Person 6) ====================
 export const createTask = async (data: any) => {
   try {
     const result = await db.runAsync(
@@ -242,7 +242,7 @@ export const deleteTask = async (id: number) => {
   }
 };
 
-// SETTINGS CRUD (Person 6)
+// ==================== SETTINGS CRUD (Person 6) ====================
 export const getSettings = async (userId: number): Promise<{ notifications_enabled: number; dark_mode: number }> => {
   try {
     const result = await db.getAllAsync('SELECT * FROM settings WHERE user_id = ?', [userId]);
@@ -273,7 +273,7 @@ export const updateSettings = async (userId: number, data: any) => {
   }
 };
 
-// NOTIFICATION CRUD (Person 6) 
+// ==================== NOTIFICATION CRUD (Person 6) ====================
 export const createNotification = async (userId: number, title: string, message: string) => {
   try {
     const result = await db.runAsync(
@@ -309,9 +309,30 @@ export const markNotificationAsRead = async (id: number) => {
   }
 };
 
-// SCHOOLS SEED DATA 
+// ==================== SCHOOLS SEED DATA ====================
 export const seedSchools = async () => {
   try {
+    await db.runAsync(`
+INSERT INTO careers (name,stream,aps) VALUES
+('Medicine','Science',42),
+('Pharmacy','Science',36),
+('Nursing','Science',30),
+('Dentistry','Science',40),
+('Computer Science','Science',34),
+('Civil Engineering','Science',34),
+
+('Law','Arts',34),
+('Psychology','Arts',30),
+('Social Work','Arts',28),
+('Teaching','Arts',24),
+('Journalism','Arts',28),
+
+('Accounting','Commerce',32),
+('Economics','Commerce',30),
+('Business Management','Commerce',26),
+('Marketing','Commerce',24),
+('Financial Management','Commerce',28);
+`);
     // Temporarily skip the check to force reseed
     // const existing = await db.getAllAsync('SELECT id FROM schools LIMIT 1');
     // if (existing.length > 0) {
@@ -343,7 +364,7 @@ export const seedSchools = async () => {
       );
     }
 
-    // SUBJECTS OFFERED (Languages, Subjects, Programs) 
+    // ===== SUBJECTS OFFERED (Languages, Subjects, Programs) =====
     const schoolSubjects = [
       ['Baleni Secondary School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences, Physical Sciences\nPrograms: NSC CAPS curriculum (Gr 8-12)'],
       ['Tyelimhlophe Secondary School', 'Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Agricultural Sciences, Agricultural Technology, Life Sciences, Geography\nPrograms: NSC CAPS curriculum with Agricultural specialisation (Gr 8-12)'],
@@ -367,14 +388,16 @@ export const seedSchools = async () => {
         [subjects, name]
       );
     }
-
+const allSchools = await db.getAllAsync("SELECT * FROM schools");
+console.log("Number of schools in database:", allSchools.length);
+console.log(allSchools);
     console.log('✅ Schools seeded successfully');
   } catch (error) {
     console.error('❌ Seed schools error:', error);
   }
 };
 export default db;
-// SCHOOL FUNCTIONS 
+// SCHOOL FUNCTIONS //
 
 export const getSchools = async () => {
   try {
@@ -385,20 +408,15 @@ export const getSchools = async () => {
   }
 };
 
-// Search schools by name
 export const searchSchools = async (query: string) => {
   try {
-    return await db.getAllAsync(
-      'SELECT * FROM schools WHERE name LIKE ?',
-      [`%${query}%`]
-    );
+    return await db.getAllAsync('SELECT * FROM schools WHERE name LIKE ?', [`%${query}%`]);
   } catch (error) {
     console.error('❌ Search schools error:', error);
     return [];
   }
 };
 
-// Filter schools by province and type
 export const filterSchools = async (province: string, type: string) => {
   try {
     return await db.getAllAsync(
@@ -430,6 +448,7 @@ export const getSchoolContacts = async (schoolId: number) => {
     return null;
   }
 };
+// ==================== SUBJECT FUNCTIONS ====================
 
 // Get all subjects
 export const getSubjects = async () => {
@@ -440,10 +459,13 @@ export const getSubjects = async () => {
     return [];
   }
 };
-
-// Get subjects by stream (Science, Arts, Commerce)
+// Filter subjects by stream
 export const getSubjectsByStream = async (stream: string) => {
   try {
+    if (stream === 'All') {
+      return await getSubjects();
+    }
+
     return await db.getAllAsync(
       'SELECT * FROM subjects WHERE stream = ?',
       [stream]
@@ -453,6 +475,7 @@ export const getSubjectsByStream = async (stream: string) => {
     return [];
   }
 };
+// Get subjects by stream (Science, Arts, Commerce)
 
 // Get one subject by ID
 export const getSubjectById = async (id: number) => {
@@ -466,5 +489,45 @@ export const getSubjectById = async (id: number) => {
   } catch (error) {
     console.error('❌ Get subject error:', error);
     return null;
+  }
+};
+// ================= CAREERS =================
+
+export const getCareers = async () => {
+  try {
+    return await db.getAllAsync(
+      "SELECT * FROM careers ORDER BY name"
+    );
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
+export const searchCareers = async (text: string) => {
+  try {
+    return await db.getAllAsync(
+      "SELECT * FROM careers WHERE name LIKE ?",
+      [`%${text}%`]
+    );
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
+export const getCareersByStream = async (stream: string) => {
+  try {
+    if (stream === "All") {
+      return await getCareers();
+    }
+
+    return await db.getAllAsync(
+      "SELECT * FROM careers WHERE stream=?",
+      [stream]
+    );
+  } catch (error) {
+    console.log(error);
+    return [];
   }
 };

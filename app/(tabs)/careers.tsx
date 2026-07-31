@@ -8,13 +8,13 @@ import {
   View,
 } from "react-native";
 
-import CareerCard from "../CareerCard";
+import { CareerCard } from "../../components/CareerCard";
 
 import {
   getCareers,
   getCareersByStream,
   searchCareers,
-} from "../../app/db/Database";
+} from "../db/Database";
 
 const STREAMS = [
   "All",
