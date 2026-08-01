@@ -1,11 +1,11 @@
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { getCareerById } from "./db/Database";
 
@@ -15,14 +15,13 @@ export default function CareerDetails() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const loadCareer = async () => {
+      const data = await getCareerById(Number(id));
+      setCareer(data);
+      setLoading(false);
+    };
     loadCareer();
-  }, []);
-
-  const loadCareer = async () => {
-    const data = await getCareerById(Number(id));
-    setCareer(data);
-    setLoading(false);
-  };
+  }, [id]);
 
   if (loading) {
     return (
@@ -57,7 +56,7 @@ export default function CareerDetails() {
       <Text style={styles.sectionTitle}>🏛️ Where to Study</Text>
       <Text style={styles.text}>{career.institutions}</Text>
 
-      <Text style={styles.sectionTitle}>📊 Minimum APS</Text>
+      <Text style={styles.sectionTitle}>📊 APS Level</Text>
       <Text style={styles.text}>{career.aps_minimum}</Text>
     </ScrollView>
   );

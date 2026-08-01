@@ -1,155 +1,75 @@
-import { Image } from "expo-image";
-import { Link, useRouter } from "expo-router";
-import { Platform, StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-import { HelloWave } from "@/components/hello-wave";
-import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
+
+console.log("✅ TABS INDEX OPENED");
 
 export default function HomeScreen() {
   const router = useRouter();
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
-          to see changes. Press{" "}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: "cmd + d",
-              android: "cmd + m",
-              web: "F12",
-            })}
-          </ThemedText>{" "}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction
-              title="Action"
-              icon="cube"
-              onPress={() => alert("Action pressed")}
-            />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert("Share pressed")}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert("Delete pressed")}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <View style={styles.container}>
+      <ThemedText type="title">Welcome to Ikamva Hub 🎓</ThemedText>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
+      <ThemedText>
+        Explore schools, careers, bursaries and opportunities.
+      </ThemedText>
 
-      {/* DEBUG BUTTON */}
-      <ThemedView style={styles.stepContainer}>
-        <TouchableOpacity
-          style={styles.debugButton}
-          onPress={() => router.push("/debug")}
-        >
-          <ThemedText style={styles.debugButtonText}>Debug Database</ThemedText>
-        </TouchableOpacity>
-        <ThemedText>
-          Tap here to test the database (add, view, update, delete users)
-        </ThemedText>
-      </ThemedView>
-      {/* SETTINGS & NOTIFICATIONS BUTTONS */}
-      <ThemedView style={styles.stepContainer}>
-        <TouchableOpacity
-          style={styles.debugButton}
-          onPress={() => router.push("/settings")}
-        >
-          <ThemedText style={styles.debugButtonText}>Settings</ThemedText>
-        </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/debug")}
+      >
+        <ThemedText style={styles.buttonText}>Debug Database</ThemedText>
+      </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.debugButton}
-          onPress={() => router.push("/notifications")}
-        >
-          <ThemedText style={styles.debugButtonText}>Notifications</ThemedText>
-        </TouchableOpacity>
-      </ThemedView>
-      {/* INDUSTRIES BUTTON */}
-      <ThemedView style={styles.stepContainer}>
-        <TouchableOpacity
-          style={styles.debugButton}
-          onPress={() => router.push("/industries")}
-        >
-          <ThemedText style={styles.debugButtonText}>🏭 Industries</ThemedText>
-        </TouchableOpacity>
-      </ThemedView>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/settings")}
+      >
+        <ThemedText style={styles.buttonText}>Settings</ThemedText>
+      </TouchableOpacity>
 
-      {/* CAREER GUIDANCE BUTTON */}
-      <ThemedView style={styles.stepContainer}>
-        <TouchableOpacity
-          style={styles.debugButton}
-          onPress={() => router.push("/careers" as any)}
-        >
-          <ThemedText style={styles.debugButtonText}>
-            💼 Career Guidance
-          </ThemedText>
-        </TouchableOpacity>
-      </ThemedView>
-    </ParallaxScrollView>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/notifications")}
+      >
+        <ThemedText style={styles.buttonText}>Notifications</ThemedText>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/industries" as any)}
+      >
+        <ThemedText style={styles.buttonText}>🏭 Industries</ThemedText>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/careers" as any)}
+      >
+        <ThemedText style={styles.buttonText}>💼 Career Guidance</ThemedText>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: "center",
+    gap: 15,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-  },
-  debugButton: {
+
+  button: {
     backgroundColor: "#007AFF",
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
-    marginTop: 10,
   },
-  debugButtonText: {
+
+  buttonText: {
     color: "#FFFFFF",
     fontWeight: "600",
     fontSize: 16,

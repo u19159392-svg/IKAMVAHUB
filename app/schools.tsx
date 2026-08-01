@@ -17,7 +17,6 @@ export default function Schools() {
   const [loading, setLoading] = useState(true);
   // removed unused subjects state
 
-
   const loadSchools = async () => {
     try {
       setLoading(true);
@@ -52,13 +51,10 @@ export default function Schools() {
     loadSchools();
   }, []);
 
-// removed unused stream/subject related code
+  // removed unused stream/subject related code
   return (
     <View style={styles.container}>
-
-      <Text style={styles.title}>
-        Schools
-      </Text>
+      <Text style={styles.title}>Schools</Text>
 
       <TextInput
         style={styles.search}
@@ -73,21 +69,17 @@ export default function Schools() {
         <FlatList
           data={schools}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <SchoolCard school={item} />
-          )}
+          renderItem={({ item }) => <SchoolCard school={item} />}
           contentContainerStyle={{
             paddingBottom: 40,
           }}
         />
       )}
-
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: "#F5F7FA",
@@ -112,5 +104,4 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
   },
-
 });

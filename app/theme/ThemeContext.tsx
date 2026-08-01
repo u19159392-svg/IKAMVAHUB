@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 type ThemeContextType = {
   isDark: boolean;
@@ -20,11 +20,14 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       // Theme persistence is temporarily disabled until the Database module is fixed.
     } catch (error) {
-      console.error('❌ Load theme error:', error);
+      console.error("❌ Load theme error:", error);
     }
   };
 
-  const persistSettings = async (_userId: number, _settings: { notifications_enabled: number; dark_mode: number; }) => {
+  const persistSettings = async (
+    _userId: number,
+    _settings: { notifications_enabled: number; dark_mode: number },
+  ) => {
     // No-op persistence until the Database module is available.
   };
 
@@ -55,7 +58,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
 };

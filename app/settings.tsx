@@ -1,14 +1,15 @@
-import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
-import { useTheme } from './theme/ThemeContext';
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Switch, Text, TouchableOpacity, View } from "react-native";
+import { useTheme } from "./theme/ThemeContext";
 
 type SettingsData = {
   notifications_enabled: number;
   dark_mode: number;
 };
 
-const getSettings = async (_userId: number): Promise<SettingsData | null> => null;
+const getSettings = async (_userId: number): Promise<SettingsData | null> =>
+  null;
 const updateSettings = async (_userId: number, _data: SettingsData) => {};
 
 export default function Settings() {
@@ -31,31 +32,64 @@ export default function Settings() {
 
   const toggleNotifications = async (value: boolean) => {
     setNotificationsEnabled(value);
-    await updateSettings(userId, { 
-      notifications_enabled: value ? 1 : 0, 
-      dark_mode: isDark ? 1 : 0 
+    await updateSettings(userId, {
+      notifications_enabled: value ? 1 : 0,
+      dark_mode: isDark ? 1 : 0,
     });
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5' }]}>
-      <Text style={[styles.title, { color: isDark ? '#fff' : '#333' }]}>Settings</Text>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDark ? "#1a1a1a" : "#f5f5f5" },
+      ]}
+    >
+      <Text style={[styles.title, { color: isDark ? "#fff" : "#333" }]}>
+        Settings
+      </Text>
 
       {/* Notification Toggle */}
-      <View style={[styles.settingItem, { backgroundColor: isDark ? '#2a2a2a' : '#fff' }]}>
-        <Text style={[styles.settingLabel, { color: isDark ? '#fff' : '#333' }]}>🔔 Notifications</Text>
-        <Switch value={notificationsEnabled} onValueChange={toggleNotifications} />
+      <View
+        style={[
+          styles.settingItem,
+          { backgroundColor: isDark ? "#2a2a2a" : "#fff" },
+        ]}
+      >
+        <Text
+          style={[styles.settingLabel, { color: isDark ? "#fff" : "#333" }]}
+        >
+          🔔 Notifications
+        </Text>
+        <Switch
+          value={notificationsEnabled}
+          onValueChange={toggleNotifications}
+        />
       </View>
 
       {/* Dark Mode Toggle */}
-      <View style={[styles.settingItem, { backgroundColor: isDark ? '#2a2a2a' : '#fff' }]}>
-        <Text style={[styles.settingLabel, { color: isDark ? '#fff' : '#333' }]}>🌙 Dark Mode</Text>
+      <View
+        style={[
+          styles.settingItem,
+          { backgroundColor: isDark ? "#2a2a2a" : "#fff" },
+        ]}
+      >
+        <Text
+          style={[styles.settingLabel, { color: isDark ? "#fff" : "#333" }]}
+        >
+          🌙 Dark Mode
+        </Text>
         <Switch value={isDark} onValueChange={toggleDarkMode} />
       </View>
 
       {/* View Notifications Button */}
-      <TouchableOpacity style={styles.linkButton} onPress={() => router.push('/notifications')}>
-        <Text style={[styles.linkText, { color: '#007AFF' }]}>View Notifications</Text>
+      <TouchableOpacity
+        style={styles.linkButton}
+        onPress={() => router.push("/notifications")}
+      >
+        <Text style={[styles.linkText, { color: "#007AFF" }]}>
+          View Notifications
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -63,9 +97,23 @@ export default function Settings() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, paddingTop: 60 },
-  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 30, textAlign: 'center' },
-  settingItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 15, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: '#eee' },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 30,
+    textAlign: "center",
+  },
+  settingItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: "#eee",
+  },
   settingLabel: { fontSize: 16 },
-  linkButton: { marginTop: 15, alignItems: 'center' },
+  linkButton: { marginTop: 15, alignItems: "center" },
   linkText: { fontSize: 16 },
 });
