@@ -6208,11 +6208,13 @@ export const getCareersByStream = async (stream: string) => {
     return await db.getAllAsync("SELECT * FROM careers WHERE stream = ?", [
       stream,
     ]);
-  } catch (error) {
+   } catch (error) {
     console.error("❌ Get careers by stream error:", error);
     return [];
   }
-};// ================= APS FUNCTIONS =================
+
+};
+// ================= APS FUNCTIONS =================
 
 export const getApsPoints = (percentage: number): number => {
   if (percentage >= 80) return 7;
@@ -6222,6 +6224,60 @@ export const getApsPoints = (percentage: number): number => {
   if (percentage >= 40) return 3;
   if (percentage >= 30) return 2;
   return 1;
+};
+// ================= UNIVERSITIES & COLLEGES =================
+
+// Get all universities
+export const getUniversities = async () => {
+  try {
+    return await db.getAllAsync("SELECT * FROM universities");
+  } catch (error) {
+    console.error("❌ Get universities error:", error);
+    return [];
+  }
+};
+
+// Get all colleges (TVET)
+export const getColleges = async () => {
+  try {
+    return await db.getAllAsync("SELECT * FROM colleges");
+  } catch (error) {
+    console.error("❌ Get colleges error:", error);
+    return [];
+  }
+};
+
+// Get courses for a specific institution
+export const getCoursesByInstitution = async (
+  institutionId: number,
+  type: string
+) => {
+  try {
+    return await db.getAllAsync(
+      "SELECT * FROM courses WHERE institution_id = ? AND institution_type = ?",
+      [institutionId, type]
+    );
+  } catch (error) {
+    console.error("❌ Get courses error:", error);
+    return [];
+  }
+};
+
+// Filter institutions by APS
+export const filterInstitutionsByAps = async (aps: number) => {
+  try {
+    return await db.getAllAsync(
+      `
+      SELECT * FROM universities WHERE minimum_aps <= ?
+      UNION
+      SELECT * FROM colleges WHERE minimum_aps <= ?
+      `,
+      [aps, aps]
+    );
+  } catch (error) {
+    console.error("❌ APS filter error:", error);
+    return [];
+  }
 };
 
 // ==================== INDUSTRY FUNCTIONS ====================
