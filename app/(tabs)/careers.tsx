@@ -145,6 +145,7 @@ export default function Careers() {
         data={filteredCareers}
         contentContainerStyle={{ paddingTop: 10, paddingBottom: 20 }}
         keyExtractor={(item) => item.id.toString()}
+        style={{ flex: 1 }}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
@@ -155,7 +156,7 @@ export default function Careers() {
               Field: {item.field || "General"}
             </Text>
             <Text style={styles.careerAps}>
-              APS: {item.aps_minimum || "N/A"}
+              APS Level: {item.aps_minimum || "N/A"}
             </Text>
           </TouchableOpacity>
         )}
@@ -174,20 +175,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
   },
-
   centered: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#F7FAFA",
   },
-
   title: {
     fontSize: 30,
     fontWeight: "700",
     color: "#0F766E",
     marginTop: 15,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   searchContainer: {
     flexDirection: "row",
@@ -195,111 +194,75 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 15,
     paddingHorizontal: 16,
-    height: 54,
-    marginBottom: 18,
+    height: 50,
+    marginBottom: 12,
     borderWidth: 1,
     borderColor: "#D6ECE9",
     elevation: 3,
   },
-
   searchIcon: {
     fontSize: 18,
     marginRight: 10,
   },
-
   searchInput: {
     flex: 1,
     fontSize: 16,
     color: "#333",
   },
-
-  searchBar: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 15,
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: "#D6ECE9",
-    marginBottom: 18,
-
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-
-    elevation: 3,
-  },
-
   streamContainer: {
-    marginBottom: 18,
+    maxHeight: 50,
+    marginBottom: 10,
   },
-
   streamContent: {
     paddingHorizontal: 4,
+    alignItems: "center",
   },
-
   streamButton: {
     backgroundColor: "#E8F5F3",
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 25,
-    marginRight: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 8,
+    marginBottom: 6,
   },
-
   streamButtonActive: {
     backgroundColor: "#14B8A6",
   },
-
   streamButtonText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "600",
     color: "#0F766E",
   },
-
   streamButtonTextActive: {
     color: "#FFFFFF",
   },
-
   card: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 18,
-    padding: 18,
-    marginBottom: 15,
-
+    borderRadius: 14,
+    padding: 12, // Reduced from 18
+    marginBottom: 10, // Reduced from 15
     shadowColor: "#000",
-    shadowOpacity: 0.07,
-    shadowRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-
-    elevation: 4,
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
   },
-
   careerName: {
-    fontSize: 19,
+    fontSize: 15, // Reduced from 19
     fontWeight: "700",
     color: "#0F766E",
   },
-
   careerField: {
-    fontSize: 14,
+    fontSize: 12, // Reduced from 14
     color: "#666",
-    marginTop: 8,
+    marginTop: 4,
   },
-
   careerAps: {
-    fontSize: 15,
+    fontSize: 13, // Reduced from 15
     color: "#14B8A6",
     fontWeight: "600",
-    marginTop: 5,
+    marginTop: 3,
   },
-
   emptyText: {
     textAlign: "center",
     color: "#888",
