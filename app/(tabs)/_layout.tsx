@@ -20,41 +20,11 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="schools"
-        options={{
-          title: "Schools",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="school" size={size} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="subjects"
-        options={{
-          title: "Subjects",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="book" size={size} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
         name="careers"
         options={{
           title: "Careers",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="briefcase" size={size} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="universities"
-        options={{
-          title: "Universities",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="business" size={size} color={color} />
           ),
         }}
       />
@@ -70,21 +40,11 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="mentorship"
+        name="explore"
         options={{
-          title: "Mentorship",
+          title: "Explore",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="people" size={size} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="industries"
-        options={{
-          title: "Industries",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="construct" size={size} color={color} />
+            <Ionicons name="compass" size={size} color={color} />
           ),
         }}
       />

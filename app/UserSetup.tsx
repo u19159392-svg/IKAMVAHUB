@@ -1,6 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import { initDatabase, seedSchools } from "./db/Database";
+import {
+  createProfile,
+  createUser,
+  initDatabase,
+  seedSchools,
+} from "./db/Database";
 
 import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import {
@@ -13,7 +18,7 @@ import {
 } from "react-native";
 
 import { useRouter } from "expo-router";
-export default function SetupScreen() {
+export default function UserSetup() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
@@ -164,34 +169,6 @@ export default function SetupScreen() {
           </>
         )}
 
-        {step === 1 && (
-          <>
-            {/* Full Name */}
-            {/* Age */}
-            {/* Gender */}
-          </>
-        )}
-
-        {step === 2 && (
-          <>
-            {/* School */}
-            {/* Grade */}
-          </>
-        )}
-
-        {step === 3 && <>{/* Career Interest */}</>}
-
-        {step === 4 && (
-          <>
-            <Text> Name: {name}</Text>
-            <Text> Age: {age}</Text>
-            <Text> Gender: {gender}</Text>
-            <Text> School: {school}</Text>
-            <Text> Grade: {grade}</Text>
-            <Text> Career Interest: {career}</Text>
-          </>
-        )}
-
         {step > 1 && (
           <TouchableOpacity
             style={styles.backButton}
@@ -208,10 +185,36 @@ export default function SetupScreen() {
               setStep(step + 1);
             } else {
               try {
+                // Create user first
+                const userId = await createUser(
+                  name,
+                  `${name.toLowerCase().replace(/\s/g, "")}@ikamvahub.com`,
+                  "",
+                );
+
+                if (userId) {
+                  // Save profile information
+                  await createProfile({
+                    user_id: userId,
+                    age,
+                    gender,
+                    school,
+                    grade,
+                    career_interest: career,
+                    bio: "",
+                    profile_pic: "",
+                    phone: "",
+                    location: "",
+                  });
+
+                  console.log("✅ Profile saved successfully");
+                }
+
                 await AsyncStorage.setItem("setupDone", "true");
+
                 router.replace("/(tabs)");
               } catch (error) {
-                console.error("Error saving setup status:", error);
+                console.error("❌ Error saving profile:", error);
               }
             }
           }}
