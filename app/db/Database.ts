@@ -105,7 +105,12 @@ CREATE TABLE profiles (
         aps_minimum INTEGER,
         stream TEXT
       );
-
+-- SUBJECTS TABLE
+CREATE TABLE IF NOT EXISTS subjects (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  stream TEXT
+);
       -- CAREER-SUBJECT RELATIONSHIPS TABLE
       DROP TABLE IF EXISTS career_subjects;
       CREATE TABLE IF NOT EXISTS career_subjects (
@@ -127,6 +132,35 @@ CREATE TABLE profiles (
         jobs_available TEXT,
         factories TEXT
       );
+      -- UNIVERSITIES TABLE
+CREATE TABLE IF NOT EXISTS universities (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  province TEXT,
+  website TEXT,
+  contact TEXT,
+  minimum_aps INTEGER
+);
+
+-- COLLEGES TABLE
+CREATE TABLE IF NOT EXISTS colleges (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  province TEXT,
+  website TEXT,
+  contact TEXT,
+  type TEXT
+);
+
+-- COURSES TABLE
+CREATE TABLE IF NOT EXISTS courses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  institution_id INTEGER,
+  institution_type TEXT,
+  name TEXT,
+  duration TEXT,
+  minimum_aps INTEGER
+);
       -- CAREER-SUBJECT RELATION TABLE
 CREATE TABLE IF NOT EXISTS career_subjects (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -605,6 +639,15 @@ export const seedSchools = async () => {
     }
 
     console.log("✅ Schools seeded successfully");
+    await db.runAsync(`
+INSERT INTO career_subjects (career_id, subject_id) VALUES
+(1, 1),
+(1, 2),
+(2, 1),
+(3, 3),
+(4, 2),
+(5, 1);
+    `);
   } catch (error) {
     console.error("❌ Seed schools error:", error);
   }
@@ -6212,7 +6255,27 @@ export const getCareersByStream = async (stream: string) => {
     console.error("❌ Get careers by stream error:", error);
     return [];
   }
-};// ================= APS FUNCTIONS =================
+};
+
+// ================= GET CAREERS BY SUBJECT =================
+export const getCareersBySubject = async (subjectId: number) => {
+  try {
+    return await db.getAllAsync(
+      `
+      SELECT careers.* 
+      FROM careers
+      INNER JOIN career_subjects 
+      ON careers.id = career_subjects.career_id
+      WHERE career_subjects.subject_id = ?
+      `,
+      [subjectId]
+    );
+  } catch (error) {
+    console.log("❌ Get careers by subject error:", error);
+    return [];
+  }
+};
+// ================= APS FUNCTIONS =================
 
 export const getApsPoints = (percentage: number): number => {
   if (percentage >= 80) return 7;
@@ -6223,6 +6286,60 @@ export const getApsPoints = (percentage: number): number => {
   if (percentage >= 30) return 2;
   return 1;
 };
+// ================= UNIVERSITIES & COLLEGES =================
+
+// Get all universities
+export const getUniversities = async () => {
+  try {
+    return await db.getAllAsync("SELECT * FROM universities");
+  } catch (error) {
+    console.error("❌ Get universities error:", error);
+    return [];
+  }
+};
+
+// Get all colleges (TVET)
+export const getColleges = async () => {
+  try {
+    return await db.getAllAsync("SELECT * FROM colleges");
+  } catch (error) {
+    console.error("❌ Get colleges error:", error);
+    return [];
+  }
+};
+
+// Get courses for a specific institution
+export const getCoursesByInstitution = async (
+  institutionId: number,
+  type: string
+) => {
+  try {
+    return await db.getAllAsync(
+      "SELECT * FROM courses WHERE institution_id = ? AND institution_type = ?",
+      [institutionId, type]
+    );
+  } catch (error) {
+    console.error("❌ Get courses error:", error);
+    return [];
+  }
+};
+
+// Filter institutions by APS
+export const filterInstitutionsByAps = async (aps: number) => {
+  try {
+    return await db.getAllAsync(
+      `
+      SELECT * FROM universities WHERE minimum_aps <= ?
+      UNION
+      SELECT * FROM colleges WHERE minimum_aps <= ?
+      `,
+      [aps, aps]
+    );
+  } catch (error) {
+    console.error("❌ APS filter error:", error);
+    return [];
+  }
+};
 
 // ==================== INDUSTRY FUNCTIONS ====================
 export const getIndustries = async () => {
@@ -6230,6 +6347,44 @@ export const getIndustries = async () => {
     return await db.getAllAsync("SELECT * FROM industries ORDER BY name ASC");
   } catch (error) {
     console.error("❌ Get industries error:", error);
+    return [];
+  }
+};
+// ================= MENTORS =================
+
+// Get all mentors
+export const getMentors = async () => {
+  try {
+    return await db.getAllAsync("SELECT * FROM mentors");
+  } catch (error) {
+    console.error("❌ Get mentors error:", error);
+    return [];
+  }
+};
+
+// Get one mentor by ID
+export const getMentorById = async (id: number) => {
+  try {
+    const result = await db.getAllAsync(
+      "SELECT * FROM mentors WHERE id = ?",
+      [id]
+    );
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("❌ Get mentor error:", error);
+    return null;
+  }
+};
+
+// Filter mentors by field (e.g. Engineering, Law, Medicine)
+export const filterMentorsByField = async (field: string) => {
+  try {
+    return await db.getAllAsync(
+      "SELECT * FROM mentors WHERE field LIKE ?",
+      [`%${field}%`]
+    );
+  } catch (error) {
+    console.error("❌ Filter mentors error:", error);
     return [];
   }
 };
