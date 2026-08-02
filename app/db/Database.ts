@@ -605,6 +605,15 @@ export const seedSchools = async () => {
     }
 
     console.log("✅ Schools seeded successfully");
+    await db.runAsync(`
+INSERT INTO career_subjects (career_id, subject_id) VALUES
+(1, 1),
+(1, 2),
+(2, 1),
+(3, 3),
+(4, 2),
+(5, 1);
+    `);
   } catch (error) {
     console.error("❌ Seed schools error:", error);
   }
@@ -6208,11 +6217,29 @@ export const getCareersByStream = async (stream: string) => {
     return await db.getAllAsync("SELECT * FROM careers WHERE stream = ?", [
       stream,
     ]);
-   } catch (error) {
+  } catch (error) {
     console.error("❌ Get careers by stream error:", error);
     return [];
   }
+};
 
+// ================= GET CAREERS BY SUBJECT =================
+export const getCareersBySubject = async (subjectId: number) => {
+  try {
+    return await db.getAllAsync(
+      `
+      SELECT careers.* 
+      FROM careers
+      INNER JOIN career_subjects 
+      ON careers.id = career_subjects.career_id
+      WHERE career_subjects.subject_id = ?
+      `,
+      [subjectId]
+    );
+  } catch (error) {
+    console.log("❌ Get careers by subject error:", error);
+    return [];
+  }
 };
 // ================= APS FUNCTIONS =================
 
@@ -6286,6 +6313,44 @@ export const getIndustries = async () => {
     return await db.getAllAsync("SELECT * FROM industries ORDER BY name ASC");
   } catch (error) {
     console.error("❌ Get industries error:", error);
+    return [];
+  }
+};
+// ================= MENTORS =================
+
+// Get all mentors
+export const getMentors = async () => {
+  try {
+    return await db.getAllAsync("SELECT * FROM mentors");
+  } catch (error) {
+    console.error("❌ Get mentors error:", error);
+    return [];
+  }
+};
+
+// Get one mentor by ID
+export const getMentorById = async (id: number) => {
+  try {
+    const result = await db.getAllAsync(
+      "SELECT * FROM mentors WHERE id = ?",
+      [id]
+    );
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("❌ Get mentor error:", error);
+    return null;
+  }
+};
+
+// Filter mentors by field (e.g. Engineering, Law, Medicine)
+export const filterMentorsByField = async (field: string) => {
+  try {
+    return await db.getAllAsync(
+      "SELECT * FROM mentors WHERE field LIKE ?",
+      [`%${field}%`]
+    );
+  } catch (error) {
+    console.error("❌ Filter mentors error:", error);
     return [];
   }
 };
