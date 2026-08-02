@@ -50,6 +50,13 @@ export default function HomeScreen() {
       >
         <ThemedText style={styles.buttonText}>💼 Career Guidance</ThemedText>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push ("/aps-calculator" )}
+        >
+        <ThemedText style={styles.buttonText}>📊 APS Calculator</ThemedText>
+        </TouchableOpacity>
     </View>
   );
 }
