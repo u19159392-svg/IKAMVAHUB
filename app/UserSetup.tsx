@@ -1,15 +1,13 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import {
+  createProfile,
+  createUser,
   initDatabase,
   seedSchools,
 } from "./db/Database";
 
-
-import {
-  FontAwesome5,
-  Ionicons,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import {
   ScrollView,
   StyleSheet,
@@ -19,9 +17,8 @@ import {
   View,
 } from "react-native";
 
-
-import { useRouter } from 'expo-router';
-export default function SetupScreen() {
+import { useRouter } from "expo-router";
+export default function UserSetup() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
@@ -31,21 +28,20 @@ export default function SetupScreen() {
   const [grade, setGrade] = useState("");
   const [career, setCareer] = useState("");
 
-  useEffect(()=>{
-      const setupDatabase = async () =>{
-      try{
+  useEffect(() => {
+    const setupDatabase = async () => {
+      try {
         await initDatabase();
         await seedSchools();
 
         console.log("✅ Database ready");
-    } catch (error) {
-      console.error("Database setup failed:", error);
-        }
-      };
+      } catch (error) {
+        console.error("Database setup failed:", error);
+      }
+    };
 
-      setupDatabase();
-    }, []);
-  
+    setupDatabase();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -53,130 +49,117 @@ export default function SetupScreen() {
         <Text style={styles.logo}>🎓 IkamvaHub</Text>
 
         <Text style={styles.title}>Welcome! 👋</Text>
-        <Text style={styles.subtitle}>
-          Let's set up your profile
+        <Text style={styles.subtitle}>Let&apos;s set up your profile</Text>
+        <Text style={{ fontSize: 20, color: "red", fontWeight: "bold" }}>
+          Current step:{step}
         </Text>
-        <Text style={{fontSize: 20, color: "red",
-          fontWeight: "bold" }}>
-            Current step:{step}
-          </Text>
-        
 
         {[1, 2, 3, 4].map((item) => (
-        <View 
-        key={item}
-        style={[
-          styles.dot,
-          item <= step && styles.activeDot,
-        ]}
-        />
+          <View
+            key={item}
+            style={[styles.dot, item <= step && styles.activeDot]}
+          />
         ))}
       </View>
 
-<TouchableOpacity
+      <TouchableOpacity
         style={styles.schoolFinderButton}
-        onPress={() => router.push('/schools')}
+        onPress={() => router.push("/schools")}
       >
         <Text style={styles.schoolFinderButtonText}>🔍 School Finder</Text>
       </TouchableOpacity>
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>
-          {step ===1 && "Personal Information"}
-          {step ===2 && "School Information"}
-          {step ===3 && "Interests & Accessibility Information"}  
-          {step ===4 && "Profile Setup Complete!"} 
-        </Text>        
+          {step === 1 && "Personal Information"}
+          {step === 2 && "School Information"}
+          {step === 3 && "Interests & Accessibility Information"}
+          {step === 4 && "Profile Setup Complete!"}
+        </Text>
         <Text style={styles.subtitle}>step {step} of 4</Text>
 
         {/* STEP 1 */}
         {step === 1 && (
           <>
-        <View style={styles.inputContainer}>
-          <Ionicons name="person-outline"
-           size={20} color="#14B8A6" />
-          <TextInput
-            placeholder="Full Name"
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-          />
-        </View>
+            <View style={styles.inputContainer}>
+              <Ionicons name="person-outline" size={20} color="#14B8A6" />
+              <TextInput
+                placeholder="Full Name"
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+              />
+            </View>
 
-        <View style={styles.inputContainer}>
-          <MaterialIcons name="cake" size={20}
-           color="#14B8A6" />
-          <TextInput
-            placeholder="Age"
-            keyboardType="numeric"
-            style={styles.input}
-            value={age}
-            onChangeText={setAge}
-          />
-        </View>
+            <View style={styles.inputContainer}>
+              <MaterialIcons name="cake" size={20} color="#14B8A6" />
+              <TextInput
+                placeholder="Age"
+                keyboardType="numeric"
+                style={styles.input}
+                value={age}
+                onChangeText={setAge}
+              />
+            </View>
 
-        <View style={styles.inputContainer}>
-          <Ionicons name="male-female-outline"
-           size={20} color="#14B8A6" />
-          <TextInput
-            placeholder="Gender"
-            style={styles.input}
-            value={gender}
-            onChangeText={setGender}
-          />
-        </View>
-        </>
-        )}  
+            <View style={styles.inputContainer}>
+              <Ionicons name="male-female-outline" size={20} color="#14B8A6" />
+              <TextInput
+                placeholder="Gender"
+                style={styles.input}
+                value={gender}
+                onChangeText={setGender}
+              />
+            </View>
+          </>
+        )}
 
         {/* STEP 2 */}
         {step === 2 && (
           <>
-        <View style={styles.inputContainer}>
-          <Ionicons name="school-outline"
-           size={20} color="#14B8A6" />
-          <TextInput
-            placeholder="School"
-            style={styles.input}
-            value={school}
-            onChangeText={setSchool}
-          />
-        </View>
+            <View style={styles.inputContainer}>
+              <Ionicons name="school-outline" size={20} color="#14B8A6" />
+              <TextInput
+                placeholder="School"
+                style={styles.input}
+                value={school}
+                onChangeText={setSchool}
+              />
+            </View>
 
-        <View style={styles.inputContainer}>
-          <FontAwesome5 name="graduation-cap" size={18} color="#14B8A6" />
-          <TextInput
-            placeholder="Grade"
-            style={styles.input}
-            value={grade}
-            onChangeText={setGrade}
-          />
-        </View>
-        </>
+            <View style={styles.inputContainer}>
+              <FontAwesome5 name="graduation-cap" size={18} color="#14B8A6" />
+              <TextInput
+                placeholder="Grade"
+                style={styles.input}
+                value={grade}
+                onChangeText={setGrade}
+              />
+            </View>
+          </>
         )}
-
 
         {/* STEP 3 */}
         {step === 3 && (
           <>
-        <View style={styles.inputContainer}>
-          <Ionicons name="briefcase-outline" size={20} color="#14B8A6" />
-          <TextInput
-            placeholder="Career Interest"
-            style={styles.input}
-            value={career}
-            onChangeText={setCareer}
-          />
-        </View>
-        </>
+            <View style={styles.inputContainer}>
+              <Ionicons name="briefcase-outline" size={20} color="#14B8A6" />
+              <TextInput
+                placeholder="Career Interest"
+                style={styles.input}
+                value={career}
+                onChangeText={setCareer}
+              />
+            </View>
+          </>
         )}
 
         {/* STEP 4 */}
         {step === 4 && (
           <>
-          <Text style= {{fontSize: 18, 
-            marginBottom: 10 }}>
+            <Text style={{ fontSize: 18, marginBottom: 10 }}>
               Review your information
             </Text>
-          
+
             <Text> Name: {name}</Text>
             <Text> Age: {age}</Text>
             <Text> Gender: {gender}</Text>
@@ -186,61 +169,55 @@ export default function SetupScreen() {
           </>
         )}
 
-        {step == 1 && (
-          <>
-          {/* Full Name */ }
-          {/* Age */ }
-          {/* Gender */ }     
-          </>
-        )}
-
-        {step == 2 && (
-          <>
-          {/* School */ }
-          {/* Grade */ }     
-          </>
-        )}
-
-        {step == 3 && (
-          <>
-          {/* Career Interest */ }     
-          </>
-        )}
-
-        {step == 4 && (
-          <>
-            <Text> Name: {name}</Text>
-            <Text> Age: {age}</Text>
-            <Text> Gender: {gender}</Text>
-            <Text> School: {school}</Text>
-            <Text> Grade: {grade}</Text>
-            <Text> Career Interest: {career}</Text>
-          </>
-        )}
-
-        {step >1 &&(
+        {step > 1 && (
           <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => setStep(step - 1)}
-        >
-          <Text style={styles.backButtonText}>← 
-            Back</Text>
-        </TouchableOpacity> 
+            style={styles.backButton}
+            onPress={() => setStep(step - 1)}
+          >
+            <Text style={styles.backButtonText}>← Back</Text>
+          </TouchableOpacity>
         )}
 
+        <TouchableOpacity
+          style={styles.button}
+          onPress={async () => {
+            if (step < 4) {
+              setStep(step + 1);
+            } else {
+              try {
+                // Create user first
+                const userId = await createUser(
+                  name,
+                  `${name.toLowerCase().replace(/\s/g, "")}@ikamvahub.com`,
+                  "",
+                );
 
+                if (userId) {
+                  // Save profile information
+                  await createProfile({
+                    user_id: userId,
+                    age,
+                    gender,
+                    school,
+                    grade,
+                    career_interest: career,
+                    bio: "",
+                    profile_pic: "",
+                    phone: "",
+                    location: "",
+                  });
 
+                  console.log("✅ Profile saved successfully");
+                }
 
-        <TouchableOpacity style={styles.button}
+                await AsyncStorage.setItem("setupDone", "true");
 
-        onPress={() => {
-          if (step < 4) {
-            setStep(step + 1);
-          } else {  
-          router.push('/UserProfilePage');
-          }
+                router.replace("/(tabs)");
+              } catch (error) {
+                console.error("❌ Error saving profile:", error);
+              }
+            }
           }}
-          // Here you can handle the submission of the form, e.g., save the data or navigate to another screen
         >
           <Text style={styles.buttonText}>Continue →</Text>
         </TouchableOpacity>
@@ -255,17 +232,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4F7FB",
   },
 
-backButton: {
-  alignItems: "center",
-  marginTop: 15,
-},
+  backButton: {
+    alignItems: "center",
+    marginTop: 15,
+  },
 
-backButtonText: {
-  fontSize: 16,
-  fontWeight: "600",
-  color: "#2563EB",
-},
-
+  backButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#2563EB",
+  },
 
   header: {
     padding: 25,
@@ -273,17 +249,17 @@ backButtonText: {
   },
 
   schoolFinderButton: {
-    backgroundColor: '#14B8A6',
+    backgroundColor: "#14B8A6",
     marginHorizontal: 25,
     marginBottom: 15,
     padding: 14,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   schoolFinderButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   logo: {
     fontSize: 22,

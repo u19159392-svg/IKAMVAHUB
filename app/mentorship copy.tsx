@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 
-export default function Universities() {
+export default function Mentorship() {
   return (
     <View
       style={{
@@ -10,7 +10,7 @@ export default function Universities() {
       }}
     >
       <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-        Universities & Colleges
+        Mentorship
       </Text>
     </View>
   );

@@ -9,9 +9,7 @@ export default function Mentorship() {
         alignItems: "center",
       }}
     >
-      <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-        Mentorship
-      </Text>
+      <Text style={{ fontSize: 24, fontWeight: "bold" }}>Mentorship</Text>
     </View>
   );
 }

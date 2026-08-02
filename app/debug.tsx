@@ -1,38 +1,51 @@
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { createUser, deleteUser, getUsers, initDatabase, seedSchools, updateUser } from './db/Database';
+import React, { useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import {
+  createUser,
+  deleteUser,
+  getUsers,
+  initDatabase,
+  seedSchools,
+  updateUser,
+} from "./db/Database";
 
 export default function DebugScreen() {
   const [users, setUsers] = useState<any[]>([]);
 
   const handleInit = async () => {
     await initDatabase();
-    await seedSchools ();
-    
-    console.log('✅ Database initialized');
+    await seedSchools();
+
+    console.log("✅ Database initialized");
   };
 
   const handleAddUser = async () => {
     const name = `User ${Math.floor(Math.random() * 100)}`;
     const email = `user${Math.floor(Math.random() * 100)}@test.com`;
     const id = await createUser(name, email);
-    console.log('✅ User added with ID:', id);
+    console.log("✅ User added with ID:", id);
   };
 
   const handleGetUsers = async () => {
     const allUsers = await getUsers();
     setUsers(allUsers);
-    console.log('✅ Users fetched:', allUsers);
+    console.log("✅ Users fetched:", allUsers);
   };
 
   const handleUpdateUser = async () => {
     if (users.length > 0) {
       const id = users[0].id;
-      await updateUser(id, 'Updated Name', 'updated@email.com');
-      console.log('✅ User updated');
+      await updateUser(id, "Updated Name", "updated@email.com");
+      console.log("✅ User updated");
       handleGetUsers();
     } else {
-      console.log('⚠️ No users to update');
+      console.log("⚠️ No users to update");
     }
   };
 
@@ -40,10 +53,10 @@ export default function DebugScreen() {
     if (users.length > 0) {
       const id = users[0].id;
       await deleteUser(id);
-      console.log('✅ User deleted');
+      console.log("✅ User deleted");
       handleGetUsers();
     } else {
-      console.log('⚠️ No users to delete');
+      console.log("⚠️ No users to delete");
     }
   };
 
@@ -88,43 +101,43 @@ export default function DebugScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     padding: 20,
     paddingTop: 60,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
     paddingVertical: 15,
     borderRadius: 10,
     marginBottom: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   userList: {
     marginTop: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 15,
     borderRadius: 10,
   },
   userListTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   userItem: {
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
 });
