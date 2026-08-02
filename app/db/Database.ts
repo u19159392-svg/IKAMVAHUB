@@ -105,7 +105,12 @@ CREATE TABLE profiles (
         aps_minimum INTEGER,
         stream TEXT
       );
-
+-- SUBJECTS TABLE
+CREATE TABLE IF NOT EXISTS subjects (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  stream TEXT
+);
       -- CAREER-SUBJECT RELATIONSHIPS TABLE
       DROP TABLE IF EXISTS career_subjects;
       CREATE TABLE IF NOT EXISTS career_subjects (
@@ -127,6 +132,35 @@ CREATE TABLE profiles (
         jobs_available TEXT,
         factories TEXT
       );
+      -- UNIVERSITIES TABLE
+CREATE TABLE IF NOT EXISTS universities (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  province TEXT,
+  website TEXT,
+  contact TEXT,
+  minimum_aps INTEGER
+);
+
+-- COLLEGES TABLE
+CREATE TABLE IF NOT EXISTS colleges (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  province TEXT,
+  website TEXT,
+  contact TEXT,
+  type TEXT
+);
+
+-- COURSES TABLE
+CREATE TABLE IF NOT EXISTS courses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  institution_id INTEGER,
+  institution_type TEXT,
+  name TEXT,
+  duration TEXT,
+  minimum_aps INTEGER
+);
       -- CAREER-SUBJECT RELATION TABLE
 CREATE TABLE IF NOT EXISTS career_subjects (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
