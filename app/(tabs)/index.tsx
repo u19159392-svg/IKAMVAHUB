@@ -58,10 +58,10 @@ export default function HomeScreen() {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push ("/aps-calculator" )}
-        >
+        onPress={() => router.push("/aps-calculator" as any)}
+      >
         <ThemedText style={styles.buttonText}>📊 APS Calculator</ThemedText>
-        </TouchableOpacity>
+      </TouchableOpacity>
     </View>
   );
 }
