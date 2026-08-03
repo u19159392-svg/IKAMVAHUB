@@ -56,8 +56,10 @@ export default function CareerDetails() {
       <Text style={styles.sectionTitle}>🏛️ Where to Study</Text>
       <Text style={styles.text}>{career.institutions}</Text>
 
-      <Text style={styles.sectionTitle}>📊 APS Level</Text>
-      <Text style={styles.text}>{career.aps_minimum}</Text>
+      <Text style={styles.sectionTitle}>📊 APS Range</Text>
+      <Text style={styles.text}>
+        {career.aps_range || "Varies by institution"}
+      </Text>
     </ScrollView>
   );
 }

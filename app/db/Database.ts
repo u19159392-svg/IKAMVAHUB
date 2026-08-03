@@ -4,7 +4,7 @@ const db = SQLite.openDatabaseSync("ikamvahub.db");
 export const initDatabase = async () => {
   try {
     await db.execAsync(`
-      -- USERS TABLE (Person 3)
+      -- USERS TABLE
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -13,25 +13,24 @@ export const initDatabase = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
-      -- PROFILES TABLE (Person 4)
-   DROP TABLE IF EXISTS profiles;
+      -- PROFILES TABLE
+      DROP TABLE IF EXISTS profiles;
+      CREATE TABLE profiles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        age TEXT,
+        gender TEXT,
+        school TEXT,
+        grade TEXT,
+        career_interest TEXT,
+        bio TEXT,
+        profile_pic TEXT,
+        phone TEXT,
+        location TEXT,
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+      );
 
-CREATE TABLE profiles (
- id INTEGER PRIMARY KEY AUTOINCREMENT,
- user_id INTEGER NOT NULL,
- age TEXT,
- gender TEXT,
- school TEXT,
- grade TEXT,
- career_interest TEXT,
- bio TEXT,
- profile_pic TEXT,
- phone TEXT,
- location TEXT,
- FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
-);
-
-      -- TASKS TABLE (Person 6)
+      -- TASKS TABLE
       CREATE TABLE IF NOT EXISTS tasks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
@@ -44,7 +43,7 @@ CREATE TABLE profiles (
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       );
 
-      -- SETTINGS TABLE (Person 6)
+      -- SETTINGS TABLE
       CREATE TABLE IF NOT EXISTS settings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
@@ -53,7 +52,7 @@ CREATE TABLE profiles (
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       );
 
-      -- NOTIFICATIONS TABLE (Person 6)
+      -- NOTIFICATIONS TABLE
       CREATE TABLE IF NOT EXISTS notifications (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
@@ -92,6 +91,13 @@ CREATE TABLE profiles (
         FOREIGN KEY (school_id) REFERENCES schools (id) ON DELETE CASCADE
       );
 
+      -- SUBJECTS TABLE
+      CREATE TABLE IF NOT EXISTS subjects (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        stream TEXT
+      );
+
       -- CAREERS TABLE
       DROP TABLE IF EXISTS careers;
       CREATE TABLE IF NOT EXISTS careers (
@@ -102,23 +108,18 @@ CREATE TABLE profiles (
         subjects_needed TEXT,
         study_path TEXT,
         institutions TEXT,
-        aps_minimum INTEGER,
+        aps_range TEXT,
         stream TEXT
       );
--- SUBJECTS TABLE
-CREATE TABLE IF NOT EXISTS subjects (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  stream TEXT
-);
-      -- CAREER-SUBJECT RELATIONSHIPS TABLE
+
+      -- CAREER-SUBJECT RELATION TABLE
       DROP TABLE IF EXISTS career_subjects;
       CREATE TABLE IF NOT EXISTS career_subjects (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        career_id INTEGER NOT NULL,
-        subject_id INTEGER NOT NULL,
-        FOREIGN KEY (career_id) REFERENCES careers (id) ON DELETE CASCADE,
-        FOREIGN KEY (subject_id) REFERENCES subjects (id) ON DELETE CASCADE
+        career_id INTEGER,
+        subject_id INTEGER,
+        FOREIGN KEY (career_id) REFERENCES careers(id),
+        FOREIGN KEY (subject_id) REFERENCES subjects(id)
       );
 
       -- INDUSTRIES TABLE
@@ -132,43 +133,36 @@ CREATE TABLE IF NOT EXISTS subjects (
         jobs_available TEXT,
         factories TEXT
       );
+
       -- UNIVERSITIES TABLE
-CREATE TABLE IF NOT EXISTS universities (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT,
-  province TEXT,
-  website TEXT,
-  contact TEXT,
-  minimum_aps INTEGER
-);
+      CREATE TABLE IF NOT EXISTS universities (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        province TEXT,
+        website TEXT,
+        contact TEXT,
+        minimum_aps INTEGER
+      );
 
--- COLLEGES TABLE
-CREATE TABLE IF NOT EXISTS colleges (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT,
-  province TEXT,
-  website TEXT,
-  contact TEXT,
-  type TEXT
-);
+      -- COLLEGES TABLE
+      CREATE TABLE IF NOT EXISTS colleges (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        province TEXT,
+        website TEXT,
+        contact TEXT,
+        type TEXT
+      );
 
--- COURSES TABLE
-CREATE TABLE IF NOT EXISTS courses (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  institution_id INTEGER,
-  institution_type TEXT,
-  name TEXT,
-  duration TEXT,
-  minimum_aps INTEGER
-);
-      -- CAREER-SUBJECT RELATION TABLE
-CREATE TABLE IF NOT EXISTS career_subjects (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  career_id INTEGER,
-  subject_id INTEGER,
-  FOREIGN KEY (career_id) REFERENCES careers(id),
-  FOREIGN KEY (subject_id) REFERENCES subjects(id)
-);
+      -- COURSES TABLE
+      CREATE TABLE IF NOT EXISTS courses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        institution_id INTEGER,
+        institution_type TEXT,
+        name TEXT,
+        duration TEXT,
+        minimum_aps INTEGER
+      );
     `);
 
     // ===== SEED DATA =====
@@ -182,7 +176,6 @@ CREATE TABLE IF NOT EXISTS career_subjects (
     console.error("❌ Database init error:", error);
   }
 };
-
 // ==================== USER CRUD (Person 3) ====================
 export const createUser = async (
   name: string,
@@ -660,7 +653,8 @@ export const seedCareers = async () => {
     await db.runAsync("DELETE FROM sqlite_sequence WHERE name='careers'");
 
     const careers = [
-      // ==================== SCIENCE & HEALTH SCIENCES (150+) ====================
+      // ==================== SCIENCE & HEALTH SCIENCES ====================
+      // HIGH RANGE (42-46+): Doctors, Surgeons, Specialists
       {
         name: "General Practitioner",
         field: "Science & Health Sciences",
@@ -672,7 +666,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Registration as a medical doctor",
         institutions:
           "University of Fort Hare, Walter Sisulu University, University of the Witwatersrand, University of Cape Town, Stellenbosch University",
-        aps_minimum: 7,
+        aps_range: "42-46+",
       },
       {
         name: "Medical Doctor (Physician)",
@@ -684,7 +678,7 @@ export const seedCareers = async () => {
         study_path: "MBChB → Internship → Community Service → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria, University of KwaZulu-Natal",
-        aps_minimum: 7,
+        aps_range: "42-46+",
       },
       {
         name: "Specialist Physician",
@@ -697,7 +691,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Specialisation training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 8,
+        aps_range: "44-48+",
       },
       {
         name: "Surgeon",
@@ -710,7 +704,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Surgical training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 8,
+        aps_range: "44-48+",
       },
       {
         name: "General Surgeon",
@@ -722,7 +716,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Surgical specialisation → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 8,
+        aps_range: "44-48+",
       },
       {
         name: "Orthopaedic Surgeon",
@@ -735,7 +729,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Orthopaedic training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 8,
+        aps_range: "44-48+",
       },
       {
         name: "Cardiothoracic Surgeon",
@@ -748,7 +742,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Cardiothoracic training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 8,
+        aps_range: "44-48+",
       },
       {
         name: "Neurosurgeon",
@@ -761,7 +755,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Neurosurgery training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 8,
+        aps_range: "44-48+",
       },
       {
         name: "Plastic and Reconstructive Surgeon",
@@ -774,7 +768,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Plastic surgery training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 8,
+        aps_range: "44-48+",
       },
       {
         name: "Paediatrician",
@@ -787,7 +781,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Paediatric training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria, University of KwaZulu-Natal",
-        aps_minimum: 7,
+        aps_range: "42-46+",
       },
       {
         name: "Gynaecologist",
@@ -799,7 +793,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Gynaecology training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria, University of KwaZulu-Natal",
-        aps_minimum: 7,
+        aps_range: "42-46+",
       },
       {
         name: "Obstetrician",
@@ -812,7 +806,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Obstetrics training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria, University of KwaZulu-Natal",
-        aps_minimum: 7,
+        aps_range: "42-46+",
       },
       {
         name: "Dermatologist",
@@ -824,7 +818,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Dermatology training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 7,
+        aps_range: "42-46+",
       },
       {
         name: "Oncologist",
@@ -836,7 +830,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Oncology training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 7,
+        aps_range: "42-46+",
       },
       {
         name: "Radiologist",
@@ -848,7 +842,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Radiology training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 7,
+        aps_range: "42-46+",
       },
       {
         name: "Anaesthesiologist",
@@ -861,7 +855,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Anaesthesia training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 7,
+        aps_range: "42-46+",
       },
       {
         name: "Psychiatrist",
@@ -873,7 +867,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Psychiatry training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 7,
+        aps_range: "40-44+",
       },
       {
         name: "Emergency Medicine Physician",
@@ -886,158 +880,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Emergency Medicine training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 7,
-      },
-      {
-        name: "Registered Nurse",
-        field: "Science & Health Sciences",
-        description:
-          "Provides patient care, administers medication, and assists doctors.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path: "Diploma in Nursing (3 years) → Registration with SANC",
-        institutions:
-          "University of Fort Hare, Walter Sisulu University, Nelson Mandela University, Various TVET Colleges",
-        aps_minimum: 5,
-      },
-      {
-        name: "Enrolled Nurse",
-        field: "Science & Health Sciences",
-        description:
-          "Provides basic nursing care under the supervision of registered nurses.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path: "Certificate in Nursing (2 years) → Registration with SANC",
-        institutions: "Various TVET Colleges, Nursing Colleges",
-        aps_minimum: 4,
-      },
-      {
-        name: "Nurse Practitioner",
-        field: "Science & Health Sciences",
-        description:
-          "Advanced practice nurse who can diagnose and treat certain conditions.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Diploma/Bachelor in Nursing → Post-graduate training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Clinical Nurse Specialist",
-        field: "Science & Health Sciences",
-        description:
-          "Provides specialized nursing care in a specific area of practice.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Diploma/Bachelor in Nursing → Specialist training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 6,
-      },
-      {
-        name: "Critical Care Nurse",
-        field: "Science & Health Sciences",
-        description:
-          "Provides specialized care to critically ill patients in ICUs.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Diploma/Bachelor in Nursing → Critical Care training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 6,
-      },
-      {
-        name: "Paediatric Nurse",
-        field: "Science & Health Sciences",
-        description:
-          "Specialises in nursing care for infants, children, and adolescents.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Diploma/Bachelor in Nursing → Paediatric Nursing training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 5,
-      },
-      {
-        name: "Midwife",
-        field: "Science & Health Sciences",
-        description:
-          "Provides care during pregnancy, childbirth, and postpartum.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Diploma/Bachelor in Nursing → Midwifery training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of KwaZulu-Natal",
-        aps_minimum: 5,
-      },
-      {
-        name: "Community Health Nurse",
-        field: "Science & Health Sciences",
-        description: "Provides healthcare services in community settings.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Diploma/Bachelor in Nursing → Community Health training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 5,
-      },
-      {
-        name: "Psychiatric Nurse",
-        field: "Science & Health Sciences",
-        description: "Specialises in mental health nursing care.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Diploma/Bachelor in Nursing → Psychiatric Nursing training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 5,
-      },
-      {
-        name: "Operating Theatre Nurse",
-        field: "Science & Health Sciences",
-        description:
-          "Assists in surgical operations and manages operating theatre equipment.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Diploma/Bachelor in Nursing → Operating Theatre training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 5,
-      },
-      {
-        name: "Geriatric Nurse",
-        field: "Science & Health Sciences",
-        description: "Specialises in nursing care for elderly patients.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Diploma/Bachelor in Nursing → Geriatric Nursing training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 5,
-      },
-      {
-        name: "Medical Laboratory Scientist",
-        field: "Science & Health Sciences",
-        description:
-          "Analyses medical samples to diagnose diseases and conditions.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path:
-          "Bachelor of Health Sciences in Medical Laboratory Science → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, University of KwaZulu-Natal",
-        aps_minimum: 6,
-      },
-      {
-        name: "Medical Laboratory Technician",
-        field: "Science & Health Sciences",
-        description: "Performs laboratory tests on medical samples.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path:
-          "National Diploma in Biomedical Technology (3 years) → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Various TVET Colleges",
-        aps_minimum: 5,
+        aps_range: "42-46+",
       },
       {
         name: "Pathologist",
@@ -1050,7 +893,7 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Pathology training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 8,
+        aps_range: "42-46+",
       },
       {
         name: "Haematologist",
@@ -1062,76 +905,135 @@ export const seedCareers = async () => {
           "MBChB → Internship → Community Service → Haematology training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 8,
+        aps_range: "42-46+",
       },
+
+      // MID-HIGH RANGE (36-40+): Dentists, Pharmacists, Physiotherapists, Psychologists, Engineers
       {
-        name: "Microbiologist",
-        field: "Science & Health Sciences",
-        description: "Studies microorganisms and their effects on humans.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path: "BSc Microbiology (3 years) → Honours → Masters → PhD",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Virologist",
-        field: "Science & Health Sciences",
-        description: "Studies viruses and viral diseases.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path: "BSc Virology (3 years) → Honours → Masters → PhD",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Immunologist",
-        field: "Science & Health Sciences",
-        description: "Studies the immune system and immune responses.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path: "BSc Immunology (3 years) → Honours → Masters → PhD",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Biochemist (Medical focus)",
+        name: "Registered Nurse",
         field: "Science & Health Sciences",
         description:
-          "Studies chemical processes in living organisms related to medicine.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path: "BSc Biochemistry (3 years) → Honours → Masters",
+          "Provides patient care, administers medication, and assists doctors.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path: "Diploma in Nursing (3 years) → Registration with SANC",
+        institutions:
+          "University of Fort Hare, Walter Sisulu University, Nelson Mandela University, Various TVET Colleges",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Enrolled Nurse",
+        field: "Science & Health Sciences",
+        description:
+          "Provides basic nursing care under the supervision of registered nurses.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path: "Certificate in Nursing (2 years) → Registration with SANC",
+        institutions: "Various TVET Colleges, Nursing Colleges",
+        aps_range: "24-28+",
+      },
+      {
+        name: "Nurse Practitioner",
+        field: "Science & Health Sciences",
+        description:
+          "Advanced practice nurse who can diagnose and treat certain conditions.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Diploma/Bachelor in Nursing → Post-graduate training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
-        name: "Histotechnologist",
+        name: "Clinical Nurse Specialist",
         field: "Science & Health Sciences",
-        description: "Prepares tissue samples for microscopic examination.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
+        description:
+          "Provides specialized nursing care in a specific area of practice.",
+        subjects_needed: "Mathematics, Life Sciences, English",
         study_path:
-          "National Diploma in Biomedical Technology (3 years) → Registration",
+          "Diploma/Bachelor in Nursing → Specialist training → Registration",
         institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Various TVET Colleges",
-        aps_minimum: 5,
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "34-38+",
       },
       {
-        name: "Cytotechnologist",
+        name: "Critical Care Nurse",
         field: "Science & Health Sciences",
-        description: "Examines cells for abnormalities and diseases.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
+        description:
+          "Provides specialized care to critically ill patients in ICUs.",
+        subjects_needed: "Mathematics, Life Sciences, English",
         study_path:
-          "National Diploma in Biomedical Technology (3 years) → Registration",
+          "Diploma/Bachelor in Nursing → Critical Care training → Registration",
         institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Various TVET Colleges",
-        aps_minimum: 5,
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Paediatric Nurse",
+        field: "Science & Health Sciences",
+        description:
+          "Specialises in nursing care for infants, children, and adolescents.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Diploma/Bachelor in Nursing → Paediatric Nursing training → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Midwife",
+        field: "Science & Health Sciences",
+        description:
+          "Provides care during pregnancy, childbirth, and postpartum.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Diploma/Bachelor in Nursing → Midwifery training → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of KwaZulu-Natal",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Community Health Nurse",
+        field: "Science & Health Sciences",
+        description: "Provides healthcare services in community settings.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Diploma/Bachelor in Nursing → Community Health training → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Psychiatric Nurse",
+        field: "Science & Health Sciences",
+        description: "Specialises in mental health nursing care.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Diploma/Bachelor in Nursing → Psychiatric Nursing training → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Operating Theatre Nurse",
+        field: "Science & Health Sciences",
+        description:
+          "Assists in surgical operations and manages operating theatre equipment.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Diploma/Bachelor in Nursing → Operating Theatre training → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Geriatric Nurse",
+        field: "Science & Health Sciences",
+        description: "Specialises in nursing care for elderly patients.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Diploma/Bachelor in Nursing → Geriatric Nursing training → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "30-34+",
       },
       {
         name: "Dentist",
@@ -1144,7 +1046,7 @@ export const seedCareers = async () => {
           "Bachelor of Dental Surgery (BDS) → Internship → Community Service → Registration",
         institutions:
           "University of the Western Cape, University of Pretoria, University of KwaZulu-Natal, Sefako Makgatho Health Sciences University",
-        aps_minimum: 7,
+        aps_range: "36-40+",
       },
       {
         name: "Orthodontist",
@@ -1157,7 +1059,7 @@ export const seedCareers = async () => {
           "BDS → Internship → Community Service → Orthodontic training → Registration",
         institutions:
           "University of the Western Cape, University of Pretoria, University of KwaZulu-Natal",
-        aps_minimum: 8,
+        aps_range: "40-44+",
       },
       {
         name: "Oral Surgeon",
@@ -1170,7 +1072,7 @@ export const seedCareers = async () => {
           "BDS → Internship → Community Service → Oral surgery training → Registration",
         institutions:
           "University of the Western Cape, University of Pretoria, University of KwaZulu-Natal",
-        aps_minimum: 8,
+        aps_range: "40-44+",
       },
       {
         name: "Periodontist",
@@ -1182,7 +1084,7 @@ export const seedCareers = async () => {
           "BDS → Internship → Community Service → Periodontology training → Registration",
         institutions:
           "University of the Western Cape, University of Pretoria, University of KwaZulu-Natal",
-        aps_minimum: 8,
+        aps_range: "40-44+",
       },
       {
         name: "Prosthodontist",
@@ -1195,7 +1097,7 @@ export const seedCareers = async () => {
           "BDS → Internship → Community Service → Prosthodontics training → Registration",
         institutions:
           "University of the Western Cape, University of Pretoria, University of KwaZulu-Natal",
-        aps_minimum: 8,
+        aps_range: "40-44+",
       },
       {
         name: "Dental Hygienist",
@@ -1206,7 +1108,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Dental Hygiene (2-3 years) → Registration",
         institutions:
           "University of the Western Cape, University of Pretoria, University of KwaZulu-Natal",
-        aps_minimum: 5,
+        aps_range: "30-34+",
       },
       {
         name: "Dental Therapist",
@@ -1216,7 +1118,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Dental Therapy (2-3 years) → Registration",
         institutions:
           "University of the Western Cape, University of Pretoria, University of KwaZulu-Natal",
-        aps_minimum: 5,
+        aps_range: "30-34+",
       },
       {
         name: "Dental Assistant",
@@ -1228,466 +1130,7 @@ export const seedCareers = async () => {
           "Certificate in Dental Assisting (1-2 years) → Registration",
         institutions:
           "Various TVET Colleges, University of the Western Cape, University of Pretoria",
-        aps_minimum: 4,
-      },
-      {
-        name: "Clinical Psychologist",
-        field: "Science & Health Sciences",
-        description:
-          "Diagnoses and treats mental, emotional, and behavioral disorders through therapy.",
-        subjects_needed: "Mathematics, English, Life Sciences",
-        study_path:
-          "BA Psychology (3 years) → Honours → Masters in Clinical Psychology → Internship → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 6,
-      },
-      {
-        name: "Counselling Psychologist",
-        field: "Science & Health Sciences",
-        description:
-          "Helps individuals manage personal, social, and emotional challenges.",
-        subjects_needed: "Mathematics, English, Life Sciences",
-        study_path:
-          "BA Psychology (3 years) → Honours → Masters in Counselling Psychology → Internship → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 6,
-      },
-      {
-        name: "Educational Psychologist",
-        field: "Science & Health Sciences",
-        description:
-          "Supports the learning and development of students with special needs.",
-        subjects_needed: "Mathematics, English, Life Sciences",
-        study_path:
-          "BA Psychology (3 years) → Honours → Masters in Educational Psychology → Internship → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 6,
-      },
-      {
-        name: "Mental Health Nurse",
-        field: "Science & Health Sciences",
-        description:
-          "Provides nursing care to patients with mental health conditions.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Diploma/Bachelor in Nursing → Psychiatric training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 5,
-      },
-      {
-        name: "Addiction Counsellor",
-        field: "Science & Health Sciences",
-        description:
-          "Supports individuals struggling with substance abuse and addiction.",
-        subjects_needed: "Psychology, Life Orientation, English",
-        study_path: "Diploma in Addiction Counselling (1-2 years)",
-        institutions:
-          "Various TVET Colleges, UNISA, Cape Peninsula University of Technology",
-        aps_minimum: 4,
-      },
-      {
-        name: "Psychotherapist",
-        field: "Science & Health Sciences",
-        description: "Provides therapy to individuals, couples, and groups.",
-        subjects_needed: "Psychology, English, Life Orientation",
-        study_path:
-          "BA Psychology (3 years) → Honours → Masters in Psychotherapy → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 6,
-      },
-      {
-        name: "Behavioural Therapist",
-        field: "Science & Health Sciences",
-        description:
-          "Uses behavior modification techniques to treat mental health conditions.",
-        subjects_needed: "Psychology, English, Life Sciences",
-        study_path:
-          "BA Psychology (3 years) → Behavioural Therapy training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 6,
-      },
-      {
-        name: "Physiotherapist",
-        field: "Science & Health Sciences",
-        description:
-          "Helps patients recover from injuries, surgeries, and physical conditions.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Bachelor of Physiotherapy (4 years) → Community Service → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Stellenbosch University, Nelson Mandela University",
-        aps_minimum: 6,
-      },
-      {
-        name: "Occupational Therapist",
-        field: "Science & Health Sciences",
-        description:
-          "Helps patients perform daily activities and recover from physical or mental conditions.",
-        subjects_needed: "Life Sciences, English, Mathematics",
-        study_path:
-          "Bachelor of Occupational Therapy (4 years) → Community Service → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Stellenbosch University, University of KwaZulu-Natal",
-        aps_minimum: 6,
-      },
-      {
-        name: "Speech-Language Therapist",
-        field: "Science & Health Sciences",
-        description:
-          "Diagnoses and treats speech, language, and communication disorders.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Bachelor of Speech-Language Pathology (4 years) → Community Service → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 6,
-      },
-      {
-        name: "Audiologist",
-        field: "Science & Health Sciences",
-        description: "Diagnoses and treats hearing and balance disorders.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Bachelor of Audiology (4 years) → Community Service → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 6,
-      },
-      {
-        name: "Dietitian",
-        field: "Science & Health Sciences",
-        description:
-          "Advises on nutrition and food choices to promote health and manage diseases.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Bachelor of Dietetics (4 years) → Community Service → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Stellenbosch University, North-West University",
-        aps_minimum: 5,
-      },
-      {
-        name: "Nutritionist",
-        field: "Science & Health Sciences",
-        description:
-          "Advises on food and nutrition to promote health and manage weight.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path: "Bachelor of Nutrition (3-4 years) → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
-      },
-      {
-        name: "Radiographer",
-        field: "Science & Health Sciences",
-        description:
-          "Uses imaging technology (X-ray, CT, MRI) to diagnose medical conditions.",
-        subjects_needed:
-          "Mathematics, Physical Sciences, Life Sciences, English",
-        study_path:
-          "Bachelor of Radiography (4 years) → Community Service → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Central University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
-      },
-      {
-        name: "Radiation Therapist",
-        field: "Science & Health Sciences",
-        description: "Administers radiation treatment for cancer patients.",
-        subjects_needed:
-          "Mathematics, Physical Sciences, Life Sciences, English",
-        study_path:
-          "Bachelor of Radiography in Radiation Therapy (4 years) → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Cape Peninsula University of Technology",
-        aps_minimum: 5,
-      },
-      {
-        name: "Prosthetist and Orthotist",
-        field: "Science & Health Sciences",
-        description: "Designs and fits prostheses and orthoses for patients.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path:
-          "Bachelor of Prosthetics and Orthotics (4 years) → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Central University of Technology",
-        aps_minimum: 5,
-      },
-      {
-        name: "Respiratory Therapist",
-        field: "Science & Health Sciences",
-        description:
-          "Provides respiratory care and therapy to patients with breathing difficulties.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path: "Bachelor of Respiratory Therapy (4 years) → Registration",
-        institutions:
-          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Central University of Technology",
-        aps_minimum: 5,
-      },
-      {
-        name: "Chiropractor",
-        field: "Science & Health Sciences",
-        description:
-          "Diagnoses and treats musculoskeletal conditions through spinal manipulation.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path: "Bachelor of Chiropractic (5-6 years) → Registration",
-        institutions:
-          "University of Johannesburg, Durban University of Technology",
-        aps_minimum: 6,
-      },
-      {
-        name: "Public Health Specialist",
-        field: "Science & Health Sciences",
-        description:
-          "Works to improve community health through disease prevention and health promotion.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Bachelor of Public Health (3 years) → Postgraduate training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
-      },
-      {
-        name: "Epidemiologist",
-        field: "Science & Health Sciences",
-        description:
-          "Studies the patterns, causes, and effects of health and disease conditions in populations.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path:
-          "Bachelor of Public Health (3 years) → Postgraduate training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Health Promotion Officer",
-        field: "Science & Health Sciences",
-        description:
-          "Promotes health and wellness in communities through education and outreach.",
-        subjects_needed: "Life Orientation, English, Life Sciences",
-        study_path: "Certificate/Diploma in Health Promotion (1-3 years)",
-        institutions:
-          "Various TVET Colleges, University of Cape Town, Stellenbosch University, University of Pretoria",
-        aps_minimum: 4,
-      },
-      {
-        name: "Environmental Health Practitioner",
-        field: "Science & Health Sciences",
-        description:
-          "Protects public health by monitoring and improving environmental conditions.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path: "Bachelor of Environmental Health (4 years) → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
-      },
-      {
-        name: "Occupational Health Specialist",
-        field: "Science & Health Sciences",
-        description: "Promotes health and safety in the workplace.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path: "Bachelor of Occupational Health (4 years) → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
-      },
-      {
-        name: "Health Data Scientist",
-        field: "Science & Health Sciences",
-        description:
-          "Analyses health data to improve patient outcomes and healthcare systems.",
-        subjects_needed: "Mathematics, Statistics, English",
-        study_path:
-          "BSc Data Science / Health Informatics (3-4 years) → Postgraduate",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Biostatistician",
-        field: "Science & Health Sciences",
-        description:
-          "Applies statistical methods to biological and health data.",
-        subjects_needed: "Mathematics, Statistics, Life Sciences, English",
-        study_path: "BSc Biostatistics (3-4 years) → Postgraduate",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Health Policy Analyst",
-        field: "Science & Health Sciences",
-        description: "Analyses health policies and recommends improvements.",
-        subjects_needed: "Mathematics, English, Life Sciences",
-        study_path:
-          "Bachelor of Public Health (3 years) → Postgraduate training",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
-      },
-      {
-        name: "Infection Control Specialist",
-        field: "Science & Health Sciences",
-        description:
-          "Prevents and controls the spread of infections in healthcare settings.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Bachelor of Nursing (4 years) → Infection Control training → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
-      },
-      {
-        name: "Community Health Worker",
-        field: "Science & Health Sciences",
-        description:
-          "Provides basic healthcare education and support in communities.",
-        subjects_needed: "Life Orientation, English",
-        study_path: "Certificate in Community Health Work (1-2 years)",
-        institutions: "Various TVET Colleges, NGOs",
-        aps_minimum: 3,
-      },
-      {
-        name: "Biomedical Scientist",
-        field: "Science & Health Sciences",
-        description:
-          "Researches biological processes and diseases at the molecular level.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path: "BSc Biomedical Science (3-4 years) → Honours → Masters",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Biomedical Engineer",
-        field: "Science & Health Sciences",
-        description: "Designs and develops medical devices and equipment.",
-        subjects_needed:
-          "Mathematics, Physical Sciences, Life Sciences, English",
-        study_path: "BSc Biomedical Engineering (4 years) → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Clinical Research Coordinator",
-        field: "Science & Health Sciences",
-        description:
-          "Manages clinical research studies and ensures compliance with regulations.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Bachelor of Health Sciences (3 years) → Clinical Research training",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
-      },
-      {
-        name: "Medical Research Scientist",
-        field: "Science & Health Sciences",
-        description:
-          "Conducts research to advance medical knowledge and treatments.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path:
-          "BSc Medical Research (3-4 years) → Honours → Masters → PhD",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Pharmacologist",
-        field: "Science & Health Sciences",
-        description:
-          "Studies the effects of drugs and chemicals on the human body.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path: "BSc Pharmacology (3-4 years) → Honours → Masters",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Toxicologist",
-        field: "Science & Health Sciences",
-        description:
-          "Studies the harmful effects of chemicals and toxins on living organisms.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path: "BSc Toxicology (3-4 years) → Honours → Masters",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Geneticist",
-        field: "Science & Health Sciences",
-        description: "Studies genes, heredity, and genetic disorders.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path: "BSc Genetics (3-4 years) → Honours → Masters → PhD",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Molecular Biologist",
-        field: "Science & Health Sciences",
-        description: "Studies biological processes at the molecular level.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path:
-          "BSc Molecular Biology (3-4 years) → Honours → Masters → PhD",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Stem Cell Researcher",
-        field: "Science & Health Sciences",
-        description:
-          "Conducts research on stem cells and their potential for treating diseases.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path:
-          "BSc Biomedical Science (3-4 years) → Honours → Masters → PhD",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Drug Development Scientist",
-        field: "Science & Health Sciences",
-        description: "Researches and develops new pharmaceutical drugs.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path:
-          "BSc Pharmaceutical Science (3-4 years) → Honours → Masters",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
-      },
-      {
-        name: "Clinical Trial Scientist",
-        field: "Science & Health Sciences",
-        description:
-          "Designs and manages clinical trials for new drugs and treatments.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path:
-          "Bachelor of Health Sciences (3 years) → Clinical Research training",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Pharmacist",
@@ -1700,7 +1143,7 @@ export const seedCareers = async () => {
           "Bachelor of Pharmacy (BPharm) → Internship → Community Service → Registration",
         institutions:
           "Rhodes University, North-West University, University of the Western Cape, Tshwane University of Technology",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Clinical Pharmacist",
@@ -1713,7 +1156,7 @@ export const seedCareers = async () => {
           "Bachelor of Pharmacy (BPharm) → Clinical training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 7,
+        aps_range: "38-42+",
       },
       {
         name: "Hospital Pharmacist",
@@ -1725,7 +1168,7 @@ export const seedCareers = async () => {
           "Bachelor of Pharmacy (BPharm) → Internship → Community Service → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Industrial Pharmacist",
@@ -1738,7 +1181,7 @@ export const seedCareers = async () => {
           "Bachelor of Pharmacy (BPharm) → Industrial training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Pharmaceutical Scientist",
@@ -1751,7 +1194,7 @@ export const seedCareers = async () => {
           "BSc Pharmaceutical Science (3-4 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Pharmacy Technician",
@@ -1762,7 +1205,7 @@ export const seedCareers = async () => {
         study_path: "National Certificate in Pharmacy (2 years) → Registration",
         institutions:
           "Various TVET Colleges, University of the Western Cape, Tshwane University of Technology",
-        aps_minimum: 4,
+        aps_range: "24-28+",
       },
       {
         name: "Pharmaceutical Sales Representative",
@@ -1772,7 +1215,466 @@ export const seedCareers = async () => {
         subjects_needed: "Mathematics, Life Sciences, English",
         study_path: "Bachelor of Pharmacy/BSc (3-4 years) → Sales training",
         institutions: "Various universities and training institutions",
-        aps_minimum: 5,
+        aps_range: "30-34+",
+      },
+      {
+        name: "Clinical Psychologist",
+        field: "Science & Health Sciences",
+        description:
+          "Diagnoses and treats mental, emotional, and behavioral disorders through therapy.",
+        subjects_needed: "Mathematics, English, Life Sciences",
+        study_path:
+          "BA Psychology (3 years) → Honours → Masters in Clinical Psychology → Internship → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Counselling Psychologist",
+        field: "Science & Health Sciences",
+        description:
+          "Helps individuals manage personal, social, and emotional challenges.",
+        subjects_needed: "Mathematics, English, Life Sciences",
+        study_path:
+          "BA Psychology (3 years) → Honours → Masters in Counselling Psychology → Internship → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Educational Psychologist",
+        field: "Science & Health Sciences",
+        description:
+          "Supports the learning and development of students with special needs.",
+        subjects_needed: "Mathematics, English, Life Sciences",
+        study_path:
+          "BA Psychology (3 years) → Honours → Masters in Educational Psychology → Internship → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Mental Health Nurse",
+        field: "Science & Health Sciences",
+        description:
+          "Provides nursing care to patients with mental health conditions.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Diploma/Bachelor in Nursing → Psychiatric training → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Addiction Counsellor",
+        field: "Science & Health Sciences",
+        description:
+          "Supports individuals struggling with substance abuse and addiction.",
+        subjects_needed: "Psychology, Life Orientation, English",
+        study_path: "Diploma in Addiction Counselling (1-2 years)",
+        institutions:
+          "Various TVET Colleges, UNISA, Cape Peninsula University of Technology",
+        aps_range: "24-28+",
+      },
+      {
+        name: "Psychotherapist",
+        field: "Science & Health Sciences",
+        description: "Provides therapy to individuals, couples, and groups.",
+        subjects_needed: "Psychology, English, Life Orientation",
+        study_path:
+          "BA Psychology (3 years) → Honours → Masters in Psychotherapy → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Behavioural Therapist",
+        field: "Science & Health Sciences",
+        description:
+          "Uses behavior modification techniques to treat mental health conditions.",
+        subjects_needed: "Psychology, English, Life Sciences",
+        study_path:
+          "BA Psychology (3 years) → Behavioural Therapy training → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Physiotherapist",
+        field: "Science & Health Sciences",
+        description:
+          "Helps patients recover from injuries, surgeries, and physical conditions.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Bachelor of Physiotherapy (4 years) → Community Service → Registration",
+        institutions:
+          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Stellenbosch University, Nelson Mandela University",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Occupational Therapist",
+        field: "Science & Health Sciences",
+        description:
+          "Helps patients perform daily activities and recover from physical or mental conditions.",
+        subjects_needed: "Life Sciences, English, Mathematics",
+        study_path:
+          "Bachelor of Occupational Therapy (4 years) → Community Service → Registration",
+        institutions:
+          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Stellenbosch University, University of KwaZulu-Natal",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Speech-Language Therapist",
+        field: "Science & Health Sciences",
+        description:
+          "Diagnoses and treats speech, language, and communication disorders.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Bachelor of Speech-Language Pathology (4 years) → Community Service → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Audiologist",
+        field: "Science & Health Sciences",
+        description: "Diagnoses and treats hearing and balance disorders.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Bachelor of Audiology (4 years) → Community Service → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Dietitian",
+        field: "Science & Health Sciences",
+        description:
+          "Advises on nutrition and food choices to promote health and manage diseases.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Bachelor of Dietetics (4 years) → Community Service → Registration",
+        institutions:
+          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Stellenbosch University, North-West University",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Nutritionist",
+        field: "Science & Health Sciences",
+        description:
+          "Advises on food and nutrition to promote health and manage weight.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path: "Bachelor of Nutrition (3-4 years) → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Radiographer",
+        field: "Science & Health Sciences",
+        description:
+          "Uses imaging technology (X-ray, CT, MRI) to diagnose medical conditions.",
+        subjects_needed:
+          "Mathematics, Physical Sciences, Life Sciences, English",
+        study_path:
+          "Bachelor of Radiography (4 years) → Community Service → Registration",
+        institutions:
+          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Central University of Technology, Cape Peninsula University of Technology",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Radiation Therapist",
+        field: "Science & Health Sciences",
+        description: "Administers radiation treatment for cancer patients.",
+        subjects_needed:
+          "Mathematics, Physical Sciences, Life Sciences, English",
+        study_path:
+          "Bachelor of Radiography in Radiation Therapy (4 years) → Registration",
+        institutions:
+          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Cape Peninsula University of Technology",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Prosthetist and Orthotist",
+        field: "Science & Health Sciences",
+        description: "Designs and fits prostheses and orthoses for patients.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path:
+          "Bachelor of Prosthetics and Orthotics (4 years) → Registration",
+        institutions:
+          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Central University of Technology",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Respiratory Therapist",
+        field: "Science & Health Sciences",
+        description:
+          "Provides respiratory care and therapy to patients with breathing difficulties.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path: "Bachelor of Respiratory Therapy (4 years) → Registration",
+        institutions:
+          "University of Cape Town, University of the Witwatersrand, University of Pretoria, Central University of Technology",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Chiropractor",
+        field: "Science & Health Sciences",
+        description:
+          "Diagnoses and treats musculoskeletal conditions through spinal manipulation.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path: "Bachelor of Chiropractic (5-6 years) → Registration",
+        institutions:
+          "University of Johannesburg, Durban University of Technology",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Public Health Specialist",
+        field: "Science & Health Sciences",
+        description:
+          "Works to improve community health through disease prevention and health promotion.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Bachelor of Public Health (3 years) → Postgraduate training → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Epidemiologist",
+        field: "Science & Health Sciences",
+        description:
+          "Studies the patterns, causes, and effects of health and disease conditions in populations.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path:
+          "Bachelor of Public Health (3 years) → Postgraduate training → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Health Promotion Officer",
+        field: "Science & Health Sciences",
+        description:
+          "Promotes health and wellness in communities through education and outreach.",
+        subjects_needed: "Life Orientation, English, Life Sciences",
+        study_path: "Certificate/Diploma in Health Promotion (1-3 years)",
+        institutions:
+          "Various TVET Colleges, University of Cape Town, Stellenbosch University, University of Pretoria",
+        aps_range: "24-28+",
+      },
+      {
+        name: "Environmental Health Practitioner",
+        field: "Science & Health Sciences",
+        description:
+          "Protects public health by monitoring and improving environmental conditions.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path: "Bachelor of Environmental Health (4 years) → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Occupational Health Specialist",
+        field: "Science & Health Sciences",
+        description: "Promotes health and safety in the workplace.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path: "Bachelor of Occupational Health (4 years) → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Health Data Scientist",
+        field: "Science & Health Sciences",
+        description:
+          "Analyses health data to improve patient outcomes and healthcare systems.",
+        subjects_needed: "Mathematics, Statistics, English",
+        study_path:
+          "BSc Data Science / Health Informatics (3-4 years) → Postgraduate",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Biostatistician",
+        field: "Science & Health Sciences",
+        description:
+          "Applies statistical methods to biological and health data.",
+        subjects_needed: "Mathematics, Statistics, Life Sciences, English",
+        study_path: "BSc Biostatistics (3-4 years) → Postgraduate",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Health Policy Analyst",
+        field: "Science & Health Sciences",
+        description: "Analyses health policies and recommends improvements.",
+        subjects_needed: "Mathematics, English, Life Sciences",
+        study_path:
+          "Bachelor of Public Health (3 years) → Postgraduate training",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Infection Control Specialist",
+        field: "Science & Health Sciences",
+        description:
+          "Prevents and controls the spread of infections in healthcare settings.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Bachelor of Nursing (4 years) → Infection Control training → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Community Health Worker",
+        field: "Science & Health Sciences",
+        description:
+          "Provides basic healthcare education and support in communities.",
+        subjects_needed: "Life Orientation, English",
+        study_path: "Certificate in Community Health Work (1-2 years)",
+        institutions: "Various TVET Colleges, NGOs",
+        aps_range: "20-24+",
+      },
+      {
+        name: "Biomedical Scientist",
+        field: "Science & Health Sciences",
+        description:
+          "Researches biological processes and diseases at the molecular level.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path: "BSc Biomedical Science (3-4 years) → Honours → Masters",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Biomedical Engineer",
+        field: "Science & Health Sciences",
+        description: "Designs and develops medical devices and equipment.",
+        subjects_needed:
+          "Mathematics, Physical Sciences, Life Sciences, English",
+        study_path: "BSc Biomedical Engineering (4 years) → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "36-40+",
+      },
+      {
+        name: "Clinical Research Coordinator",
+        field: "Science & Health Sciences",
+        description:
+          "Manages clinical research studies and ensures compliance with regulations.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Bachelor of Health Sciences (3 years) → Clinical Research training",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "30-34+",
+      },
+      {
+        name: "Medical Research Scientist",
+        field: "Science & Health Sciences",
+        description:
+          "Conducts research to advance medical knowledge and treatments.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path:
+          "BSc Medical Research (3-4 years) → Honours → Masters → PhD",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Pharmacologist",
+        field: "Science & Health Sciences",
+        description:
+          "Studies the effects of drugs and chemicals on the human body.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path: "BSc Pharmacology (3-4 years) → Honours → Masters",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Toxicologist",
+        field: "Science & Health Sciences",
+        description:
+          "Studies the harmful effects of chemicals and toxins on living organisms.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path: "BSc Toxicology (3-4 years) → Honours → Masters",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Geneticist",
+        field: "Science & Health Sciences",
+        description: "Studies genes, heredity, and genetic disorders.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path: "BSc Genetics (3-4 years) → Honours → Masters → PhD",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Molecular Biologist",
+        field: "Science & Health Sciences",
+        description: "Studies biological processes at the molecular level.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path:
+          "BSc Molecular Biology (3-4 years) → Honours → Masters → PhD",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Stem Cell Researcher",
+        field: "Science & Health Sciences",
+        description:
+          "Conducts research on stem cells and their potential for treating diseases.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path:
+          "BSc Biomedical Science (3-4 years) → Honours → Masters → PhD",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Drug Development Scientist",
+        field: "Science & Health Sciences",
+        description: "Researches and develops new pharmaceutical drugs.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path:
+          "BSc Pharmaceutical Science (3-4 years) → Honours → Masters",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "34-38+",
+      },
+      {
+        name: "Clinical Trial Scientist",
+        field: "Science & Health Sciences",
+        description:
+          "Designs and manages clinical trials for new drugs and treatments.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path:
+          "Bachelor of Health Sciences (3 years) → Clinical Research training",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
+        aps_range: "30-34+",
       },
       {
         name: "Paramedic",
@@ -1783,7 +1685,7 @@ export const seedCareers = async () => {
           "Bachelor of Emergency Medical Care (4 years) → Registration",
         institutions:
           "University of Cape Town, University of Johannesburg, Cape Peninsula University of Technology, Central University of Technology",
-        aps_minimum: 5,
+        aps_range: "30-34+",
       },
       {
         name: "Emergency Care Practitioner",
@@ -1795,7 +1697,7 @@ export const seedCareers = async () => {
           "Bachelor of Emergency Medical Care (4 years) → Registration",
         institutions:
           "University of Cape Town, University of Johannesburg, Cape Peninsula University of Technology, Central University of Technology",
-        aps_minimum: 5,
+        aps_range: "30-34+",
       },
       {
         name: "Advanced Life Support Paramedic",
@@ -1806,7 +1708,7 @@ export const seedCareers = async () => {
           "Diploma in Emergency Medical Care (3 years) → Advanced training → Registration",
         institutions:
           "Cape Peninsula University of Technology, Central University of Technology, University of Johannesburg",
-        aps_minimum: 4,
+        aps_range: "26-30+",
       },
       {
         name: "Ambulance Emergency Assistant",
@@ -1817,7 +1719,7 @@ export const seedCareers = async () => {
           "National Certificate in Emergency Care (1-2 years) → Registration",
         institutions:
           "Various TVET Colleges, Cape Peninsula University of Technology, Central University of Technology",
-        aps_minimum: 3,
+        aps_range: "22-26+",
       },
       {
         name: "Emergency Medical Technician",
@@ -1829,7 +1731,7 @@ export const seedCareers = async () => {
           "National Certificate in Emergency Medical Care (1-3 years) → Registration",
         institutions:
           "Various TVET Colleges, University of Cape Town, University of Johannesburg, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "24-28+",
       },
       {
         name: "Trauma Nurse",
@@ -1840,7 +1742,7 @@ export const seedCareers = async () => {
           "Diploma/Bachelor in Nursing → Trauma Nursing training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 5,
+        aps_range: "30-34+",
       },
       {
         name: "Disaster Response Medic",
@@ -1852,10 +1754,10 @@ export const seedCareers = async () => {
           "Diploma/Bachelor in Emergency Care (3-4 years) → Disaster training → Registration",
         institutions:
           "University of Cape Town, University of Johannesburg, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "30-34+",
       },
 
-      // ==================== ENGINEERING & TECHNOLOGY (80+) ====================
+      // ==================== ENGINEERING & TECHNOLOGY ====================
       {
         name: "Civil Engineer",
         field: "Engineering & Technology",
@@ -1866,7 +1768,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Mechanical Engineer",
@@ -1878,7 +1780,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, Vaal University of Technology",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Electrical Engineer",
@@ -1890,7 +1792,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, Cape Peninsula University of Technology",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Electronic Engineer",
@@ -1901,7 +1803,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Cape Peninsula University of Technology",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Chemical Engineer",
@@ -1913,7 +1815,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, University of KwaZulu-Natal",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Industrial Engineer",
@@ -1925,7 +1827,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Mining Engineer",
@@ -1937,7 +1839,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, University of KwaZulu-Natal",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Aerospace Engineer",
@@ -1949,7 +1851,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 7,
+        aps_range: "38-42+",
       },
       {
         name: "Automotive Engineer",
@@ -1960,7 +1862,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Structural Engineer",
@@ -1972,7 +1874,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Environmental Engineer",
@@ -1984,7 +1886,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Computer Engineer",
@@ -1996,7 +1898,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Software Engineer",
@@ -2009,7 +1911,7 @@ export const seedCareers = async () => {
           "Bachelor of Computer Science / BEng Software Engineering (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, University of Johannesburg",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Systems Engineer",
@@ -2020,7 +1922,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Network Engineer",
@@ -2031,7 +1933,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) → Professional Certifications",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "30-34+",
       },
       {
         name: "Telecommunications Engineer",
@@ -2043,7 +1945,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Robotics Engineer",
@@ -2054,7 +1956,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Mechatronics Engineer",
@@ -2066,7 +1968,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Artificial Intelligence Engineer",
@@ -2077,7 +1979,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Computer Science / AI Engineering (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, University of Johannesburg",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Machine Learning Engineer",
@@ -2089,7 +1991,7 @@ export const seedCareers = async () => {
           "Bachelor of Computer Science / Data Science (3-4 years) → Postgraduate",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, University of Johannesburg",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Cybersecurity Analyst / Engineer",
@@ -2101,7 +2003,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology in Cybersecurity (3 years) OR Certifications",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "30-34+",
       },
       {
         name: "Data Engineer",
@@ -2112,7 +2014,7 @@ export const seedCareers = async () => {
           "Bachelor of Computer Science / Data Engineering (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, University of Johannesburg",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Cloud Engineer",
@@ -2123,7 +2025,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) → Cloud Certifications",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "30-34+",
       },
       {
         name: "DevOps Engineer",
@@ -2134,7 +2036,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) → DevOps training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "30-34+",
       },
       {
         name: "Information Technology Specialist",
@@ -2145,7 +2047,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) OR National Diploma in IT",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Computer Technician",
@@ -2155,7 +2057,7 @@ export const seedCareers = async () => {
         study_path: "Certificate/Diploma in Computer Technology (1-3 years)",
         institutions:
           "Various TVET Colleges, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "24-28+",
       },
       {
         name: "Game Developer",
@@ -2165,7 +2067,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Computer Science / Game Design (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Web Developer",
@@ -2176,7 +2078,7 @@ export const seedCareers = async () => {
           "Bachelor of Computer Science / Diploma in Web Development (3 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "App Developer",
@@ -2188,7 +2090,7 @@ export const seedCareers = async () => {
           "Bachelor of Computer Science / App Development (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "UX/UI Designer",
@@ -2199,7 +2101,7 @@ export const seedCareers = async () => {
         study_path: "BA in Digital Design / UX Design (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Database Administrator",
@@ -2210,7 +2112,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) → Database Certifications",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Systems Analyst",
@@ -2221,7 +2123,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Information Technology (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Geotechnical Engineer",
@@ -2233,7 +2135,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Water Resources Engineer",
@@ -2245,7 +2147,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
       {
         name: "Transportation Engineer",
@@ -2257,10 +2159,10 @@ export const seedCareers = async () => {
           "Bachelor of Science in Engineering (BSc Eng) (4 years) → Practical Training → Registration with ECSA",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "36-40+",
       },
 
-      // ==================== COMMERCE & BUSINESS (70+) ====================
+      // ==================== COMMERCE & BUSINESS ====================
       {
         name: "Accountant",
         field: "Commerce & Business",
@@ -2271,7 +2173,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce in Accounting (3 years) → Honours → SAICA Qualifying Exam → Articles (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, University of Fort Hare",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Auditor",
@@ -2282,7 +2184,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce in Accounting (3 years) → Honours → SAICA Qualifying Exam → Articles (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Chartered Accountant (CA)",
@@ -2294,7 +2196,7 @@ export const seedCareers = async () => {
           "BCom Accounting → Honours → SAICA Qualifying Exam → Articles (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, Rhodes University",
-        aps_minimum: 7,
+        aps_range: "38-42+",
       },
       {
         name: "Financial Manager",
@@ -2306,7 +2208,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce in Finance (3 years) → Professional Certifications",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Financial Analyst",
@@ -2318,7 +2220,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce in Finance (3 years) → Professional Certifications",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Investment Banker",
@@ -2330,7 +2232,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce in Finance (3 years) → MBA or CFA → Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, University of Johannesburg",
-        aps_minimum: 7,
+        aps_range: "36-40+",
       },
       {
         name: "Banker",
@@ -2341,7 +2243,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Banking training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Economist",
@@ -2353,7 +2255,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce in Economics (3 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Actuary",
@@ -2365,7 +2267,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Actuarial Science (3-4 years) → Professional Exams",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, North-West University",
-        aps_minimum: 7,
+        aps_range: "38-42+",
       },
       {
         name: "Insurance Broker",
@@ -2376,7 +2278,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Insurance training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Risk Manager",
@@ -2386,7 +2288,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Risk Management training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, University of Johannesburg",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Tax Consultant",
@@ -2398,7 +2300,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce in Accounting (3 years) → Honours → Tax training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Business Analyst",
@@ -2410,7 +2312,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce (3 years) → Business Analysis training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Management Consultant",
@@ -2421,7 +2323,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → MBA → Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, University of Johannesburg",
-        aps_minimum: 5,
+        aps_range: "30-34+",
       },
       {
         name: "Human Resource Manager",
@@ -2433,7 +2335,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce in Human Resources Management (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Marketing Manager",
@@ -2444,7 +2346,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce in Marketing (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Digital Marketer",
@@ -2455,7 +2357,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce in Marketing (3 years) → Digital Marketing training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Sales Manager",
@@ -2466,7 +2368,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce (3 years) → Sales Management training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Brand Manager",
@@ -2477,7 +2379,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce in Marketing (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Supply Chain Manager",
@@ -2488,7 +2390,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce in Supply Chain Management (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Logistics Manager",
@@ -2498,7 +2400,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce in Logistics (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Nelson Mandela University, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Operations Manager",
@@ -2509,7 +2411,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce (3 years) → Operations Management training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Project Manager",
@@ -2520,7 +2422,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce (3 years) → Project Management training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Entrepreneur",
@@ -2532,7 +2434,7 @@ export const seedCareers = async () => {
           "Various — Degree in Business, Entrepreneurship programs, or direct experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Business Owner",
@@ -2544,7 +2446,7 @@ export const seedCareers = async () => {
           "Various — Degree in Business, Entrepreneurship programs, or direct experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Retail Manager",
@@ -2556,7 +2458,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce (3 years) → Retail Management training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Procurement Officer",
@@ -2567,7 +2469,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Procurement training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Public Relations Officer",
@@ -2578,7 +2480,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Arts in Public Relations (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Corporate Lawyer",
@@ -2589,7 +2491,7 @@ export const seedCareers = async () => {
         study_path: "BA Law (3 years) → LLB (2 years) → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Compliance Officer",
@@ -2600,7 +2502,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Compliance training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
 
       // ==================== HUMANITIES & SOCIAL SCIENCES ====================
@@ -2612,7 +2514,7 @@ export const seedCareers = async () => {
         study_path: "BA Sociology (3 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Anthropologist",
@@ -2622,7 +2524,7 @@ export const seedCareers = async () => {
         study_path: "BA Anthropology (3 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Psychologist",
@@ -2633,7 +2535,7 @@ export const seedCareers = async () => {
           "BA Psychology (3 years) → Honours → Masters → Internship → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria, University of Fort Hare",
-        aps_minimum: 6,
+        aps_range: "30-34+",
       },
       {
         name: "Social Worker",
@@ -2645,7 +2547,7 @@ export const seedCareers = async () => {
           "Bachelor of Social Work (4 years) → Registration with SACSSP",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, University of Fort Hare",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Criminologist",
@@ -2655,7 +2557,7 @@ export const seedCareers = async () => {
         study_path: "BA Criminology (3 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Political Scientist",
@@ -2666,7 +2568,7 @@ export const seedCareers = async () => {
         study_path: "BA Political Science (3 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "International Relations Specialist",
@@ -2677,7 +2579,7 @@ export const seedCareers = async () => {
         study_path: "BA International Relations (3 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Historian",
@@ -2687,7 +2589,7 @@ export const seedCareers = async () => {
         study_path: "BA History (3 years) → Honours → Masters → PhD",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Archaeologist",
@@ -2697,7 +2599,7 @@ export const seedCareers = async () => {
         study_path: "BA Archaeology (3 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Geographer",
@@ -2707,7 +2609,7 @@ export const seedCareers = async () => {
         study_path: "BA Geography (3 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Development Studies Specialist",
@@ -2718,7 +2620,7 @@ export const seedCareers = async () => {
         study_path: "BA Development Studies (3 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Philosopher",
@@ -2729,7 +2631,7 @@ export const seedCareers = async () => {
         study_path: "BA Philosophy (3 years) → Honours → Masters → PhD",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Linguist",
@@ -2739,7 +2641,7 @@ export const seedCareers = async () => {
         study_path: "BA Linguistics (3 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Language Translator / Interpreter",
@@ -2749,7 +2651,7 @@ export const seedCareers = async () => {
         study_path: "BA Translation Studies (3 years) → Professional training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Journalist",
@@ -2760,7 +2662,7 @@ export const seedCareers = async () => {
         study_path: "BA in Journalism / Media Studies (3 years)",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Reporter",
@@ -2770,7 +2672,7 @@ export const seedCareers = async () => {
         study_path: "BA in Journalism (3 years)",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Editor",
@@ -2780,7 +2682,7 @@ export const seedCareers = async () => {
         study_path: "BA English / Journalism (3 years)",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Content Writer",
@@ -2791,7 +2693,7 @@ export const seedCareers = async () => {
         study_path: "BA English / Creative Writing (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Rhodes University, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Copywriter",
@@ -2801,7 +2703,7 @@ export const seedCareers = async () => {
         study_path: "BA English / Marketing (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Rhodes University, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Public Relations Specialist",
@@ -2812,7 +2714,7 @@ export const seedCareers = async () => {
         study_path: "BA Public Relations (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Human Rights Advocate",
@@ -2822,7 +2724,7 @@ export const seedCareers = async () => {
         study_path: "BA Law (3 years) → LLB (2 years) → Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Community Development Practitioner",
@@ -2833,7 +2735,7 @@ export const seedCareers = async () => {
         study_path: "BA Community Development (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University, University of Fort Hare",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Counsellor",
@@ -2845,10 +2747,10 @@ export const seedCareers = async () => {
           "BA Psychology (3 years) → Honours → Counselling training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, University of Fort Hare",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
 
-      // ==================== ARTS & CREATIVE FIELDS (60+) ====================
+      // ==================== ARTS & CREATIVE FIELDS ====================
       {
         name: "Graphic Designer",
         field: "Arts & Creative Fields",
@@ -2858,7 +2760,7 @@ export const seedCareers = async () => {
         study_path: "BA in Visual Communication / Graphic Design (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Fashion Designer",
@@ -2869,7 +2771,7 @@ export const seedCareers = async () => {
         study_path: "BA in Fashion Design (3-4 years)",
         institutions:
           "University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Interior Designer",
@@ -2879,7 +2781,7 @@ export const seedCareers = async () => {
         study_path: "BA in Interior Design (3-4 years)",
         institutions:
           "University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Industrial Designer",
@@ -2890,7 +2792,7 @@ export const seedCareers = async () => {
         study_path: "BA in Industrial Design (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Animator",
@@ -2901,7 +2803,7 @@ export const seedCareers = async () => {
         study_path: "BA in Animation or Digital Arts (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Illustrator",
@@ -2912,7 +2814,7 @@ export const seedCareers = async () => {
         study_path: "BA in Illustration (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Fine Artist",
@@ -2923,7 +2825,7 @@ export const seedCareers = async () => {
         study_path: "BA in Fine Arts (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Painter",
@@ -2933,7 +2835,7 @@ export const seedCareers = async () => {
         study_path: "BA in Fine Arts (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Sculptor",
@@ -2943,7 +2845,7 @@ export const seedCareers = async () => {
         study_path: "BA in Fine Arts (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Photographer",
@@ -2954,7 +2856,7 @@ export const seedCareers = async () => {
         study_path: "BA in Photography (3 years) OR Diploma",
         institutions:
           "University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 4,
+        aps_range: "24-28+",
       },
       {
         name: "Videographer",
@@ -2964,7 +2866,7 @@ export const seedCareers = async () => {
         study_path: "BA in Film / Video Production (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Film Director",
@@ -2975,7 +2877,7 @@ export const seedCareers = async () => {
         study_path: "BA in Film Production (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Film Producer",
@@ -2985,7 +2887,7 @@ export const seedCareers = async () => {
         study_path: "BA in Film Production (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Screenwriter",
@@ -2995,7 +2897,7 @@ export const seedCareers = async () => {
         study_path: "BA in Screenwriting (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Actor",
@@ -3006,7 +2908,7 @@ export const seedCareers = async () => {
         study_path: "BA in Dramatic Arts (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Voice Actor",
@@ -3017,7 +2919,7 @@ export const seedCareers = async () => {
         study_path: "BA in Dramatic Arts (3-4 years) → Voice training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Musician",
@@ -3028,7 +2930,7 @@ export const seedCareers = async () => {
         study_path: "BMus (3-4 years) OR Practical experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria, Tshwane University of Technology",
-        aps_minimum: 4,
+        aps_range: "24-28+",
       },
       {
         name: "Singer",
@@ -3038,7 +2940,7 @@ export const seedCareers = async () => {
         study_path: "BMus (3-4 years) OR Practical experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria, Tshwane University of Technology",
-        aps_minimum: 4,
+        aps_range: "24-28+",
       },
       {
         name: "Composer",
@@ -3048,7 +2950,7 @@ export const seedCareers = async () => {
         study_path: "BMus (3-4 years) → Composition training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of the Witwatersrand, University of Pretoria, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Music Producer",
@@ -3058,7 +2960,7 @@ export const seedCareers = async () => {
         study_path: "BMus (3-4 years) → Production training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Sound Engineer",
@@ -3068,7 +2970,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Sound Engineering (2-3 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, University of Johannesburg, Central University of Technology",
-        aps_minimum: 4,
+        aps_range: "24-28+",
       },
       {
         name: "Dancer",
@@ -3078,7 +2980,7 @@ export const seedCareers = async () => {
         study_path: "BA in Dance (3-4 years) OR Practical experience",
         institutions:
           "University of Cape Town, Stellenbosch University, Tshwane University of Technology, Cape Peninsula University of Technology, University of Johannesburg",
-        aps_minimum: 4,
+        aps_range: "24-28+",
       },
       {
         name: "Choreographer",
@@ -3088,7 +2990,7 @@ export const seedCareers = async () => {
         study_path: "BA in Dance (3-4 years) → Choreography training",
         institutions:
           "University of Cape Town, Stellenbosch University, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Makeup Artist",
@@ -3099,7 +3001,7 @@ export const seedCareers = async () => {
         study_path: "Certificate/Diploma in Makeup Artistry (1-2 years)",
         institutions:
           "Various training institutions, Cape Peninsula University of Technology, University of Johannesburg",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Set Designer",
@@ -3110,7 +3012,7 @@ export const seedCareers = async () => {
         study_path: "BA in Theatre Design (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, Tshwane University of Technology, University of Johannesburg",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Costume Designer",
@@ -3121,7 +3023,7 @@ export const seedCareers = async () => {
         study_path: "BA in Costume Design (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, Tshwane University of Technology, University of Johannesburg",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Art Director",
@@ -3132,7 +3034,7 @@ export const seedCareers = async () => {
         study_path: "BA in Art Direction / Visual Arts (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Creative Director",
@@ -3142,7 +3044,7 @@ export const seedCareers = async () => {
         study_path: "BA in Design / Fine Arts (3-4 years) → Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Game Designer",
@@ -3153,7 +3055,7 @@ export const seedCareers = async () => {
         study_path: "BA in Game Design (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Game Artist",
@@ -3163,7 +3065,7 @@ export const seedCareers = async () => {
         study_path: "BA in Game Art / Digital Arts (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
 
       // ==================== AGRICULTURE & ENVIRONMENTAL STUDIES ====================
@@ -3177,7 +3079,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Science in Agriculture (4 years)",
         institutions:
           "University of Pretoria, Stellenbosch University, University of the Free State, University of Fort Hare, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Agronomist",
@@ -3188,7 +3090,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Science in Agriculture (4 years)",
         institutions:
           "University of Pretoria, Stellenbosch University, University of the Free State, University of Fort Hare, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Crop Scientist",
@@ -3201,7 +3103,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Agriculture (4 years) → Honours → Masters",
         institutions:
           "University of Pretoria, Stellenbosch University, University of the Free State, University of Fort Hare",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Soil Scientist",
@@ -3213,7 +3115,7 @@ export const seedCareers = async () => {
         study_path: "BSc Soil Science (3-4 years) → Honours → Masters",
         institutions:
           "University of Pretoria, Stellenbosch University, University of the Free State, University of Fort Hare",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Animal Scientist",
@@ -3225,7 +3127,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Science in Agriculture (4 years)",
         institutions:
           "University of Pretoria, Stellenbosch University, University of the Free State, University of Fort Hare, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Veterinarian",
@@ -3237,7 +3139,7 @@ export const seedCareers = async () => {
           "Bachelor of Veterinary Science (BVSc) (6 years) → Registration",
         institutions:
           "University of Pretoria, University of Cape Town (Postgrad), Sefako Makgatho Health Sciences University",
-        aps_minimum: 7,
+        aps_range: "40-44+",
       },
       {
         name: "Agricultural Engineer",
@@ -3248,7 +3150,7 @@ export const seedCareers = async () => {
         study_path: "BSc Agricultural Engineering (4 years) → Registration",
         institutions:
           "University of Pretoria, Stellenbosch University, University of the Free State",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Irrigation Engineer",
@@ -3260,7 +3162,7 @@ export const seedCareers = async () => {
           "BSc Agricultural Engineering (4 years) → Irrigation training",
         institutions:
           "University of Pretoria, Stellenbosch University, University of the Free State",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Horticulturist",
@@ -3272,7 +3174,7 @@ export const seedCareers = async () => {
         study_path: "BSc Horticulture (3-4 years)",
         institutions:
           "University of Pretoria, Stellenbosch University, University of the Free State, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Viticulturist",
@@ -3283,7 +3185,7 @@ export const seedCareers = async () => {
         study_path: "BSc Viticulture (3-4 years)",
         institutions:
           "Stellenbosch University, University of Pretoria, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Forester",
@@ -3293,7 +3195,7 @@ export const seedCareers = async () => {
         study_path: "BSc Forestry (3-4 years)",
         institutions:
           "University of Pretoria, Stellenbosch University, Nelson Mandela University, University of the Free State",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Fisheries Scientist",
@@ -3305,7 +3207,7 @@ export const seedCareers = async () => {
         study_path: "BSc Fisheries Science (3-4 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Aquaculture Specialist",
@@ -3316,7 +3218,7 @@ export const seedCareers = async () => {
         study_path: "BSc Aquaculture (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Environmental Scientist",
@@ -3328,7 +3230,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Science in Environmental Science (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University, University of the Free State",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Environmental Consultant",
@@ -3339,7 +3241,7 @@ export const seedCareers = async () => {
         study_path: "BSc Environmental Science (3-4 years) → Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Ecologist",
@@ -3350,7 +3252,7 @@ export const seedCareers = async () => {
         study_path: "BSc Ecology (3-4 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Conservation Scientist",
@@ -3361,7 +3263,7 @@ export const seedCareers = async () => {
         study_path: "BSc Environmental Management (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Wildlife Biologist",
@@ -3371,7 +3273,7 @@ export const seedCareers = async () => {
         study_path: "BSc Zoology / Wildlife Science (3-4 years) → Postgraduate",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Park Ranger",
@@ -3383,7 +3285,7 @@ export const seedCareers = async () => {
           "National Certificate in Nature Conservation (2-3 years) OR BSc",
         institutions:
           "Various TVET Colleges, University of Cape Town, Stellenbosch University, Nelson Mandela University",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Climate Scientist",
@@ -3393,7 +3295,7 @@ export const seedCareers = async () => {
         study_path: "BSc Climate Science (3-4 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Water Resource Scientist",
@@ -3404,7 +3306,7 @@ export const seedCareers = async () => {
           "BSc Water Resource Science (3-4 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Environmental Health Officer",
@@ -3415,7 +3317,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Environmental Health (4 years) → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Sustainability Specialist",
@@ -3426,7 +3328,7 @@ export const seedCareers = async () => {
         study_path: "BSc Sustainability / Environmental Science (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Waste Management Specialist",
@@ -3437,7 +3339,7 @@ export const seedCareers = async () => {
           "BSc Environmental Science (3-4 years) → Waste management training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Land Rehabilitation Specialist",
@@ -3448,7 +3350,7 @@ export const seedCareers = async () => {
           "BSc Environmental Science (3-4 years) → Rehabilitation training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Natural Resource Manager",
@@ -3459,7 +3361,7 @@ export const seedCareers = async () => {
         study_path: "BSc Natural Resource Management (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Food Scientist",
@@ -3471,7 +3373,7 @@ export const seedCareers = async () => {
         study_path: "BSc Food Science (3-4 years)",
         institutions:
           "University of Pretoria, Stellenbosch University, University of Cape Town, North-West University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Agri-Business Manager",
@@ -3483,7 +3385,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Agriculture / Agri-Business (3-4 years)",
         institutions:
           "University of Pretoria, Stellenbosch University, University of the Free State, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
 
       // ==================== EDUCATION ====================
@@ -3498,7 +3400,7 @@ export const seedCareers = async () => {
           "Bachelor of Education (BEd) (4 years) OR PGCE after a degree (1 year) → Registration with SACE",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, University of Fort Hare, Walter Sisulu University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Primary School Teacher",
@@ -3510,7 +3412,7 @@ export const seedCareers = async () => {
           "Bachelor of Education (Foundation Phase / Intermediate Phase) (4 years) → Registration with SACE",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, University of Fort Hare, Walter Sisulu University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Early Childhood Development Practitioner",
@@ -3522,7 +3424,7 @@ export const seedCareers = async () => {
           "National Certificate in Early Childhood Development (1-2 years) OR Diploma",
         institutions:
           "Various TVET Colleges, University of Cape Town, Stellenbosch University, UNISA, Nelson Mandela University",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Special Needs Education Teacher",
@@ -3533,7 +3435,7 @@ export const seedCareers = async () => {
           "BEd (Special Needs Education) (4 years) → Registration with SACE",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Subject Specialist Teacher",
@@ -3545,7 +3447,7 @@ export const seedCareers = async () => {
           "BEd (4 years) → Subject specialisation → Registration with SACE",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "School Principal",
@@ -3555,7 +3457,7 @@ export const seedCareers = async () => {
         subjects_needed: "English, Mathematics, Life Orientation",
         study_path: "BEd (4 years) → Teaching experience → Principal Training",
         institutions: "Various universities offering Education degrees",
-        aps_minimum: 5,
+        aps_range: "30-34+",
       },
       {
         name: "Deputy Principal",
@@ -3564,7 +3466,7 @@ export const seedCareers = async () => {
         subjects_needed: "English, Mathematics, Life Orientation",
         study_path: "BEd (4 years) → Teaching experience → Management training",
         institutions: "Various universities offering Education degrees",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Head of Department (HOD)",
@@ -3574,7 +3476,7 @@ export const seedCareers = async () => {
         study_path:
           "BEd (4 years) → Teaching experience → Departmental leadership",
         institutions: "Various universities offering Education degrees",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Education Administrator",
@@ -3586,7 +3488,7 @@ export const seedCareers = async () => {
           "BEd (4 years) → Postgraduate Diploma in Education Management",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, UNISA",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Education Policy Analyst",
@@ -3596,7 +3498,7 @@ export const seedCareers = async () => {
         study_path: "BA Education (3 years) → Postgraduate training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Curriculum Developer",
@@ -3606,7 +3508,7 @@ export const seedCareers = async () => {
         study_path: "BEd (4 years) → Curriculum development training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Instructional Designer",
@@ -3617,7 +3519,7 @@ export const seedCareers = async () => {
         study_path: "BEd / BA Instructional Design (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Education Consultant",
@@ -3627,7 +3529,7 @@ export const seedCareers = async () => {
         study_path: "BEd (4 years) → Experience → Consulting",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "School Counsellor",
@@ -3637,7 +3539,7 @@ export const seedCareers = async () => {
         study_path: "BA Psychology (3 years) → Honours → Counselling training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Education Psychologist",
@@ -3649,7 +3551,7 @@ export const seedCareers = async () => {
           "BA Psychology (3 years) → Honours → Masters in Educational Psychology → Internship → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
+        aps_range: "30-34+",
       },
       {
         name: "Lecturer",
@@ -3661,7 +3563,7 @@ export const seedCareers = async () => {
         study_path:
           "Bachelor of Arts / Science (3 years) → Honours → Masters → PhD",
         institutions: "All South African universities",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "University Professor",
@@ -3672,7 +3574,7 @@ export const seedCareers = async () => {
         study_path:
           "Bachelor of Arts / Science (3 years) → Honours → Masters → PhD → Academic experience",
         institutions: "All South African universities",
-        aps_minimum: 7,
+        aps_range: "38-42+",
       },
       {
         name: "Researcher",
@@ -3682,7 +3584,7 @@ export const seedCareers = async () => {
         study_path:
           "Bachelor of Arts / Science (3 years) → Honours → Masters → PhD",
         institutions: "All South African universities, research institutes",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Academic Advisor",
@@ -3691,7 +3593,7 @@ export const seedCareers = async () => {
         subjects_needed: "English, Mathematics, Life Orientation",
         study_path: "BA / BEd (3-4 years) → Academic advising training",
         institutions: "All South African universities",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Librarian",
@@ -3701,7 +3603,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Library and Information Science (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "School Librarian",
@@ -3711,7 +3613,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Library and Information Science (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Education Technology Specialist",
@@ -3721,7 +3623,7 @@ export const seedCareers = async () => {
         study_path: "BEd / BA Education Technology (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Training and Development Officer",
@@ -3732,7 +3634,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce (3 years) → Training and Development training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Corporate Trainer",
@@ -3744,7 +3646,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce (3 years) → Training and Development training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Adult Education Facilitator",
@@ -3755,7 +3657,7 @@ export const seedCareers = async () => {
           "BEd / BA Adult Education (3-4 years) → Registration with SACE",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, UNISA",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
 
       // ==================== HOSPITALITY & TOURISM ====================
@@ -3767,7 +3669,7 @@ export const seedCareers = async () => {
         study_path: "Diploma or Degree in Hospitality Management (3-4 years)",
         institutions:
           "Stadio Higher Education, Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology, Walter Sisulu University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Front Office Manager",
@@ -3777,7 +3679,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Hospitality Management (3 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology, Walter Sisulu University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Guest Relations Manager",
@@ -3787,7 +3689,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Hospitality Management (3 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology, Stadio Higher Education",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Concierge",
@@ -3797,7 +3699,7 @@ export const seedCareers = async () => {
         study_path: "Certificate/Diploma in Hospitality (1-3 years)",
         institutions:
           "Various TVET Colleges, Cape Peninsula University of Technology, Central University of Technology",
-        aps_minimum: 4,
+        aps_range: "20-24+",
       },
       {
         name: "Housekeeping Manager",
@@ -3807,7 +3709,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Hospitality Management (3 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Restaurant Manager",
@@ -3817,7 +3719,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Hospitality Management (3 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology, University of Johannesburg",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Food and Beverage Manager",
@@ -3827,7 +3729,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Hospitality Management (3 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology, Stadio Higher Education",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Chef",
@@ -3839,7 +3741,7 @@ export const seedCareers = async () => {
           "National Certificate in Food Preparation (2 years) OR Diploma in Culinary Arts",
         institutions:
           "Cape Peninsula University of Technology, Central University of Technology, Tshwane University of Technology, Boland TVET College, Buffalo City TVET College",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Sous Chef",
@@ -3849,7 +3751,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Culinary Arts (2-3 years) → Experience",
         institutions:
           "Cape Peninsula University of Technology, Central University of Technology, Tshwane University of Technology, Boland TVET College",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Pastry Chef",
@@ -3859,7 +3761,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Culinary Arts / Pastry (2-3 years)",
         institutions:
           "Cape Peninsula University of Technology, Central University of Technology, Tshwane University of Technology, Boland TVET College",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Catering Manager",
@@ -3869,7 +3771,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Hospitality Management (3 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology, Stadio Higher Education",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Event Planner",
@@ -3879,7 +3781,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Events Management (2-3 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology, Stadio Higher Education",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Wedding Planner",
@@ -3889,7 +3791,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Events Management (2-3 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Tourism Manager",
@@ -3900,7 +3802,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Tourism Management (3-4 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Nelson Mandela University, University of Johannesburg, UNISA",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Tour Guide",
@@ -3912,7 +3814,7 @@ export const seedCareers = async () => {
           "National Certificate in Tourism (1-2 years) OR Diploma in Tourism Management",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology, Boland TVET College, Nelson Mandela University",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Travel Consultant",
@@ -3923,7 +3825,7 @@ export const seedCareers = async () => {
           "National Certificate in Travel and Tourism (1-2 years) OR Diploma",
         institutions:
           "Various TVET Colleges, Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Travel Agent",
@@ -3934,7 +3836,7 @@ export const seedCareers = async () => {
           "National Certificate in Travel and Tourism (1-2 years) OR Diploma",
         institutions:
           "Various TVET Colleges, Cape Peninsula University of Technology, Tshwane University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Airline Cabin Crew",
@@ -3945,7 +3847,7 @@ export const seedCareers = async () => {
           "National Certificate in Aviation (1-2 years) → In-house training",
         institutions:
           "Various aviation training institutions, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Flight Attendant",
@@ -3956,7 +3858,7 @@ export const seedCareers = async () => {
           "National Certificate in Aviation (1-2 years) → In-house training",
         institutions:
           "Various aviation training institutions, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Resort Manager",
@@ -3966,7 +3868,7 @@ export const seedCareers = async () => {
         study_path: "Diploma or Degree in Hospitality Management (3-4 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology, Stadio Higher Education",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Spa Manager",
@@ -3977,7 +3879,7 @@ export const seedCareers = async () => {
           "Diploma in Hospitality Management (3 years) → Spa training",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Hospitality Operations Manager",
@@ -3987,7 +3889,7 @@ export const seedCareers = async () => {
         study_path: "Diploma or Degree in Hospitality Management (3-4 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology, Stadio Higher Education",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Sommelier",
@@ -3998,7 +3900,7 @@ export const seedCareers = async () => {
           "Diploma in Hospitality Management (3 years) → Sommelier training",
         institutions:
           "Cape Peninsula University of Technology, Central University of Technology, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Bar Manager",
@@ -4009,7 +3911,7 @@ export const seedCareers = async () => {
           "Diploma in Hospitality Management (3 years) → Bar management training",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology",
-        aps_minimum: 5,
+        aps_range: "22-26+",
       },
       {
         name: "Bartender",
@@ -4019,7 +3921,7 @@ export const seedCareers = async () => {
         study_path: "Certificate in Bar Service (1 year)",
         institutions:
           "Various TVET Colleges, Cape Peninsula University of Technology",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Food Service Supervisor",
@@ -4029,7 +3931,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Hospitality Management (3 years) OR Experience",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Central University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Tourism Marketing Specialist",
@@ -4039,7 +3941,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Tourism Management (3-4 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Nelson Mandela University, University of Johannesburg",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Destination Manager",
@@ -4049,7 +3951,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Tourism Management (3-4 years)",
         institutions:
           "Cape Peninsula University of Technology, Tshwane University of Technology, Nelson Mandela University, University of Johannesburg",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Heritage Site Manager",
@@ -4059,7 +3961,7 @@ export const seedCareers = async () => {
         study_path: "BA Heritage Studies / Tourism Management (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, Nelson Mandela University, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
 
       // ==================== TVET / SKILLED TRADES ====================
@@ -4073,7 +3975,7 @@ export const seedCareers = async () => {
           "National Certificate (NCV) in Electrical Engineering (3 years) OR Apprenticeship",
         institutions:
           "Vaal University of Technology, Tshwane South TVET College, Ekurhuleni East TVET College, Port Elizabeth TVET College",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Welder",
@@ -4085,7 +3987,7 @@ export const seedCareers = async () => {
           "National Certificate in Welding (3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Buffalo City TVET College, Ekurhuleni East TVET College",
-        aps_minimum: 3,
+        aps_range: "20-24+",
       },
       {
         name: "Plumber",
@@ -4098,7 +4000,7 @@ export const seedCareers = async () => {
           "National Certificate in Plumbing (3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Tshwane South TVET College, Port Elizabeth TVET College, Buffalo City TVET College",
-        aps_minimum: 3,
+        aps_range: "20-24+",
       },
       {
         name: "Carpenter",
@@ -4110,7 +4012,7 @@ export const seedCareers = async () => {
           "National Certificate in Carpentry (3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Tshwane South TVET College, Port Elizabeth TVET College, Buffalo City TVET College",
-        aps_minimum: 3,
+        aps_range: "20-24+",
       },
       {
         name: "Fitter and Turner",
@@ -4123,7 +4025,7 @@ export const seedCareers = async () => {
           "National Certificate in Fitting and Turning (3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Ekurhuleni East TVET College, Buffalo City TVET College",
-        aps_minimum: 3,
+        aps_range: "20-24+",
       },
       {
         name: "Boilermaker",
@@ -4136,7 +4038,7 @@ export const seedCareers = async () => {
           "National Certificate in Boilermaking (3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Ekurhuleni East TVET College, Buffalo City TVET College",
-        aps_minimum: 3,
+        aps_range: "20-24+",
       },
       {
         name: "Steel Fixer",
@@ -4147,7 +4049,7 @@ export const seedCareers = async () => {
           "National Certificate in Steel Fixing (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Ekurhuleni East TVET College",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Bricklayer",
@@ -4158,7 +4060,7 @@ export const seedCareers = async () => {
           "National Certificate in Bricklaying (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Tshwane South TVET College, Buffalo City TVET College",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Plasterer",
@@ -4169,7 +4071,7 @@ export const seedCareers = async () => {
           "National Certificate in Plastering (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Tshwane South TVET College",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Tiler",
@@ -4180,7 +4082,7 @@ export const seedCareers = async () => {
           "National Certificate in Tiling (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Tshwane South TVET College, Buffalo City TVET College",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Painter and Decorator",
@@ -4191,7 +4093,7 @@ export const seedCareers = async () => {
           "National Certificate in Painting and Decorating (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Tshwane South TVET College",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Glazier",
@@ -4202,7 +4104,7 @@ export const seedCareers = async () => {
           "National Certificate in Glazing (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Tshwane South TVET College",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Roofer",
@@ -4213,7 +4115,7 @@ export const seedCareers = async () => {
           "National Certificate in Roofing (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Tshwane South TVET College",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Flooring Installer",
@@ -4225,7 +4127,7 @@ export const seedCareers = async () => {
           "National Certificate in Flooring (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Tshwane South TVET College",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Scaffolder",
@@ -4237,7 +4139,7 @@ export const seedCareers = async () => {
           "National Certificate in Scaffolding (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Tshwane South TVET College",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Crane Operator",
@@ -4248,7 +4150,7 @@ export const seedCareers = async () => {
           "National Certificate in Crane Operation (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Tshwane South TVET College",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Heavy Equipment Operator",
@@ -4260,7 +4162,7 @@ export const seedCareers = async () => {
           "National Certificate in Heavy Equipment Operation (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, Port Elizabeth TVET College, Tshwane South TVET College",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
 
       // ==================== LAW & LEGAL STUDIES ====================
@@ -4274,7 +4176,7 @@ export const seedCareers = async () => {
           "BA Law (3 years) → LLB (2 years) → Articles of Clerkship (2 years) → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University, University of Fort Hare, Nelson Mandela University, UNISA",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Advocate",
@@ -4285,7 +4187,7 @@ export const seedCareers = async () => {
         study_path: "LLB (4 years) → Pupillage → Admission as Advocate",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Legal Advisor",
@@ -4295,7 +4197,7 @@ export const seedCareers = async () => {
         study_path: "LLB (4 years) → Experience in legal advisory",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Corporate Lawyer",
@@ -4307,7 +4209,7 @@ export const seedCareers = async () => {
           "LLB (4 years) → Corporate Law training → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Criminal Lawyer",
@@ -4318,7 +4220,7 @@ export const seedCareers = async () => {
           "LLB (4 years) → Criminal Law training → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Civil Lawyer",
@@ -4329,7 +4231,7 @@ export const seedCareers = async () => {
           "LLB (4 years) → Civil Law training → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Constitutional Lawyer",
@@ -4340,7 +4242,7 @@ export const seedCareers = async () => {
           "LLB (4 years) → Constitutional Law training → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Human Rights Lawyer",
@@ -4351,7 +4253,7 @@ export const seedCareers = async () => {
           "LLB (4 years) → Human Rights training → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Family Lawyer",
@@ -4363,7 +4265,7 @@ export const seedCareers = async () => {
           "LLB (4 years) → Family Law training → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Labour Lawyer",
@@ -4374,7 +4276,7 @@ export const seedCareers = async () => {
           "LLB (4 years) → Labour Law training → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Tax Lawyer",
@@ -4384,7 +4286,7 @@ export const seedCareers = async () => {
         study_path: "LLB (4 years) → Tax Law training → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Environmental Lawyer",
@@ -4395,7 +4297,7 @@ export const seedCareers = async () => {
           "LLB (4 years) → Environmental Law training → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Immigration Lawyer",
@@ -4406,7 +4308,7 @@ export const seedCareers = async () => {
           "LLB (4 years) → Immigration Law training → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Legal Consultant",
@@ -4416,7 +4318,7 @@ export const seedCareers = async () => {
         study_path: "LLB (4 years) → Experience in legal consulting",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "30-34+",
       },
       {
         name: "Paralegal",
@@ -4428,7 +4330,7 @@ export const seedCareers = async () => {
           "National Certificate in Paralegal Studies (1-2 years) OR Diploma",
         institutions:
           "UNISA, Tshwane University of Technology, Cape Peninsula University of Technology, Various TVET Colleges",
-        aps_minimum: 4,
+        aps_range: "24-28+",
       },
       {
         name: "Legal Assistant",
@@ -4438,7 +4340,7 @@ export const seedCareers = async () => {
         study_path: "Certificate in Legal Assistance (1-2 years)",
         institutions:
           "Various TVET Colleges, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Court Clerk",
@@ -4449,7 +4351,7 @@ export const seedCareers = async () => {
           "Certificate in Court Administration (1-2 years) → Experience",
         institutions:
           "Various TVET Colleges, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Magistrate",
@@ -4460,7 +4362,7 @@ export const seedCareers = async () => {
           "LLB (4 years) → Legal experience → Appointment as Magistrate",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Judge",
@@ -4471,7 +4373,7 @@ export const seedCareers = async () => {
         study_path: "LLB (4 years) → Legal experience → Appointment as Judge",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 7,
+        aps_range: "38-42+",
       },
       {
         name: "Prosecutor",
@@ -4482,7 +4384,7 @@ export const seedCareers = async () => {
         study_path: "LLB (4 years) → Experience → Appointment as Prosecutor",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "State Attorney",
@@ -4493,7 +4395,7 @@ export const seedCareers = async () => {
           "LLB (4 years) → Experience → Appointment as State Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Legal Aid Practitioner",
@@ -4503,7 +4405,7 @@ export const seedCareers = async () => {
         study_path: "LLB (4 years) → Experience → Admission as Attorney",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "30-34+",
       },
       {
         name: "Compliance Officer",
@@ -4514,7 +4416,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Compliance training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Legal Researcher",
@@ -4524,7 +4426,7 @@ export const seedCareers = async () => {
         study_path: "LLB (4 years) → Research training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Rhodes University",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
 
       // ==================== ICT & DIGITAL MEDIA ====================
@@ -4538,7 +4440,7 @@ export const seedCareers = async () => {
           "Bachelor of Computer Science / BEng Software Engineering (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, University of Johannesburg",
-        aps_minimum: 6,
+        aps_range: "30-34+",
       },
       {
         name: "Web Developer",
@@ -4549,7 +4451,7 @@ export const seedCareers = async () => {
           "Bachelor of Computer Science / Diploma in Web Development (3 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Cybersecurity Analyst",
@@ -4561,7 +4463,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology in Cybersecurity (3 years) OR Certifications",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Network Administrator",
@@ -4572,7 +4474,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) OR National Diploma in IT",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, Cape Peninsula University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Data Analyst",
@@ -4584,7 +4486,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Data Science / Statistics (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "28-32+",
       },
       {
         name: "Data Scientist",
@@ -4597,7 +4499,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Data Science / Computer Science (3-4 years) → Postgraduate",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, University of Johannesburg",
-        aps_minimum: 7,
+        aps_range: "34-38+",
       },
       {
         name: "Machine Learning Engineer",
@@ -4609,7 +4511,7 @@ export const seedCareers = async () => {
           "Bachelor of Computer Science / Data Science (3-4 years) → Postgraduate",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, University of Johannesburg",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "AI Engineer",
@@ -4619,7 +4521,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Computer Science / AI Engineering (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, University of Johannesburg",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Business Intelligence Analyst",
@@ -4630,7 +4532,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology / Data Analytics (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "IT Project Manager",
@@ -4641,7 +4543,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) → Project Management training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, University of Johannesburg",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Systems Administrator",
@@ -4652,7 +4554,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) OR National Diploma in IT",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Database Administrator",
@@ -4663,7 +4565,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) → Database Certifications",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Cloud Engineer",
@@ -4674,7 +4576,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) → Cloud Certifications",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "DevOps Engineer",
@@ -4685,7 +4587,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) → DevOps training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Ethical Hacker (Penetration Tester)",
@@ -4696,7 +4598,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) → Cybersecurity Certifications",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Information Security Specialist",
@@ -4707,7 +4609,7 @@ export const seedCareers = async () => {
           "Bachelor of Information Technology (3 years) → Cybersecurity Certifications",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "IT Support Technician",
@@ -4717,7 +4619,7 @@ export const seedCareers = async () => {
         study_path: "Certificate/Diploma in IT Support (1-3 years)",
         institutions:
           "Various TVET Colleges, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
 
       // ==================== BUILT ENVIRONMENT & CONSTRUCTION ====================
@@ -4731,7 +4633,7 @@ export const seedCareers = async () => {
           "Bachelor of Architectural Studies (3 years) → Masters in Architecture (2 years) → Practical Training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University, Tshwane University of Technology",
-        aps_minimum: 6,
+        aps_range: "34-38+",
       },
       {
         name: "Urban Planner",
@@ -4741,7 +4643,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Urban and Regional Planning (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Town Planner",
@@ -4751,7 +4653,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Urban and Regional Planning (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Quantity Surveyor",
@@ -4763,7 +4665,7 @@ export const seedCareers = async () => {
           "Bachelor of Science in Quantity Surveying (3-4 years) → Practical Training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 6,
+        aps_range: "30-34+",
       },
       {
         name: "Construction Manager",
@@ -4774,7 +4676,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Construction Management (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Site Manager",
@@ -4785,7 +4687,7 @@ export const seedCareers = async () => {
           "Bachelor of Construction Management (3-4 years) OR Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Project Manager (Construction)",
@@ -4797,7 +4699,7 @@ export const seedCareers = async () => {
           "Bachelor of Construction Management (3-4 years) → Project Management training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Building Surveyor",
@@ -4807,7 +4709,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Building Surveying (3-4 years) → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Land Surveyor",
@@ -4818,7 +4720,7 @@ export const seedCareers = async () => {
           "Bachelor of Surveying (3-4 years) → Practical Training → Registration",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Cartographer",
@@ -4828,7 +4730,7 @@ export const seedCareers = async () => {
         study_path: "BSc Geography / Cartography (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Property Developer",
@@ -4838,7 +4740,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce / Property Development (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Real Estate Developer",
@@ -4848,7 +4750,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce / Property Development (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Facilities Manager",
@@ -4858,7 +4760,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Facilities Management (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Property Manager",
@@ -4868,7 +4770,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce / Property Management (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Construction Foreman",
@@ -4879,7 +4781,7 @@ export const seedCareers = async () => {
           "National Certificate in Construction (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, University of Cape Town, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 4,
+        aps_range: "20-24+",
       },
       {
         name: "Site Supervisor",
@@ -4890,7 +4792,7 @@ export const seedCareers = async () => {
           "National Certificate in Construction (2-3 years) OR Apprenticeship",
         institutions:
           "Various TVET Colleges, University of Cape Town, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 4,
+        aps_range: "20-24+",
       },
       {
         name: "Building Inspector",
@@ -4901,7 +4803,7 @@ export const seedCareers = async () => {
         study_path: "National Certificate in Building Inspection (2-3 years)",
         institutions:
           "Various TVET Colleges, University of Cape Town, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Health and Safety Officer (Construction)",
@@ -4911,7 +4813,7 @@ export const seedCareers = async () => {
         study_path: "National Certificate in Health and Safety (2-3 years)",
         institutions:
           "Various TVET Colleges, University of Cape Town, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Civil Draughtsperson",
@@ -4923,7 +4825,7 @@ export const seedCareers = async () => {
         study_path: "National Diploma in Civil Drafting (3 years)",
         institutions:
           "Various TVET Colleges, University of Cape Town, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Architectural Draughtsperson",
@@ -4934,7 +4836,7 @@ export const seedCareers = async () => {
         study_path: "National Diploma in Architectural Drafting (3 years)",
         institutions:
           "Various TVET Colleges, University of Cape Town, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
 
       // ==================== TRANSPORT & LOGISTICS ====================
@@ -4947,7 +4849,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce in Logistics (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Nelson Mandela University, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Supply Chain Manager",
@@ -4958,7 +4860,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce in Supply Chain Management (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Transport Manager",
@@ -4969,7 +4871,7 @@ export const seedCareers = async () => {
           "Bachelor of Commerce in Logistics / Transport Management (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Fleet Manager",
@@ -4979,7 +4881,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Logistics / Transport Management (3 years)",
         institutions:
           "University of Johannesburg, Tshwane University of Technology, Nelson Mandela University, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Warehouse Manager",
@@ -4989,7 +4891,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Logistics / Supply Chain Management (3 years)",
         institutions:
           "University of Johannesburg, Tshwane University of Technology, Nelson Mandela University, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Distribution Manager",
@@ -4999,7 +4901,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce in Logistics (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Procurement Officer",
@@ -5009,7 +4911,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Procurement training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "22-26+",
       },
       {
         name: "Purchasing Manager",
@@ -5020,7 +4922,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Purchasing training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "22-26+",
       },
       {
         name: "Inventory Manager",
@@ -5030,7 +4932,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Logistics / Supply Chain Management (3 years)",
         institutions:
           "University of Johannesburg, Tshwane University of Technology, Nelson Mandela University, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Stock Controller",
@@ -5040,7 +4942,7 @@ export const seedCareers = async () => {
         study_path: "Certificate/Diploma in Logistics (1-3 years)",
         institutions:
           "Various TVET Colleges, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Warehouse Supervisor",
@@ -5051,7 +4953,7 @@ export const seedCareers = async () => {
           "Certificate/Diploma in Logistics (1-3 years) OR Experience",
         institutions:
           "Various TVET Colleges, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 3,
+        aps_range: "18-22+",
       },
       {
         name: "Truck Driver",
@@ -5061,7 +4963,7 @@ export const seedCareers = async () => {
         study_path:
           "Code 10 or Code 14 Driver's License → Professional Driving Permit (PrDP)",
         institutions: "Various accredited driving schools",
-        aps_minimum: 3,
+        aps_range: "16-20+",
       },
       {
         name: "Delivery Driver",
@@ -5071,7 +4973,7 @@ export const seedCareers = async () => {
         study_path:
           "Code 8 or Code 10 Driver's License → Professional Driving Permit (PrDP)",
         institutions: "Various accredited driving schools",
-        aps_minimum: 3,
+        aps_range: "16-20+",
       },
       {
         name: "Courier",
@@ -5080,7 +4982,7 @@ export const seedCareers = async () => {
         subjects_needed: "Mathematics, English",
         study_path: "Code 8 Driver's License → Experience",
         institutions: "Various accredited driving schools",
-        aps_minimum: 3,
+        aps_range: "16-20+",
       },
       {
         name: "Shipping Coordinator",
@@ -5090,7 +4992,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Logistics / Shipping (3 years)",
         institutions:
           "University of Johannesburg, Tshwane University of Technology, Nelson Mandela University, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Freight Forwarder",
@@ -5100,7 +5002,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Logistics / Freight Forwarding (3 years)",
         institutions:
           "University of Johannesburg, Tshwane University of Technology, Nelson Mandela University, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Customs Broker",
@@ -5110,7 +5012,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Logistics / Customs (3 years) → Accreditation",
         institutions:
           "University of Johannesburg, Tshwane University of Technology, Nelson Mandela University, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Import and Export Specialist",
@@ -5120,7 +5022,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Import/Export training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Air Cargo Agent",
@@ -5130,7 +5032,7 @@ export const seedCareers = async () => {
         study_path: "Diploma in Logistics / Air Cargo (3 years)",
         institutions:
           "University of Johannesburg, Tshwane University of Technology, Nelson Mandela University, Cape Peninsula University of Technology",
-        aps_minimum: 4,
+        aps_range: "22-26+",
       },
       {
         name: "Port Operations Manager",
@@ -5140,7 +5042,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce / Port Management (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Maritime Logistics Officer",
@@ -5150,7 +5052,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce / Maritime Studies (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Ship Captain",
@@ -5160,7 +5062,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Maritime Studies (4 years) → Certification",
         institutions:
           "University of Cape Town, Stellenbosch University, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
 
       // ==================== MEDIA & COMMUNICATIONS ====================
@@ -5172,7 +5074,7 @@ export const seedCareers = async () => {
         study_path: "BA in Journalism / Media Studies (3 years)",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Reporter",
@@ -5182,7 +5084,7 @@ export const seedCareers = async () => {
         study_path: "BA in Journalism (3 years)",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "News Anchor",
@@ -5192,7 +5094,7 @@ export const seedCareers = async () => {
         study_path: "BA in Journalism / Broadcast (3 years)",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "News Editor",
@@ -5202,7 +5104,7 @@ export const seedCareers = async () => {
         study_path: "BA in Journalism (3 years) → Experience",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Broadcast Journalist",
@@ -5212,7 +5114,7 @@ export const seedCareers = async () => {
         study_path: "BA in Journalism / Broadcast (3 years)",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Radio Presenter",
@@ -5222,7 +5124,7 @@ export const seedCareers = async () => {
         study_path: "BA in Media Studies / Radio (3 years)",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Radio Producer",
@@ -5232,7 +5134,7 @@ export const seedCareers = async () => {
         study_path: "BA in Media Studies (3 years) → Experience",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Television Presenter",
@@ -5242,7 +5144,7 @@ export const seedCareers = async () => {
         study_path: "BA in Media Studies / Broadcasting (3 years)",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Television Producer",
@@ -5252,7 +5154,7 @@ export const seedCareers = async () => {
         study_path: "BA in Media Studies (3 years) → Experience",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Film Producer",
@@ -5262,7 +5164,7 @@ export const seedCareers = async () => {
         study_path: "BA in Film Production (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Film Director",
@@ -5273,7 +5175,7 @@ export const seedCareers = async () => {
         study_path: "BA in Film Production (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Screenwriter",
@@ -5283,7 +5185,7 @@ export const seedCareers = async () => {
         study_path: "BA in Screenwriting (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Copywriter",
@@ -5293,7 +5195,7 @@ export const seedCareers = async () => {
         study_path: "BA English / Marketing (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Rhodes University, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Content Writer",
@@ -5303,7 +5205,7 @@ export const seedCareers = async () => {
         study_path: "BA English / Creative Writing (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Rhodes University, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Editor",
@@ -5313,7 +5215,7 @@ export const seedCareers = async () => {
         study_path: "BA English / Journalism (3 years)",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Sub-Editor",
@@ -5323,7 +5225,7 @@ export const seedCareers = async () => {
         study_path: "BA English / Journalism (3 years)",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "22-26+",
       },
       {
         name: "Proofreader",
@@ -5333,7 +5235,7 @@ export const seedCareers = async () => {
         study_path: "BA English (3 years) OR Training",
         institutions:
           "Rhodes University, University of Cape Town, Stellenbosch University, University of Johannesburg",
-        aps_minimum: 5,
+        aps_range: "22-26+",
       },
       {
         name: "Public Relations Officer",
@@ -5343,7 +5245,7 @@ export const seedCareers = async () => {
         study_path: "BA Public Relations (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Public Relations Manager",
@@ -5353,7 +5255,7 @@ export const seedCareers = async () => {
         study_path: "BA Public Relations (3 years) → Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Corporate Communications Specialist",
@@ -5363,7 +5265,7 @@ export const seedCareers = async () => {
         study_path: "BA Corporate Communications (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Communications Manager",
@@ -5373,7 +5275,7 @@ export const seedCareers = async () => {
         study_path: "BA Communications (3 years) → Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Social Media Manager",
@@ -5383,7 +5285,7 @@ export const seedCareers = async () => {
         study_path: "BA Marketing / Communications (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Digital Content Creator",
@@ -5393,7 +5295,7 @@ export const seedCareers = async () => {
         study_path: "BA Digital Media / Content Creation (3 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Influencer Marketing Manager",
@@ -5403,7 +5305,7 @@ export const seedCareers = async () => {
         study_path: "BA Marketing (3 years) → Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Brand Communications Specialist",
@@ -5413,7 +5315,7 @@ export const seedCareers = async () => {
         study_path: "BA Marketing / Communications (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Media Planner",
@@ -5423,7 +5325,7 @@ export const seedCareers = async () => {
         study_path: "BA Marketing / Media Studies (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Media Buyer",
@@ -5433,7 +5335,7 @@ export const seedCareers = async () => {
         study_path: "BA Marketing / Media Studies (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Advertising Account Executive",
@@ -5443,7 +5345,7 @@ export const seedCareers = async () => {
         study_path: "BA Marketing / Advertising (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Advertising Copywriter",
@@ -5453,7 +5355,7 @@ export const seedCareers = async () => {
         study_path: "BA Advertising (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Art Director",
@@ -5463,7 +5365,7 @@ export const seedCareers = async () => {
         study_path: "BA Art Direction / Design (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Creative Director",
@@ -5473,7 +5375,7 @@ export const seedCareers = async () => {
         study_path: "BA Design / Fine Arts (3-4 years) → Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Photojournalist",
@@ -5483,7 +5385,7 @@ export const seedCareers = async () => {
         study_path: "BA Photojournalism (3 years)",
         institutions:
           "Rhodes University, University of Cape Town, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Videographer",
@@ -5493,7 +5395,7 @@ export const seedCareers = async () => {
         study_path: "BA Film / Video Production (3-4 years)",
         institutions:
           "University of Cape Town, University of Johannesburg, Tshwane University of Technology, Cape Peninsula University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Podcaster",
@@ -5502,7 +5404,7 @@ export const seedCareers = async () => {
         subjects_needed: "English, Drama, Languages",
         study_path: "BA Media Studies (3 years) OR Experience",
         institutions: "Various universities, practical experience",
-        aps_minimum: 4,
+        aps_range: "20-24+",
       },
       {
         name: "Podcast Producer",
@@ -5511,7 +5413,7 @@ export const seedCareers = async () => {
         subjects_needed: "English, Drama, Information Technology",
         study_path: "BA Media Studies (3 years) → Experience",
         institutions: "Various universities, practical experience",
-        aps_minimum: 4,
+        aps_range: "20-24+",
       },
       {
         name: "Media Analyst",
@@ -5521,7 +5423,7 @@ export const seedCareers = async () => {
         study_path: "BA Media Studies (3 years) → Data analysis training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Rhodes University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
 
       // ==================== PUBLIC ADMINISTRATION & GOVERNMENT ====================
@@ -5533,7 +5435,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Public Administration (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Government Official",
@@ -5543,7 +5445,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Public Administration (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Civil Servant",
@@ -5553,7 +5455,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Public Administration (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Policy Analyst",
@@ -5564,7 +5466,7 @@ export const seedCareers = async () => {
           "Bachelor of Public Administration (3-4 years) → Postgraduate",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Policy Advisor",
@@ -5575,7 +5477,7 @@ export const seedCareers = async () => {
           "Bachelor of Public Administration (3-4 years) → Postgraduate",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Legislative Assistant",
@@ -5585,7 +5487,7 @@ export const seedCareers = async () => {
         study_path: "BA Public Administration (3 years) → Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "22-26+",
       },
       {
         name: "Parliamentary Officer",
@@ -5595,7 +5497,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Public Administration (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Municipal Manager",
@@ -5606,7 +5508,7 @@ export const seedCareers = async () => {
           "Bachelor of Public Administration / Management (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "City Manager",
@@ -5617,7 +5519,7 @@ export const seedCareers = async () => {
           "Bachelor of Public Administration / Management (3-4 years) → Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Mayor",
@@ -5626,7 +5528,7 @@ export const seedCareers = async () => {
         subjects_needed: "English, History, Life Orientation",
         study_path: "Various — Elected position",
         institutions: "Elected through political process",
-        aps_minimum: 4,
+        aps_range: "20-24+",
       },
       {
         name: "Councillor",
@@ -5635,7 +5537,7 @@ export const seedCareers = async () => {
         subjects_needed: "English, History, Life Orientation",
         study_path: "Various — Elected position",
         institutions: "Elected through political process",
-        aps_minimum: 4,
+        aps_range: "20-24+",
       },
       {
         name: "Provincial Administrator",
@@ -5646,7 +5548,7 @@ export const seedCareers = async () => {
           "Bachelor of Public Administration (3-4 years) → Experience",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "District Administrator",
@@ -5656,7 +5558,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Public Administration (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Township Manager",
@@ -5666,7 +5568,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Public Administration (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Public Affairs Officer",
@@ -5676,7 +5578,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Public Administration (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Government Communications Officer",
@@ -5686,7 +5588,7 @@ export const seedCareers = async () => {
         study_path: "BA Public Relations / Communications (3 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Johannesburg, Tshwane University of Technology",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Diplomat",
@@ -5697,7 +5599,7 @@ export const seedCareers = async () => {
           "BA International Relations (3 years) → Postgraduate → Diplomatic training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "28-32+",
       },
       {
         name: "Foreign Service Officer",
@@ -5708,7 +5610,7 @@ export const seedCareers = async () => {
           "BA International Relations (3 years) → Diplomatic training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Consular Officer",
@@ -5719,7 +5621,7 @@ export const seedCareers = async () => {
           "BA International Relations (3 years) → Diplomatic training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Ambassador",
@@ -5730,7 +5632,7 @@ export const seedCareers = async () => {
           "BA International Relations (3 years) → Diplomatic service → Appointment",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 6,
+        aps_range: "32-36+",
       },
       {
         name: "Political Analyst",
@@ -5740,7 +5642,7 @@ export const seedCareers = async () => {
         study_path: "BA Political Science (3 years) → Honours → Masters",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Governance Specialist",
@@ -5751,7 +5653,7 @@ export const seedCareers = async () => {
           "Bachelor of Public Administration (3-4 years) → Postgraduate",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Public Sector Manager",
@@ -5762,7 +5664,7 @@ export const seedCareers = async () => {
           "Bachelor of Public Administration / Management (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Programme Manager (Government)",
@@ -5773,7 +5675,7 @@ export const seedCareers = async () => {
           "Bachelor of Public Administration / Management (3-4 years) → Project Management training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Project Manager (Public Sector)",
@@ -5784,7 +5686,7 @@ export const seedCareers = async () => {
           "Bachelor of Public Administration / Management (3-4 years) → Project Management training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Budget Analyst",
@@ -5794,7 +5696,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Budget analysis training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Treasury Analyst",
@@ -5804,7 +5706,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Treasury training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Revenue Officer",
@@ -5814,7 +5716,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Revenue training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "22-26+",
       },
       {
         name: "Tax Administrator",
@@ -5824,7 +5726,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Commerce (3 years) → Tax training",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "22-26+",
       },
       {
         name: "Customs Officer",
@@ -5834,7 +5736,7 @@ export const seedCareers = async () => {
         study_path: "Certificate/Diploma in Customs (1-3 years) → Experience",
         institutions:
           "Various TVET Colleges, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 4,
+        aps_range: "20-24+",
       },
       {
         name: "Immigration Officer",
@@ -5845,7 +5747,7 @@ export const seedCareers = async () => {
           "Certificate/Diploma in Immigration (1-3 years) → Experience",
         institutions:
           "Various TVET Colleges, University of Johannesburg, Nelson Mandela University",
-        aps_minimum: 4,
+        aps_range: "20-24+",
       },
       {
         name: "Social Services Administrator",
@@ -5855,7 +5757,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Public Administration (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "22-26+",
       },
       {
         name: "Public Health Administrator",
@@ -5866,7 +5768,7 @@ export const seedCareers = async () => {
           "Bachelor of Public Administration / Health Administration (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
       {
         name: "Education Administrator",
@@ -5876,7 +5778,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Public Administration (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "22-26+",
       },
       {
         name: "Urban Planner",
@@ -5886,7 +5788,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Urban and Regional Planning (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "26-30+",
       },
       {
         name: "Local Government Official",
@@ -5896,7 +5798,7 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Public Administration (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "22-26+",
       },
       {
         name: "Development Planner",
@@ -5906,13 +5808,13 @@ export const seedCareers = async () => {
         study_path: "Bachelor of Urban and Regional Planning (3-4 years)",
         institutions:
           "University of Cape Town, Stellenbosch University, University of Pretoria, University of the Witwatersrand, Nelson Mandela University",
-        aps_minimum: 5,
+        aps_range: "24-28+",
       },
     ];
 
     for (const career of careers) {
       await db.runAsync(
-        "INSERT INTO careers (name, field, description, subjects_needed, study_path, institutions, aps_minimum) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO careers (name, field, description, subjects_needed, study_path, institutions, aps_range) VALUES (?, ?, ?, ?, ?, ?, ?)",
         [
           career.name,
           career.field,
@@ -5920,7 +5822,7 @@ export const seedCareers = async () => {
           career.subjects_needed,
           career.study_path,
           career.institutions,
-          career.aps_minimum,
+          career.aps_range,
         ],
       );
     }
@@ -5930,7 +5832,6 @@ export const seedCareers = async () => {
     console.error("❌ Seed careers error:", error);
   }
 };
-
 export const seedIndustries = async () => {
   try {
     const existing = await db.getAllAsync("SELECT id FROM industries LIMIT 1");
@@ -6242,7 +6143,6 @@ export const searchCareers = async (text: string) => {
   }
 };
 
-
 export const getCareersByStream = async (stream: string) => {
   try {
     if (stream === "All") {
@@ -6268,7 +6168,7 @@ export const getCareersBySubject = async (subjectId: number) => {
       ON careers.id = career_subjects.career_id
       WHERE career_subjects.subject_id = ?
       `,
-      [subjectId]
+      [subjectId],
     );
   } catch (error) {
     console.log("❌ Get careers by subject error:", error);
@@ -6311,12 +6211,12 @@ export const getColleges = async () => {
 // Get courses for a specific institution
 export const getCoursesByInstitution = async (
   institutionId: number,
-  type: string
+  type: string,
 ) => {
   try {
     return await db.getAllAsync(
       "SELECT * FROM courses WHERE institution_id = ? AND institution_type = ?",
-      [institutionId, type]
+      [institutionId, type],
     );
   } catch (error) {
     console.error("❌ Get courses error:", error);
@@ -6333,7 +6233,7 @@ export const filterInstitutionsByAps = async (aps: number) => {
       UNION
       SELECT * FROM colleges WHERE minimum_aps <= ?
       `,
-      [aps, aps]
+      [aps, aps],
     );
   } catch (error) {
     console.error("❌ APS filter error:", error);
@@ -6365,10 +6265,9 @@ export const getMentors = async () => {
 // Get one mentor by ID
 export const getMentorById = async (id: number) => {
   try {
-    const result = await db.getAllAsync(
-      "SELECT * FROM mentors WHERE id = ?",
-      [id]
-    );
+    const result = await db.getAllAsync("SELECT * FROM mentors WHERE id = ?", [
+      id,
+    ]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
     console.error("❌ Get mentor error:", error);
@@ -6379,10 +6278,9 @@ export const getMentorById = async (id: number) => {
 // Filter mentors by field (e.g. Engineering, Law, Medicine)
 export const filterMentorsByField = async (field: string) => {
   try {
-    return await db.getAllAsync(
-      "SELECT * FROM mentors WHERE field LIKE ?",
-      [`%${field}%`]
-    );
+    return await db.getAllAsync("SELECT * FROM mentors WHERE field LIKE ?", [
+      `%${field}%`,
+    ]);
   } catch (error) {
     console.error("❌ Filter mentors error:", error);
     return [];
