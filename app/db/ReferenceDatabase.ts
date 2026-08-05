@@ -1,4 +1,5 @@
 import * as SQLite from "expo-sqlite";
+import { seedUCT } from "./Seeds/seeds.UCT";
 
 // Second database for reference data
 const refDb = SQLite.openDatabaseSync("reference.db");
@@ -86,13 +87,27 @@ export const initReferenceDatabase = async () => {
 
       -- COURSES TABLE
       CREATE TABLE IF NOT EXISTS courses (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        institution_id INTEGER,
-        institution_type TEXT,
-        name TEXT NOT NULL,
-        duration TEXT,
-        minimum_aps INTEGER,
-        description TEXT
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    institution_id INTEGER NOT NULL,
+    institution_type TEXT NOT NULL,
+    faculty TEXT NOT NULL,
+    qualification TEXT NOT NULL,
+    qualification_type TEXT NOT NULL,
+    duration TEXT NOT NULL,
+    province TEXT NOT NULL,
+    minimum_aps INTEGER,
+    fps TEXT,
+    english_hl TEXT,
+    english_fal TEXT,
+    mathematics TEXT,
+    mathematical_literacy TEXT,
+    physical_sciences TEXT,
+    life_sciences TEXT,
+    nbt TEXT,
+    additional_requirements TEXT,
+    apply_url TEXT,
+    FOREIGN KEY (institution_id) REFERENCES universities(id)
+);
       );
 
       -- SCHOLARSHIPS TABLE
@@ -435,13 +450,19 @@ export const getApsPoints = (percentage: number): number => {
 // ==================== SEED FUNCTIONS ====================
 export const seedReferenceDatabase = async () => {
   try {
-    const existing = await refDb.getAllAsync("SELECT id FROM schools LIMIT 1");
-    if (existing.length > 0) {
-      console.log("ℹ️ Reference database already seeded");
+
+    const existingCourses = await refDb.getAllAsync(
+      "SELECT id FROM courses LIMIT 1"
+    );
+
+    if (existingCourses.length > 0) {
+      console.log("ℹ️ Courses already seeded");
       return;
     }
 
     console.log("🌱 Seeding reference database...");
+
+    await seedUCT(refDb);
 
     // ===== APS RULES =====
     await refDb.runAsync(`
@@ -644,32 +665,45 @@ export const seedReferenceDatabase = async () => {
       [
         1,
         "university",
-        "BSc Computer Science",
-        "3 years",
-        5,
-        "Study of computing and programming",
-      ],
-      [
-        1,
-        "university",
-        "BA Humanities",
-        "3 years",
-        4,
-        "Study of human culture",
-      ],
-      [
-        2,
-        "university",
-        "BEng Civil Engineering",
-        "4 years",
-        5,
-        "Study of infrastructure",
+        "Commerce",
+        "Bachelor of Business Science specialising in Computer Science",
+        "Bachelor's Degree",
+        "4 Years",
+        "Western Cape",
+        36,
+        "50%",
+        "60%",
+        "70%",
+        "No",
+        "",
+        "",
+        "Upper Intermediate (AL & QL)",
+        "Mathematical Studies and Maths Main are not accepted.",
+        "https://applyonline.uct.ac.za"
       ],
     ];
 
     for (const course of courses) {
       await refDb.runAsync(
-        "INSERT INTO courses (institution_id, institution_type, name, duration, minimum_aps, description) VALUES (?, ?, ?, ?, ?, ?)",
+        `INSERT INTO courses (
+          institution_id,
+          institution_type,
+          faculty,
+          qualification,
+          qualification_type,
+          duration,
+          province,
+          minimum_aps,
+          english_hl,
+          english_fal,
+          mathematics,
+          mathematical_literacy,
+          physical_sciences,
+          life_sciences,
+          nbt,
+          additional_requirements,
+          apply_url
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         course,
       );
     }
