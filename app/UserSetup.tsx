@@ -1,11 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
+import { createProfile, createUser, initDatabase } from "./db/Database";
 import {
-  createProfile,
-  createUser,
-  initDatabase,
-  seedSchools,
-} from "./db/Database";
+  initReferenceDatabase,
+  seedReferenceDatabase,
+} from "./db/ReferenceDatabase";
 
 import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import {
@@ -29,18 +28,22 @@ export default function UserSetup() {
   const [career, setCareer] = useState("");
 
   useEffect(() => {
-    const setupDatabase = async () => {
+    const setupDatabases = async () => {
       try {
+        // Your existing initDatabase()
         await initDatabase();
-        await seedSchools();
 
-        console.log("✅ Database ready");
+        // ✅ ADD THIS — Initialize reference database
+        await initReferenceDatabase();
+        await seedReferenceDatabase();
+
+        console.log("✅ All databases ready");
       } catch (error) {
-        console.error("Database setup failed:", error);
+        console.error("❌ Database setup failed:", error);
       }
     };
 
-    setupDatabase();
+    setupDatabases();
   }, []);
 
   return (
