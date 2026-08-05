@@ -36,7 +36,12 @@ export default function HomeScreen() {
       >
         <ThemedText style={styles.buttonText}>Notifications</ThemedText>
       </TouchableOpacity>
-
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/schools" as any)}
+      >
+        <ThemedText style={styles.buttonText}>🔍 School Finder</ThemedText>
+      </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
         onPress={() => router.push("/industries" as any)}
@@ -49,6 +54,13 @@ export default function HomeScreen() {
         onPress={() => router.push("/careers" as any)}
       >
         <ThemedText style={styles.buttonText}>💼 Career Guidance</ThemedText>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/aps-calculator" as any)}
+      >
+        <ThemedText style={styles.buttonText}>📊 APS Calculator</ThemedText>
       </TouchableOpacity>
     </View>
   );

@@ -9,9 +9,7 @@ export default function Bursaries() {
         alignItems: "center",
       }}
     >
-      <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-        Bursaries
-      </Text>
+      <Text style={{ fontSize: 24, fontWeight: "bold" }}>Bursaries</Text>
     </View>
   );
 }

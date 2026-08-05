@@ -155,9 +155,7 @@ export default function Careers() {
             <Text style={styles.careerField}>
               Field: {item.field || "General"}
             </Text>
-            <Text style={styles.careerAps}>
-              APS Level: {item.aps_minimum || "N/A"}
-            </Text>
+            <Text style={styles.careerAps}>APS {item.aps_range || "N/A"}</Text>
           </TouchableOpacity>
         )}
         ListEmptyComponent={
