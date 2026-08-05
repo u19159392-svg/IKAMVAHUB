@@ -1,0 +1,100 @@
+-- COURSES TABLE
+CREATE TABLE IF NOT EXISTS courses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  institution_id INTEGER,
+  name TEXT,
+  level TEXT,
+  faculty TEXT,
+  duration TEXT,
+  aps TEXT,
+  requirements TEXT
+);
+export const seedCourses = async () => {
+  try {
+       await db.runAsync(`
+    INSERT INTO courses 
+    (institution_id, name, level, faculty, duration, aps, requirements)
+    VALUES
+
+-- ================= COMMERCE =================
+(1,'BCom Accounting','Degree','Commerce','3 years','28+','Maths required'),
+(1,'BCom Accounting Sciences','Degree','Commerce','3 years','32+','Maths required'),
+(1,'BCom Finance','Degree','Commerce','3 years','30+','Maths required'),
+(1,'BCom Economics','Degree','Commerce','3 years','28+','Maths required'),
+(1,'BCom Marketing Management','Degree','Commerce','3 years','26+','Maths Lit accepted'),
+(1,'BCom Human Resource Management','Degree','Commerce','3 years','26+','Maths Lit accepted'),
+(1,'BCom Supply Chain Management','Degree','Commerce','3 years','28+','Maths required'),
+(1,'BCom Information Systems','Degree','Commerce','3 years','30+','Maths required'),
+(1,'BCom Risk Management','Degree','Commerce','3 years','28+','Maths required'),
+(1,'BCom Banking','Degree','Commerce','3 years','28+','Maths required'),
+(1,'BCom Entrepreneurship','Degree','Commerce','3 years','26+','Maths Lit accepted'),
+(1,'BCom Financial Planning','Degree','Commerce','3 years','28+','Maths required'),
+(1,'BCom Industrial Psychology','Degree','Commerce','3 years','26+','Maths Lit accepted'),
+(1,'BCom International Business','Degree','Commerce','3 years','30+','Maths required'),
+
+-- ================= HUMANITIES =================
+(1,'BA Psychology','Degree','Humanities','3 years','26+','English required'),
+(1,'BA Sociology','Degree','Humanities','3 years','24+','English required'),
+(1,'BA Communication','Degree','Humanities','3 years','24+','English required'),
+(1,'BA Philosophy','Degree','Humanities','3 years','24+','English required'),
+(1,'BA Politics and International Relations','Degree','Humanities','3 years','27+','English required'),
+(1,'BA Languages','Degree','Humanities','3 years','24+','English required'),
+(1,'BA Media Studies','Degree','Humanities','3 years','26+','English required'),
+(1,'BA Journalism','Degree','Humanities','3 years','26+','English required'),
+(1,'BA History','Degree','Humanities','3 years','24+','English required'),
+
+-- ================= SCIENCE =================
+(1,'BSc Computer Science','Degree','Science','3 years','32+','Maths required'),
+(1,'BSc Information Technology','Degree','Science','3 years','30+','Maths required'),
+(1,'BSc Mathematics','Degree','Science','3 years','32+','Maths required'),
+(1,'BSc Physics','Degree','Science','3 years','34+','Maths + Physical Science'),
+(1,'BSc Chemistry','Degree','Science','3 years','34+','Maths + Physical Science'),
+(1,'BSc Geology','Degree','Science','3 years','30+','Maths + Science'),
+(1,'BSc Environmental Science','Degree','Science','3 years','28+','Maths + Science'),
+(1,'BSc Biotechnology','Degree','Science','3 years','32+','Maths + Life Science'),
+(1,'BSc Microbiology','Degree','Science','3 years','32+','Maths + Life Science'),
+(1,'BSc Zoology','Degree','Science','3 years','30+','Maths + Life Science'),
+(1,'BSc Botany','Degree','Science','3 years','30+','Maths + Life Science'),
+(1,'BSc Data Science','Degree','Science','3 years','34+','Maths required'),
+
+-- ================= ENGINEERING =================
+(1,'BEng Civil Engineering','Degree','Engineering','4 years','34+','Maths + Physical Science'),
+(1,'BEng Mechanical Engineering','Degree','Engineering','4 years','34+','Maths + Physical Science'),
+(1,'BEng Electrical Engineering','Degree','Engineering','4 years','34+','Maths + Physical Science'),
+(1,'BEng Chemical Engineering','Degree','Engineering','4 years','34+','Maths + Physical Science'),
+(1,'BEng Mining Engineering','Degree','Engineering','4 years','34+','Maths + Physical Science'),
+(1,'BEng Industrial Engineering','Degree','Engineering','4 years','34+','Maths + Physical Science'),
+
+-- ================= LAW =================
+(1,'LLB Law','Degree','Law','4 years','32+','English required'),
+
+-- ================= HEALTH =================
+(1,'Bachelor of Nursing','Degree','Health Sciences','4 years','30+','Maths + Life Science'),
+(1,'Biokinetics','Degree','Health Sciences','4 years','32+','Maths + Life Science'),
+(1,'Bachelor of Public Health','Degree','Health Sciences','4 years','30+','Maths + Life Science'),
+
+-- ================= EDUCATION =================
+(1,'Bachelor of Education','Degree','Education','4 years','30+','Teaching subjects required'),
+
+-- ================= DIPLOMAS =================
+(1,'Diploma in Accounting','Diploma','Commerce','3 years','22+','Maths or Maths Lit'),
+(1,'Diploma in Marketing','Diploma','Commerce','3 years','22+','Maths Lit accepted'),
+(1,'Diploma in Logistics','Diploma','Commerce','3 years','22+','Maths Lit accepted'),
+(1,'Diploma in Tourism','Diploma','Hospitality','3 years','22+','English required'),
+(1,'Diploma in Information Technology','Diploma','Science','3 years','24+','Maths required'),
+(1,'Diploma in Public Relations','Diploma','Humanities','3 years','22+','English required'),
+(1,'Diploma in Journalism','Diploma','Humanities','3 years','22+','English required'),
+
+-- ================= CERTIFICATES =================
+(1,'Higher Certificate in Business','Certificate','Commerce','1 year','18+','NSC pass'),
+(1,'Higher Certificate in IT','Certificate','Science','1 year','18+','NSC pass'),
+(1,'Higher Certificate in Education','Certificate','Education','1 year','18+','NSC pass'),
+(1,'Higher Certificate in Marketing','Certificate','Commerce','1 year','18+','NSC pass'),
+(1,'Higher Certificate in Tourism','Certificate','Hospitality','1 year','18+','NSC pass')
+    `);
+
+    console.log("✅ UJ Courses Inserted");
+  } catch (error) {
+    console.error("❌ Seed courses error:", error);
+  }
+}; 
