@@ -1,5 +1,6 @@
 import * as SQLite from "expo-sqlite";
 import { seedUCT } from "./Seeds/seeds.UCT";
+import { seedUKZN } from "./Seeds/seeds.UKZN";
 
 // Second database for reference data
 const refDb = SQLite.openDatabaseSync("reference.db");
@@ -327,6 +328,16 @@ export const getCoursesByInstitution = async (
   }
 };
 
+// ==================== ELIGIBILITY SUPPORT ====================
+export const getAllCourses = async () => {
+  try {
+    return await refDb.getAllAsync("SELECT * FROM courses");
+  } catch (error) {
+    console.error("❌ Get all courses error:", error);
+    return [];
+  }
+};
+
 // ==================== TVET COLLEGE FUNCTIONS ====================
 export const getTvetColleges = async () => {
   try {
@@ -463,6 +474,7 @@ export const seedReferenceDatabase = async () => {
     console.log("🌱 Seeding reference database...");
 
     await seedUCT(refDb);
+    await seedUKZN(refDb);
 
     // ===== APS RULES =====
     await refDb.runAsync(`
@@ -624,6 +636,14 @@ export const seedReferenceDatabase = async () => {
         5,
         "",
       ],
+       [
+    "University of KwaZulu-Natal",
+    "KwaZulu-Natal",
+    "www.ukzn.ac.za",
+    "031 260 1111",
+    5,
+    "",
+  ],
     ];
 
     for (const uni of universities) {

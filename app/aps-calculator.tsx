@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Alert, Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { MASTER_SUBJECT_LIST, NUM_SUBJECT_SLOTS } from './constants/subjects';
 import { getApsPoints } from './db/Database'; // capital D — matches your actual filename
+import { saveApsResult } from './utils/apsStorage';
 
 type SubjectEntry = { subject: string; mark: string };
 
@@ -39,6 +40,9 @@ export default function ApsCalculatorScreen() {
       breakdown.push({ subject: slot.subject, mark, points });
       total += points;
     }
+
+    // NEW — persist so any screen (not just aps-results) can check eligibility later
+    saveApsResult(total, breakdown);
 
     router.push({
       pathname: '/aps-results',
