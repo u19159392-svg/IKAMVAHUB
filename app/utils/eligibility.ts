@@ -1,13 +1,14 @@
 // app/utils/eligibility.ts
 //
 // Compares a learner's saved APS breakdown (from apsStorage.ts) against a
-// course row from the `courses` table in reference.db, using the columns
-// already defined in ReferenceDatabase.ts.
+// course row from the `courses` table in reference.db.
+//
+// Course requirement columns (mathematics, english_hl, etc.) are stored as
+// NSC achievement levels — "Level 4", "Level 5", etc. — matching real
+// university brochures, and the same bands as getApsPoints() in Database.ts.
 
 import { SubjectResult } from './apsStorage';
 
-// Matches the `courses` table columns from ReferenceDatabase.ts.
-// Extend this if you add more subject columns later.
 export type Course = {
   id: number;
   institution_id: number;
@@ -30,36 +31,49 @@ export type Course = {
   apply_url: string | null;
 };
 
-// Maps a subject name (as it appears in MASTER_SUBJECT_LIST / the calculator)
-// to the matching column on a course row.
-// IMPORTANT: these subject names must exactly match what's used in
-// constants/subjects.ts — mismatched spelling here means a course will
-// silently never match, even when the learner actually qualifies.
+// Subjects where a learner only ever has ONE of the two — satisfying
+// either one's requirement is enough. A course specifying both columns
+// doesn't mean "you need both," it means "whichever one you took."
+const SUBJECT_ALTERNATIVES: Array<{
+  subjects: string[];
+  columns: (keyof Course)[];
+}> = [
+  {
+    subjects: ['English Home Language', 'English First Additional Language'],
+    columns: ['english_hl', 'english_fal'],
+  },
+];
+
+// Every other subject: one subject name maps to exactly one column, and
+// it's a straightforward "must meet this" requirement.
 const SUBJECT_TO_COLUMN: Record<string, keyof Course> = {
   'Mathematics': 'mathematics',
   'Mathematical Literacy': 'mathematical_literacy',
   'Physical Sciences': 'physical_sciences',
   'Life Sciences': 'life_sciences',
-  'English Home Language': 'english_hl',
-  'English First Additional Language': 'english_fal',
 };
 
-/**
- * Extracts the leading number out of a requirement string like "60%" or "60".
- * Returns null if the course doesn't specify a requirement for that subject.
- */
-const parseRequiredMark = (requirement: string | null): number | null => {
+// Same bands as getApsPoints() in Database.ts — kept in sync deliberately.
+const markToLevel = (mark: number): number => {
+  if (mark >= 80) return 7;
+  if (mark >= 70) return 6;
+  if (mark >= 60) return 5;
+  if (mark >= 50) return 4;
+  if (mark >= 40) return 3;
+  if (mark >= 30) return 2;
+  return 1;
+};
+
+const NOT_REQUIRED_VALUES = new Set(['not required', 'no', 'n/a', '']);
+
+const parseRequiredLevel = (requirement: string | null): number | null => {
   if (!requirement) return null;
-  const match = requirement.match(/\d+/);
-  return match ? parseInt(match[0], 10) : null;
+  if (NOT_REQUIRED_VALUES.has(requirement.trim().toLowerCase())) return null;
+
+  const match = requirement.match(/Level\s*(\d)/i);
+  return match ? parseInt(match[1], 10) : null;
 };
 
-/**
- * Returns true if the learner's APS breakdown meets every requirement
- * this course specifies (overall APS + any per-subject minimums).
- * A subject with no requirement on the course (null/blank) is skipped —
- * it isn't held against the learner.
- */
 export const isEligible = (
   course: Course,
   totalAps: number,
@@ -69,14 +83,45 @@ export const isEligible = (
     return false;
   }
 
+  // Standard one-subject-to-one-column requirements
   for (const [subjectName, column] of Object.entries(SUBJECT_TO_COLUMN)) {
-    const requiredMark = parseRequiredMark(course[column] as string | null);
-    if (requiredMark == null) continue; // not required for this course
+    const requiredLevel = parseRequiredLevel(course[column] as string | null);
+    if (requiredLevel == null) continue; // not required for this course
 
     const learnerSubject = breakdown.find((b) => b.subject === subjectName);
-    const learnerMark = learnerSubject?.mark ?? 0;
+    const learnerLevel = learnerSubject ? markToLevel(learnerSubject.mark) : 0;
 
-    if (learnerMark < requiredMark) {
+    if (learnerLevel < requiredLevel) {
+      return false;
+    }
+  }
+
+  // Alternative-subject requirements (e.g. English HL OR FAL) — the
+  // learner only needs to satisfy ONE of the listed subject/column pairs.
+  for (const group of SUBJECT_ALTERNATIVES) {
+    // Does the course require anything from this group at all?
+    const requirements = group.columns
+      .map((col) => parseRequiredLevel(course[col] as string | null))
+      .filter((lvl): lvl is number => lvl != null);
+
+    if (requirements.length === 0) continue; // course doesn't require any of these
+
+    // Find whichever of the group's subjects the learner actually took.
+    const learnerEntry = breakdown.find((b) => group.subjects.includes(b.subject));
+    if (!learnerEntry) {
+      return false; // course needs one of these subjects, learner took none of them
+    }
+
+    const learnerLevel = markToLevel(learnerEntry.mark);
+    const subjectIndex = group.subjects.indexOf(learnerEntry.subject);
+    const requiredLevel = parseRequiredLevel(
+      course[group.columns[subjectIndex]] as string | null,
+    );
+
+    // If the specific subject the learner took isn't required by the course
+    // (e.g. course only sets english_hl, learner took FAL), that's still a
+    // pass — the course's real intent is "meet the language requirement."
+    if (requiredLevel != null && learnerLevel < requiredLevel) {
       return false;
     }
   }
@@ -84,9 +129,6 @@ export const isEligible = (
   return true;
 };
 
-/**
- * Filters a full list of courses down to the ones the learner qualifies for.
- */
 export const getQualifyingCourses = (
   courses: Course[],
   totalAps: number,

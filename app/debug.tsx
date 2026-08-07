@@ -15,16 +15,24 @@ import {
   seedSchools,
   updateUser,
 } from "./db/Database";
+import {
+  initReferenceDatabase,
+  seedReferenceDatabase,
+} from "./db/ReferenceDatabase";
 
 export default function DebugScreen() {
   const [users, setUsers] = useState<any[]>([]);
 
   const handleInit = async () => {
-    await initDatabase();
-    await seedSchools();
+  await initDatabase();
+  await seedSchools();
 
-    console.log("✅ Database initialized");
-  };
+  await initReferenceDatabase();
+  await seedReferenceDatabase();
+
+  console.log("✅ Main database initialized");
+  console.log("✅ Reference database initialized");
+};
 
   const handleAddUser = async () => {
     const name = `User ${Math.floor(Math.random() * 100)}`;

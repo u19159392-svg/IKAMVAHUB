@@ -1,9 +1,13 @@
-// app/qualifying-courses.tsx
+// app/university-detail.tsx
 //
-// Shows the courses the learner qualifies for, grouped by faculty.
-// Each faculty is a collapsible section — tap to expand and see its courses.
+// Shows one institution's faculties as collapsible dropdowns. Tap a faculty
+// to expand it and see its courses underneath. Works for both universities
+// and colleges — the `type` param decides which institution_type to query.
+//
+// Toggle: "All courses" vs "Courses I qualify for" — the latter filters
+// this institution's courses against the learner's saved APS result.
 
-import { router } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   ScrollView,
@@ -12,38 +16,51 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { getAllCourses } from './db/ReferenceDatabase';
+import { getCoursesByInstitution } from './db/ReferenceDatabase';
 import { ApsResult, getApsResult } from './utils/apsStorage';
-import { Course, getQualifyingCourses } from './utils/eligibility';
+import { Course, isEligible } from './utils/eligibility';
 
 type FacultyGroup = {
   faculty: string;
   courses: Course[];
 };
 
-export default function QualifyingCoursesScreen() {
+export default function UniversityDetailScreen() {
+  const { id, name, type } = useLocalSearchParams<{
+    id: string;
+    name: string;
+    type?: string;
+  }>();
+
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [apsResult, setApsResult] = useState<ApsResult | null>(null);
-  const [facultyGroups, setFacultyGroups] = useState<FacultyGroup[]>([]);
+  const [showQualifyingOnly, setShowQualifyingOnly] = useState(false);
   const [expandedFaculties, setExpandedFaculties] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
+  const institutionType = type === 'college' ? 'college' : 'university';
+
   useEffect(() => {
     const load = async () => {
-      const saved = await getApsResult();
+      const [courses, saved] = await Promise.all([
+        getCoursesByInstitution(parseInt(id, 10), institutionType) as Promise<Course[]>,
+        getApsResult(),
+      ]);
+      setAllCourses(courses);
       setApsResult(saved);
-
-      if (saved) {
-        const allCourses = (await getAllCourses()) as Course[];
-        const matches = getQualifyingCourses(allCourses, saved.total, saved.breakdown);
-        setFacultyGroups(groupByFaculty(matches));
-      }
-
       setLoading(false);
     };
     load();
-  }, []);
+  }, [id, institutionType]);
 
-  const groupByFaculty = (courses: Course[]): FacultyGroup[] => {
+  const visibleCourses =
+    showQualifyingOnly && apsResult
+      ? allCourses.filter((course) => isEligible(course, apsResult.total, apsResult.breakdown))
+      : allCourses;
+
+  const facultyGroups = groupByFaculty(visibleCourses);
+
+  function groupByFaculty(courses: Course[]): FacultyGroup[] {
     const map = new Map<string, Course[]>();
     for (const course of courses) {
       const key = course.faculty || 'Other';
@@ -53,7 +70,7 @@ export default function QualifyingCoursesScreen() {
     return Array.from(map.entries())
       .map(([faculty, courses]) => ({ faculty, courses }))
       .sort((a, b) => a.faculty.localeCompare(b.faculty));
-  };
+  }
 
   const toggleFaculty = (faculty: string) => {
     setExpandedFaculties((prev) => {
@@ -75,39 +92,47 @@ export default function QualifyingCoursesScreen() {
     );
   }
 
-  if (!apsResult) {
-    return (
-      <View style={styles.centered}>
-        <Text style={styles.emptyText}>You haven't calculated your APS yet.</Text>
-        <TouchableOpacity
-          style={styles.calculateButton}
-          onPress={() => router.push('/aps-calculator')}
-        >
-          <Text style={styles.calculateButtonText}>Calculate my APS</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  const calculatedDate = new Date(apsResult.calculatedAt).toLocaleDateString();
-
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.heading}>Courses You Qualify For</Text>
-      <Text style={styles.subheading}>
-        Based on your APS of {apsResult.total}, calculated on {calculatedDate}
-      </Text>
+      <Text style={styles.heading}>{name}</Text>
+      <Text style={styles.subheading}>Faculties</Text>
 
-      <TouchableOpacity
-        style={styles.recalculateLink}
-        onPress={() => router.push('/aps-calculator')}
-      >
-        <Text style={styles.recalculateLinkText}>Recalculate my APS</Text>
-      </TouchableOpacity>
+      {/* Toggle: All courses vs Courses I qualify for */}
+      <View style={styles.toggleRow}>
+        <TouchableOpacity
+          style={[styles.toggleButton, !showQualifyingOnly && styles.toggleButtonActive]}
+          onPress={() => setShowQualifyingOnly(false)}
+        >
+          <Text style={[styles.toggleText, !showQualifyingOnly && styles.toggleTextActive]}>
+            All Courses
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.toggleButton, showQualifyingOnly && styles.toggleButtonActive]}
+          onPress={() => setShowQualifyingOnly(true)}
+        >
+          <Text style={[styles.toggleText, showQualifyingOnly && styles.toggleTextActive]}>
+            What I Qualify For
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {showQualifyingOnly && !apsResult && (
+        <Text style={styles.apsHint}>
+          You haven't calculated your APS yet — showing all courses instead.
+        </Text>
+      )}
+      {showQualifyingOnly && apsResult && (
+        <Text style={styles.apsHint}>Based on your APS of {apsResult.total}</Text>
+      )}
 
       {facultyGroups.length === 0 ? (
         <View style={styles.centered}>
-          <Text style={styles.emptyText}>No courses match your current APS yet.</Text>
+          <Text style={styles.emptyText}>
+            {showQualifyingOnly
+              ? 'No courses at this institution match your APS yet.'
+              : 'No courses have been added for this institution yet.'}
+          </Text>
         </View>
       ) : (
         facultyGroups.map((group) => {
@@ -149,16 +174,26 @@ const styles = StyleSheet.create({
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 },
   heading: { fontSize: 22, fontWeight: 'bold', marginBottom: 4 },
   subheading: { fontSize: 14, color: '#666', marginBottom: 12 },
-  recalculateLink: { marginBottom: 16 },
-  recalculateLinkText: { color: '#1E88E5', fontWeight: '600' },
-  emptyText: { fontSize: 15, textAlign: 'center', color: '#666', marginBottom: 16 },
-  calculateButton: {
-    backgroundColor: '#1E88E5',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+  emptyText: { fontSize: 15, textAlign: 'center', color: '#666' },
+  toggleRow: {
+    flexDirection: 'row',
+    backgroundColor: '#F0F0F0',
+    borderRadius: 10,
+    padding: 4,
+    marginBottom: 10,
   },
-  calculateButtonText: { color: '#FFFFFF', fontWeight: '600', fontSize: 16 },
+  toggleButton: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  toggleButtonActive: {
+    backgroundColor: '#1E88E5',
+  },
+  toggleText: { fontSize: 13, fontWeight: '600', color: '#666' },
+  toggleTextActive: { color: '#FFFFFF' },
+  apsHint: { fontSize: 13, color: '#666', marginBottom: 12 },
   facultySection: {
     marginBottom: 12,
     borderRadius: 10,

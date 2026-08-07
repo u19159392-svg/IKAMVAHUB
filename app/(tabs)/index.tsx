@@ -1,12 +1,30 @@
 import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
-
-console.log("✅ TABS INDEX OPENED");
-
+import { initDatabase, seedSchools } from "../db/Database";
+import { initReferenceDatabase, seedReferenceDatabase } from "../db/ReferenceDatabase";
 export default function HomeScreen() {
   const router = useRouter();
+
+  useEffect(() => {
+    const setupDatabases = async () => {
+      try {
+        await initDatabase();
+        await seedSchools();
+
+        await initReferenceDatabase();
+        await seedReferenceDatabase();
+
+        console.log("✅ Databases initialized and seeded on app start");
+      } catch (error) {
+        console.error("❌ Database setup error:", error);
+      }
+    };
+
+    setupDatabases();
+  }, []);
 
   return (
     <View style={styles.container}>
