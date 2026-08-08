@@ -80,6 +80,12 @@ export default function HomeScreen() {
       >
         <ThemedText style={styles.buttonText}>📊 APS Calculator</ThemedText>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/scholarships" as any)}
+      >
+        <ThemedText style={styles.buttonText}>🎓 Scholarships & Bursaries</ThemedText>
+      </TouchableOpacity>
     </View>
   );
 }

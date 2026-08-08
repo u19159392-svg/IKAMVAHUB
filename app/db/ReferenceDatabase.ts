@@ -116,24 +116,28 @@ export const initReferenceDatabase = async () => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         provider TEXT,
-        amount TEXT,
-        eligibility TEXT,
+    
         closing_date TEXT,
         apply_link TEXT,
         field_of_study TEXT
       );
 
       -- BURSARIES TABLE
-      CREATE TABLE IF NOT EXISTS bursaries (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        provider TEXT,
-        amount TEXT,
-        eligibility TEXT,
-        closing_date TEXT,
-        apply_link TEXT,
-        field_of_study TEXT
-      );
+CREATE TABLE IF NOT EXISTS bursaries (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  provider TEXT,
+  closing_date TEXT,
+  apply_link TEXT
+);
+
+-- BURSARY CATEGORIES TABLE
+CREATE TABLE IF NOT EXISTS bursary_categories (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  bursary_id INTEGER NOT NULL,
+  category TEXT NOT NULL,
+  FOREIGN KEY (bursary_id) REFERENCES bursaries(id) ON DELETE CASCADE
+);
 
       -- MENTORS TABLE
       CREATE TABLE IF NOT EXISTS mentors (
@@ -155,18 +159,9 @@ export const initReferenceDatabase = async () => {
         points INTEGER NOT NULL
       );
     `);
-
-    console.log("✅ Reference database initialized");
-
-    // Migration: add city column if it doesn't exist yet (for databases created before this change)
-    try {
-      await refDb.execAsync("ALTER TABLE universities ADD COLUMN city TEXT;");
-      console.log("✅ Added city column to universities");
-    } catch (error) {
-      // Column already exists — safe to ignore
-    }
+    console.log("✅ Reference database schema ready");
   } catch (error) {
-    console.error("❌ Reference database init error:", error);
+    console.error("❌ Init reference database error:", error);
   }
 };
 
@@ -397,10 +392,11 @@ export const getScholarshipById = async (id: number) => {
 };
 
 // ==================== BURSARY FUNCTIONS ====================
+
 export const getBursaries = async () => {
   try {
     return await refDb.getAllAsync(
-      "SELECT * FROM bursaries ORDER BY closing_date ASC",
+      "SELECT * FROM bursaries ORDER BY closing_date ASC"
     );
   } catch (error) {
     console.error("❌ Get bursaries error:", error);
@@ -412,8 +408,9 @@ export const getBursaryById = async (id: number) => {
   try {
     const result = await refDb.getAllAsync(
       "SELECT * FROM bursaries WHERE id = ?",
-      [id],
+      [id]
     );
+
     return result.length > 0 ? result[0] : null;
   } catch (error) {
     console.error("❌ Get bursary error:", error);
@@ -421,36 +418,47 @@ export const getBursaryById = async (id: number) => {
   }
 };
 
-// ==================== MENTOR FUNCTIONS ====================
-export const getMentors = async () => {
+export const getBursaryCategories = async (bursaryId: number) => {
   try {
-    return await refDb.getAllAsync("SELECT * FROM mentors ORDER BY name ASC");
+    return await refDb.getAllAsync(
+      `SELECT category
+       FROM bursary_categories
+       WHERE bursary_id = ?
+       ORDER BY category ASC`,
+      [bursaryId]
+    );
   } catch (error) {
-    console.error("❌ Get mentors error:", error);
+    console.error("❌ Get bursary categories error:", error);
     return [];
   }
 };
 
-export const getMentorById = async (id: number) => {
+export const filterBursariesByCategory = async (category: string) => {
   try {
-    const result = await refDb.getAllAsync(
-      "SELECT * FROM mentors WHERE id = ?",
-      [id],
+    return await refDb.getAllAsync(
+      `SELECT DISTINCT b.*
+       FROM bursaries b
+       INNER JOIN bursary_categories bc
+         ON b.id = bc.bursary_id
+       WHERE bc.category = ?
+       ORDER BY b.closing_date ASC`,
+      [category]
     );
-    return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("❌ Get mentor error:", error);
-    return null;
+    console.error("❌ Filter bursaries by category error:", error);
+    return [];
   }
 };
 
-export const filterMentorsByField = async (field: string) => {
+export const getBursaryCategoriesList = async () => {
   try {
-    return await refDb.getAllAsync("SELECT * FROM mentors WHERE field = ?", [
-      field,
-    ]);
+    return await refDb.getAllAsync(
+      `SELECT DISTINCT category
+       FROM bursary_categories
+       ORDER BY category ASC`
+    );
   } catch (error) {
-    console.error("❌ Filter mentors by field error:", error);
+    console.error("❌ Get bursary categories error:", error);
     return [];
   }
 };
@@ -710,21 +718,6 @@ await seedUKZN(refDb);
       console.log("✅ Seeded scholarships");
     }
 
-    // ===== BURSARIES =====
-    const existingBursaries = await refDb.getAllAsync("SELECT id FROM bursaries LIMIT 1");
-    if (existingBursaries.length === 0) {
-      const bursaries = [
-        ["Funza Lushaka Bursary", "Department of Basic Education", "Full tuition", "Students pursuing teaching", "2025-10-31", "www.funzalushaka.gov.za", "Education"],
-        ["NSFAS Bursary", "NSFAS", "Full tuition", "South African citizen, financial need", "2025-11-30", "www.nsfas.org.za", "All fields"],
-      ];
-      for (const bursary of bursaries) {
-        await refDb.runAsync(
-          "INSERT INTO bursaries (name, provider, amount, eligibility, closing_date, apply_link, field_of_study) VALUES (?, ?, ?, ?, ?, ?, ?)",
-          bursary,
-        );
-      }
-      console.log("✅ Seeded bursaries");
-    }
 
     // ===== MENTORS =====
     const existingMentors = await refDb.getAllAsync("SELECT id FROM mentors LIMIT 1");
