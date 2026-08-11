@@ -1062,32 +1062,78 @@ export const seedReferenceDatabase = async () => {
     if (existingMentors.length === 0) {
       const mentors = [
         [
-          "Dr. Thabo Mbeki",
-          "Engineering",
-          "Senior lecturer in Civil Engineering",
-          "082 123 4567",
-          "thabo@mentor.co.za",
-          "https://i.pravatar.cc/150?img=1",
+          "Ms Nadia Mavika",
+          "Economic Management Sciences faculty - Bachelor of Accounting Sciences",
+          "Student mentor",
+          "062 889 9560",
+          "nadiamavika663@gmail.com",
+          "https://i.pravatar.cc/150?img=1(profile picture)",
           "Weekends",
         ],
         [
-          "Prof. Naledi Khumalo",
-          "Medicine",
-          "Paediatrician with 15 years experience",
-          "082 234 5678",
-          "naledi@mentor.co.za",
+          "Mr Lesiba Pitseng",
+          "Economic Management Sciences faculty-Bachelor of Accounting Sciences",
+          "Student mentor",
+          "071 299 4145",
+          "u23752379@tuks.co.za",
           "https://i.pravatar.cc/150?img=2",
           "Weekdays",
         ],
         [
-          "Ms. Zanele Ndlovu",
-          "Law",
-          "Human rights lawyer and advocate",
-          "082 345 6789",
-          "zanele@mentor.co.za",
+          "Mr Celukwanda Mtshali",
+          "Education faculty- Senoir Phase and FET Phase",
+          "student mentor",
+          "063 810 9315",
+          "u24828752@tuks.co.za",
           "https://i.pravatar.cc/150?img=3",
           "Evenings",
         ],
+
+        [
+          "Ms Morabusioluwa Abolarin",
+          "Engineering, Built Environment and Information Technology faculty- Bachelor of Engineering in Mechanical Engineering",
+          "Student mentor",
+          " 061 187 9226",
+          "abusi.abolarin@gmail.com",
+          "https://i.pravatar.cc/150?img=4",
+          "Weekends",
+        ],
+
+        [
+          "Ms Nomzi Phosa",
+          "Engineering, Built Environment and Information Technology faculty- Bachelor of Science in Computer Science",
+          "Student mentor",
+          "081 098 5238",
+          "nomzimphosa@gmail.com",
+          "https://i.pravatar.cc/150?img=5",
+          "Weekdays",
+        ],
+        [
+          "Silothabo Chimboza",
+          "Health Sciences faculty- Human Physiology majoring in Phamacology",
+          "Student mentor",
+          " 062 977 2580",
+          "silothabo.chimboza@gmail.com",
+          "https://i.pravatar.cc/150?img=6",
+          "Weekends", 
+        ],
+
+        [
+          "Ms Kealeboga Moothai",
+          "Health Sciences faculty- Bachelor of  ",
+          "Student mentor",
+          " 068 096 7003",
+          "Moothaikealeboga@gmail.com",
+          "https://i.pravatar.cc/150?img=7",
+          "Weekdays",
+        ],
+
+        [
+          ""
+        ]
+
+    
+
       ];
       for (const mentor of mentors) {
         await refDb.runAsync(
