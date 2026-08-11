@@ -108,7 +108,6 @@ export const initReferenceDatabase = async () => {
     apply_url TEXT,
     FOREIGN KEY (institution_id) REFERENCES universities(id)
 );
-      );
 
       -- SCHOLARSHIPS TABLE
       CREATE TABLE IF NOT EXISTS scholarships (
@@ -154,7 +153,10 @@ export const initReferenceDatabase = async () => {
         points INTEGER NOT NULL
       );
     `);
+// Seed the reference database
+await seedReferenceDatabase();
 
+console.log("✅ Reference database seeded successfully");
     console.log("✅ Reference database initialized");
   } catch (error) {
     console.error("❌ Reference database init error:", error);
@@ -288,6 +290,15 @@ export const getSubjectsByStream = async (stream: string) => {
 };
 
 // ==================== UNIVERSITY FUNCTIONS ====================
+export const testUniversities = async () => {
+  const data = await refDb.getAllAsync(
+    "SELECT * FROM universities"
+  );
+
+  console.log("🏛 Universities:", data);
+
+  return data;
+};
 export const getUniversities = async () => {
   try {
     return await refDb.getAllAsync(
@@ -452,15 +463,20 @@ export const seedReferenceDatabase = async () => {
   try {
 
     const existingCourses = await refDb.getAllAsync(
-      "SELECT id FROM courses LIMIT 1"
-    );
+  "SELECT * FROM courses"
+);
+
+console.log(existingCourses);
+console.log("Number of courses:", existingCourses.length);
+
+console.log("Total courses in database:", existingCourses.length);
 
     if (existingCourses.length > 0) {
       console.log("ℹ️ Courses already seeded");
       return;
     }
 
-    console.log("🌱 Seeding reference database...");
+    console.log("🌱 Checking reference database...");
 
     await seedUCT(refDb);
 
@@ -769,34 +785,25 @@ export const seedReferenceDatabase = async () => {
     // ===== MENTORS =====
     const mentors = [
       [
-        "Dr. Thabo Mbeki",
+        "Sipho Dlamini",
         "Engineering",
-        "Senior lecturer in Civil Engineering",
-        "082 123 4567",
-        "thabo@mentor.co.za",
-        "https://i.pravatar.cc/150?img=1",
-        "Weekends",
+        "Experienced mechanical engineer mentoring students in STEM fields.",
+        "012 345 6789",
+        "sipho.dlamini@example.com",
+        "https://example.com/sipho.jpg",
+        "Mon-Fri 9am-5pm",
       ],
       [
-        "Prof. Naledi Khumalo",
-        "Medicine",
-        "Paediatrician with 15 years experience",
-        "082 234 5678",
-        "naledi@mentor.co.za",
-        "https://i.pravatar.cc/150?img=2",
-        "Weekdays",
-      ],
-      [
-        "Ms. Zanele Ndlovu",
-        "Law",
-        "Human rights lawyer and advocate",
-        "082 345 6789",
-        "zanele@mentor.co.za",
-        "https://i.pravatar.cc/150?img=3",
-        "Evenings",
+        "Anele Khumalo",
+        "Business",
+        "Career coach focusing on business and finance careers.",
+        "098 765 4321",
+        "anele.khumalo@example.com",
+        "https://example.com/anele.jpg",
+        "Weekends 10am-2pm",
       ],
     ];
-
+  
     for (const mentor of mentors) {
       await refDb.runAsync(
         "INSERT INTO mentors (name, field, bio, phone, email, profile_pic, availability) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -811,3 +818,36 @@ export const seedReferenceDatabase = async () => {
 };
 
 export default refDb;
+// ==================== GET COURSES BY UNIVERSITY ====================
+
+export const getCoursesByUniversity = async (
+  universityId: number
+) => {
+  try {
+    console.log("🔍 Searching for university ID:", universityId);
+
+    const allCourses = await refDb.getAllAsync(`
+      SELECT id, institution_id, faculty, qualification
+      FROM courses
+    `);
+
+    console.log("📚 ALL COURSES:", allCourses);
+
+    const courses = await refDb.getAllAsync(
+      `
+      SELECT *
+      FROM courses
+      WHERE institution_id = ?
+      ORDER BY faculty, qualification
+      `,
+      [universityId]
+    );
+
+    console.log("✅ MATCHING COURSES:", courses);
+
+    return courses;
+  } catch (error) {
+    console.error("❌ Error getting courses:", error);
+    return [];
+  }
+};

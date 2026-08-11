@@ -960,6 +960,7 @@ null,
       duration,
       province,
       minimum_aps,
+      fps TEXT,
       english_hl,
       english_fal,
       mathematics,
@@ -979,3 +980,4 @@ null,
 
   console.log("✅ UCT courses seeded successfully");
 }
+//

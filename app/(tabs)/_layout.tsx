@@ -28,6 +28,16 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+  name="universities"
+  options={{
+    title: "Universities",
+    headerShown: false,
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons name="school" size={size} color={color} />
+    ),
+  }}
+/>
 
       <Tabs.Screen
         name="bursaries"
