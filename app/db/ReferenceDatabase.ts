@@ -1129,3 +1129,17 @@ export const getMentorById = async (id: number) => {
 };
 
 export default refDb;
+
+// Mentors and Mentorship
+CREATE TABLE IF NOT EXISTS mentors (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    field TEXT NOT NULL,
+    bio TEXT,
+    phone TEXT,
+    email TEXT,
+    availability TEXT,
+    faculty TEXT,
+    course TEXT,
+    years_of_study INTEGER
+);
