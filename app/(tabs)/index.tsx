@@ -4,7 +4,10 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import { initDatabase, seedSchools } from "../db/Database";
-import { initReferenceDatabase, seedReferenceDatabase } from "../db/ReferenceDatabase";
+import {
+  initReferenceDatabase,
+  seedReferenceDatabase,
+} from "../db/ReferenceDatabase";
 export default function HomeScreen() {
   const router = useRouter();
 
@@ -84,7 +87,16 @@ export default function HomeScreen() {
         style={styles.button}
         onPress={() => router.push("/scholarships" as any)}
       >
-        <ThemedText style={styles.buttonText}>🎓 Scholarships & Bursaries</ThemedText>
+        <ThemedText style={styles.buttonText}>
+          🎓 Scholarships & Bursaries
+        </ThemedText>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push("/mentors" as any)}
+      >
+        <ThemedText style={styles.buttonText}>🤝 Mentorship</ThemedText>
       </TouchableOpacity>
     </View>
   );
