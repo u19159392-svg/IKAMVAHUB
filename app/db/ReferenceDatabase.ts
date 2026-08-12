@@ -150,16 +150,18 @@ CREATE TABLE IF NOT EXISTS bursary_categories (
 );
 
       -- MENTORS TABLE
-      CREATE TABLE IF NOT EXISTS mentors (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        field TEXT NOT NULL,
-        bio TEXT,
-        phone TEXT,
-        email TEXT,
-        profile_pic TEXT,
-        availability TEXT
-      );
+     CREATE TABLE IF NOT EXISTS mentors (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    field TEXT NOT NULL,
+    bio TEXT,
+    phone TEXT,
+    email TEXT,
+    availability TEXT,
+    faculty TEXT,
+    course TEXT,
+    years_of_study INTEGER
+);
 
       -- APS RULES TABLE
       CREATE TABLE IF NOT EXISTS aps_rules (
