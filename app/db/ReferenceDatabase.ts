@@ -1,7 +1,16 @@
 import * as SQLite from "expo-sqlite";
+import { seedMthashana } from "./Seeds/seeds.Mthashana TVET College";
+import { seedPortElizabeth } from "./Seeds/seeds.Port Elizabeth TVET College";
+import { seedThekwini } from "./Seeds/seeds.Thekwini TVET College";
+import { seedTUT } from "./Seeds/seeds.TUT";
 import { seedUCT } from "./Seeds/seeds.UCT";
 import { seedUKZN } from "./Seeds/seeds.UKZN";
+import { seedUmgungundlovu } from "./Seeds/seeds.Umgungundlovu TVET College";
+import { seedUWC } from "./Seeds/seeds.UWC";
+import { seedVhembe } from "./Seeds/seeds.Vhembe TVET College";
 import { seedWits } from "./Seeds/seeds.Wits";
+import { seedWSU } from "./Seeds/seeds.WSU";
+
 
 // Second database for reference data
 const refDb = SQLite.openDatabaseSync("reference.db");
@@ -141,16 +150,18 @@ CREATE TABLE IF NOT EXISTS bursary_categories (
 );
 
       -- MENTORS TABLE
-      CREATE TABLE IF NOT EXISTS mentors (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        field TEXT NOT NULL,
-        bio TEXT,
-        phone TEXT,
-        email TEXT,
-        profile_pic TEXT,
-        availability TEXT
-      );
+     CREATE TABLE IF NOT EXISTS mentors (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    field TEXT NOT NULL,
+    bio TEXT,
+    phone TEXT,
+    email TEXT,
+    availability TEXT,
+    faculty TEXT,
+    course TEXT,
+    years_of_study INTEGER
+);
 
       -- APS RULES TABLE
       CREATE TABLE IF NOT EXISTS aps_rules (
@@ -498,7 +509,7 @@ export const seedReferenceDatabase = async () => {
       console.log("✅ Seeded aps_rules");
     }
 
-    // ===== SCHOOLS =====
+    // SCHOOLS 
     const existingSchools = await refDb.getAllAsync(
       "SELECT id FROM schools LIMIT 1",
     );
@@ -912,82 +923,176 @@ export const seedReferenceDatabase = async () => {
     console.log("✅ Universities up to date (26 total, with cities)");
 
     // ===== COURSES (incl. per-institution seed files) =====
-    const existingUCT = await refDb.getAllAsync(
-      `SELECT id FROM courses
+    
+
+const existingUCT = await refDb.getAllAsync(
+  `SELECT id FROM courses
    WHERE institution_id = (
      SELECT id FROM universities
      WHERE name = ?
    )
    LIMIT 1`,
-      ["University of Cape Town"],
-    );
+  ["University of Cape Town"],
+);
 
-    if (existingUCT.length === 0) {
-      await seedUCT(refDb);
-    }
+if (existingUCT.length === 0) {
+  await seedUCT(refDb);
+}
 
-    const existingUKZN = await refDb.getAllAsync(
-      `SELECT id FROM courses
+const existingUKZN = await refDb.getAllAsync(
+  `SELECT id FROM courses
    WHERE institution_id = (
      SELECT id FROM universities
      WHERE name = ?
    )
    LIMIT 1`,
-      ["University of KwaZulu-Natal"],
-    );
+  ["University of KwaZulu-Natal"],
+);
 
-    if (existingUKZN.length === 0) {
-      await seedUKZN(refDb);
-    }
+if (existingUKZN.length === 0) {
+  await seedUKZN(refDb);
+}
 
-    const existingWits = await refDb.getAllAsync(
-      `SELECT id FROM courses
+const existingWits = await refDb.getAllAsync(
+  `SELECT id FROM courses
    WHERE institution_id = (
      SELECT id FROM universities
      WHERE name = ?
    )
    LIMIT 1`,
-      ["University of the Witwatersrand"],
-    );
+  ["University of the Witwatersrand"],
+);
 
-    if (existingWits.length === 0) {
-      await seedWits(refDb);
-    }
+if (existingWits.length === 0) {
+  await seedWits(refDb);
+}
 
-    const courses = [
-      [
-        1,
-        "university",
-        "Commerce",
-        "Bachelor of Business Science specialising in Computer Science",
-        "Bachelor's Degree",
-        "4 Years",
-        "Western Cape",
-        36,
-        "50%",
-        "60%",
-        "70%",
-        "No",
-        "",
-        "",
-        "Upper Intermediate (AL & QL)",
-        "Mathematical Studies and Maths Main are not accepted.",
-        "https://applyonline.uct.ac.za",
-      ],
-    ];
-    for (const course of courses) {
-      await refDb.runAsync(
-        `INSERT INTO courses (
-            institution_id, institution_type, faculty, qualification, qualification_type,
-            duration, province, minimum_aps, english_hl, english_fal, mathematics,
-            mathematical_literacy, physical_sciences, life_sciences, nbt,
-            additional_requirements, apply_url
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        course,
-      );
-    }
+const existingWSU = await refDb.getAllAsync(
+  `SELECT id FROM courses
+   WHERE institution_id = (
+     SELECT id FROM universities
+     WHERE name = ?
+   )
+   LIMIT 1`,
+  ["Walter Sisulu University"],
+);
 
-    console.log("✅ Seeded courses (UCT, UKZN, and inline)");
+if (existingWSU.length === 0) {
+  await seedWSU(refDb);
+}
+
+const existingUWC = await refDb.getAllAsync(
+  `SELECT id FROM courses
+   WHERE institution_id = (
+     SELECT id FROM universities
+     WHERE name = ?
+   )
+   LIMIT 1`,
+  ["University of the Western Cape"],
+);
+
+if (existingUWC.length === 0) {
+  await seedUWC(refDb);
+}
+
+const existingTUT = await refDb.getAllAsync(
+  `SELECT id FROM courses
+   WHERE institution_id = (
+     SELECT id FROM universities
+     WHERE name = ?
+   )
+   LIMIT 1`,
+  ["Tshwane University of Technology"],
+);
+
+if (existingTUT.length === 0) {
+  await seedTUT(refDb);
+}
+
+
+// ============================================================
+// TVET COLLEGE COURSES
+// ============================================================
+
+const existingMthashana = await refDb.getAllAsync(
+  `SELECT id FROM courses
+   WHERE institution_id = (
+     SELECT id FROM tvet_colleges
+     WHERE name = ?
+   )
+   LIMIT 1`,
+  ["Mthashana TVET College"],
+);
+
+if (existingMthashana.length === 0) {
+  await seedMthashana(refDb);
+}
+
+
+const existingPortElizabeth = await refDb.getAllAsync(
+  `SELECT id FROM courses
+   WHERE institution_id = (
+     SELECT id FROM tvet_colleges
+     WHERE name = ?
+   )
+   LIMIT 1`,
+  ["Port Elizabeth TVET College"],
+);
+
+if (existingPortElizabeth.length === 0) {
+  await seedPortElizabeth(refDb);
+}
+
+
+const existingThekwini = await refDb.getAllAsync(
+  `SELECT id FROM courses
+   WHERE institution_id = (
+     SELECT id FROM tvet_colleges
+     WHERE name = ?
+   )
+   LIMIT 1`,
+  ["Thekwini TVET College"],
+);
+
+if (existingThekwini.length === 0) {
+  await seedThekwini(refDb);
+}
+
+
+const existingVhembe = await refDb.getAllAsync(
+  `SELECT id FROM courses
+   WHERE institution_id = (
+     SELECT id FROM tvet_colleges
+     WHERE name = ?
+   )
+   LIMIT 1`,
+  ["Vhembe TVET College"],
+);
+
+if (existingVhembe.length === 0) {
+  await seedVhembe(refDb);
+}
+
+
+const existingUmgungundlovu = await refDb.getAllAsync(
+  `SELECT id FROM courses
+   WHERE institution_id = (
+     SELECT id FROM tvet_colleges
+     WHERE name = ?
+   )
+   LIMIT 1`,
+  ["Umgungundlovu TVET College"],
+);
+
+if (existingUmgungundlovu.length === 0) {
+  await seedUmgungundlovu(refDb);
+}
+
+
+console.log(
+  "✅ Seeded courses (UCT, UKZN, Wits, WSU, UWC, TUT and TVET colleges)"
+);
+    
 
     // ===== TVET COLLEGES =====
     const existingTvet = await refDb.getAllAsync(
