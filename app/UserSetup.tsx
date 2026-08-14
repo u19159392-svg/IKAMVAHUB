@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { createProfile, createUser, initDatabase } from "./db/Database";
 import {
@@ -213,9 +212,7 @@ export default function UserSetup() {
                   console.log("✅ Profile saved successfully");
                 }
 
-                await AsyncStorage.setItem("setupDone", "true");
-
-                router.replace("/(tabs)");
+                console.log("✅ Setup complete - staying on UserSetup");
               } catch (error) {
                 console.error("❌ Error saving profile:", error);
               }
