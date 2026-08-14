@@ -1,9 +1,9 @@
 import NetInfo from "@react-native-community/netinfo";
 import { useEffect, useState } from "react";
 import {
-    StyleSheet,
-    Text,
-    View,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
 interface OfflineIndicatorProps {
@@ -16,6 +16,12 @@ export default function OfflineIndicator({
   const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
+    // Check initial connection state
+    NetInfo.fetch().then((state) => {
+      setIsOffline(!state.isConnected);
+    });
+
+    // Listen for connection changes
     const unsubscribe = NetInfo.addEventListener((state) => {
       setIsOffline(!state.isConnected);
     });

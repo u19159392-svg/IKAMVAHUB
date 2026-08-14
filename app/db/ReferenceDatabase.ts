@@ -3,7 +3,9 @@ import * as SQLite from "expo-sqlite";
 import { seedCPUT } from "./Seeds/seeds.CPUT";
 import { seedNMU } from "./Seeds/seeds.NMU";
 import { seedSPU } from "./Seeds/seeds.SPU";
+import { seedTUT } from "./Seeds/seeds.TUT";
 import { seedUCT } from "./Seeds/seeds.UCT";
+import { seedUKZN } from "./Seeds/seeds.UKZN";
 import { seedUP } from "./Seeds/seeds.UP";
 
 // Second database for reference data
@@ -73,6 +75,7 @@ export const initReferenceDatabase = async () => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         province TEXT,
+        city TEXT,
         website TEXT,
         contact TEXT,
         minimum_aps INTEGER,
@@ -114,41 +117,48 @@ export const initReferenceDatabase = async () => {
     FOREIGN KEY (institution_id) REFERENCES universities(id)
 );
 
+  
       -- SCHOLARSHIPS TABLE
       CREATE TABLE IF NOT EXISTS scholarships (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         provider TEXT,
-        amount TEXT,
-        eligibility TEXT,
+    
         closing_date TEXT,
         apply_link TEXT,
         field_of_study TEXT
       );
 
       -- BURSARIES TABLE
-      CREATE TABLE IF NOT EXISTS bursaries (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        provider TEXT,
-        amount TEXT,
-        eligibility TEXT,
-        closing_date TEXT,
-        apply_link TEXT,
-        field_of_study TEXT
-      );
+CREATE TABLE IF NOT EXISTS bursaries (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  provider TEXT,
+  closing_date TEXT,
+  apply_link TEXT
+);
+
+-- BURSARY CATEGORIES TABLE
+CREATE TABLE IF NOT EXISTS bursary_categories (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  bursary_id INTEGER NOT NULL,
+  category TEXT NOT NULL,
+  FOREIGN KEY (bursary_id) REFERENCES bursaries(id) ON DELETE CASCADE
+);
 
       -- MENTORS TABLE
-      CREATE TABLE IF NOT EXISTS mentors (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        field TEXT NOT NULL,
-        bio TEXT,
-        phone TEXT,
-        email TEXT,
-        profile_pic TEXT,
-        availability TEXT
-      );
+     CREATE TABLE IF NOT EXISTS mentors (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    field TEXT NOT NULL,
+    bio TEXT,
+    phone TEXT,
+    email TEXT,
+    availability TEXT,
+    faculty TEXT,
+    course TEXT,
+    years_of_study INTEGER
+);
 
       -- APS RULES TABLE
       CREATE TABLE IF NOT EXISTS aps_rules (
@@ -164,7 +174,7 @@ await seedReferenceDatabase();
 console.log("✅ Reference database seeded successfully");
     console.log("✅ Reference database initialized");
   } catch (error) {
-    console.error("❌ Reference database init error:", error);
+    console.error("❌ Init reference database error:", error);
   }
 };
 
@@ -343,6 +353,16 @@ export const getCoursesByInstitution = async (
   }
 };
 
+// ==================== ELIGIBILITY SUPPORT ====================
+export const getAllCourses = async () => {
+  try {
+    return await refDb.getAllAsync("SELECT * FROM courses");
+  } catch (error) {
+    console.error("❌ Get all courses error:", error);
+    return [];
+  }
+};
+
 // ==================== TVET COLLEGE FUNCTIONS ====================
 export const getTvetColleges = async () => {
   try {
@@ -394,6 +414,7 @@ export const getScholarshipById = async (id: number) => {
 };
 
 // ==================== BURSARY FUNCTIONS ====================
+
 export const getBursaries = async () => {
   try {
     return await refDb.getAllAsync(
@@ -411,6 +432,7 @@ export const getBursaryById = async (id: number) => {
       "SELECT * FROM bursaries WHERE id = ?",
       [id],
     );
+
     return result.length > 0 ? result[0] : null;
   } catch (error) {
     console.error("❌ Get bursary error:", error);
@@ -418,36 +440,47 @@ export const getBursaryById = async (id: number) => {
   }
 };
 
-// ==================== MENTOR FUNCTIONS ====================
-export const getMentors = async () => {
+export const getBursaryCategories = async (bursaryId: number) => {
   try {
-    return await refDb.getAllAsync("SELECT * FROM mentors ORDER BY name ASC");
+    return await refDb.getAllAsync(
+      `SELECT category
+       FROM bursary_categories
+       WHERE bursary_id = ?
+       ORDER BY category ASC`,
+      [bursaryId],
+    );
   } catch (error) {
-    console.error("❌ Get mentors error:", error);
+    console.error("❌ Get bursary categories error:", error);
     return [];
   }
 };
 
-export const getMentorById = async (id: number) => {
+export const filterBursariesByCategory = async (category: string) => {
   try {
-    const result = await refDb.getAllAsync(
-      "SELECT * FROM mentors WHERE id = ?",
-      [id],
+    return await refDb.getAllAsync(
+      `SELECT DISTINCT b.*
+       FROM bursaries b
+       INNER JOIN bursary_categories bc
+         ON b.id = bc.bursary_id
+       WHERE bc.category = ?
+       ORDER BY b.closing_date ASC`,
+      [category],
     );
-    return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("❌ Get mentor error:", error);
-    return null;
+    console.error("❌ Filter bursaries by category error:", error);
+    return [];
   }
 };
 
-export const filterMentorsByField = async (field: string) => {
+export const getBursaryCategoriesList = async () => {
   try {
-    return await refDb.getAllAsync("SELECT * FROM mentors WHERE field = ?", [
-      field,
-    ]);
+    return await refDb.getAllAsync(
+      `SELECT DISTINCT category
+       FROM bursary_categories
+       ORDER BY category ASC`,
+    );
   } catch (error) {
-    console.error("❌ Filter mentors by field error:", error);
+    console.error("❌ Get bursary categories error:", error);
     return [];
   }
 };
@@ -486,155 +519,196 @@ if (uctCourses.length === 0) {
   console.log("🌱 Seeding reference database...");
 
 await seedUCT(refDb);
+await seedUKZN(refDb);
+await seedWits(refDb);
+await seedUWC(refDb);
+await seedWSU(refDb);
+await seedTUT(refDb);
 await seedNMU(refDb);
-await seedCPUT(refDb);
-await seedUP(refDb);
-await seedSPU(refDb);
+    await seedCPUT(refDb);
+    await seedUP(refDb);
+    await seedSPU(refDb);
+
 } else {
-  console.log("ℹ️ NMU courses already seeded");
+  console.log("ℹ️ University courses already seeded");
 }
 
 console.log("✅ University course seeding check completed");
 
     // ===== APS RULES =====
-    await refDb.runAsync(`
-      INSERT INTO aps_rules (min_percentage, max_percentage, points) VALUES
-      (80, 100, 7),
-      (70, 79, 6),
-      (60, 69, 5),
-      (50, 59, 4),
-      (40, 49, 3),
-      (30, 39, 2),
-      (0, 29, 1)
-    `);
+    const existingApsRules = await refDb.getAllAsync(
+      "SELECT id FROM aps_rules LIMIT 1",
+    );
+    if (existingApsRules.length === 0) {
+      await refDb.runAsync(`
+        INSERT INTO aps_rules (min_percentage, max_percentage, points) VALUES
+        (80, 100, 7),
+        (70, 79, 6),
+        (60, 69, 5),
+        (50, 59, 4),
+        (40, 49, 3),
+        (30, 39, 2),
+        (0, 29, 1)
+      `);
+      console.log("✅ Seeded aps_rules");
+    }
 
-    // ===== SCHOOLS =====
-    const schools = [
-      ["Baleni Secondary School", "Eastern Cape", "Public", "Bizana", "", ""],
-      [
-        "Tyelimhlophe Secondary School",
-        "Eastern Cape",
-        "Public",
-        "Mount Frere",
-        "",
-        "",
-      ],
-      [
-        "Toleni Secondary School",
-        "Eastern Cape",
-        "Public",
-        "Mount Frere",
-        "",
-        "",
-      ],
-      ["Bonxa High School", "Eastern Cape", "Public", "Tabankulu", "", ""],
-      [
-        "Dumsi Senior Secondary School",
-        "Eastern Cape",
-        "Public",
-        "Mount Frere",
-        "",
-        "",
-      ],
-    ];
-
-    for (const school of schools) {
-      await refDb.runAsync(
-        "INSERT INTO schools (name, province, type, location, contact, email) VALUES (?, ?, ?, ?, ?, ?)",
-        school,
-      );
+    // SCHOOLS 
+    const existingSchools = await refDb.getAllAsync(
+      "SELECT id FROM schools LIMIT 1",
+    );
+    if (existingSchools.length === 0) {
+      const schools = [
+        ["Baleni Secondary School", "Eastern Cape", "Public", "Bizana", "", ""],
+        [
+          "Tyelimhlophe Secondary School",
+          "Eastern Cape",
+          "Public",
+          "Mount Frere",
+          "",
+          "",
+        ],
+        [
+          "Toleni Secondary School",
+          "Eastern Cape",
+          "Public",
+          "Mount Frere",
+          "",
+          "",
+        ],
+        ["Bonxa High School", "Eastern Cape", "Public", "Tabankulu", "", ""],
+        [
+          "Dumsi Senior Secondary School",
+          "Eastern Cape",
+          "Public",
+          "Mount Frere",
+          "",
+          "",
+        ],
+      ];
+      for (const school of schools) {
+        await refDb.runAsync(
+          "INSERT INTO schools (name, province, type, location, contact, email) VALUES (?, ?, ?, ?, ?, ?)",
+          school,
+        );
+      }
+      console.log("✅ Seeded schools");
     }
 
     // ===== CAREERS =====
-    const careers = [
-      {
-        name: "General Practitioner",
-        field: "Science & Health Sciences",
-        description: "Diagnoses and treats common illnesses.",
-        subjects_needed:
-          "Mathematics, Life Sciences, Physical Sciences, English",
-        study_path: "MBChB → Internship → Community Service → Registration",
-        institutions:
-          "University of Cape Town, Stellenbosch University, University of the Witwatersrand",
-        aps_range: "42-46+",
-      },
-      {
-        name: "Registered Nurse",
-        field: "Science & Health Sciences",
-        description: "Provides patient care and administers medication.",
-        subjects_needed: "Mathematics, Life Sciences, English",
-        study_path: "Diploma in Nursing → Registration with SANC",
-        institutions:
-          "University of Fort Hare, Walter Sisulu University, Nelson Mandela University",
-        aps_range: "30-34+",
-      },
-    ];
-
-    for (const career of careers) {
-      await refDb.runAsync(
-        "INSERT INTO careers (name, field, description, subjects_needed, study_path, institutions, aps_range) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        [
-          career.name,
-          career.field,
-          career.description,
-          career.subjects_needed,
-          career.study_path,
-          career.institutions,
-          career.aps_range,
-        ],
-      );
+    const existingCareers = await refDb.getAllAsync(
+      "SELECT id FROM careers LIMIT 1",
+    );
+    if (existingCareers.length === 0) {
+      const careers = [
+        {
+          name: "General Practitioner",
+          field: "Science & Health Sciences",
+          description: "Diagnoses and treats common illnesses.",
+          subjects_needed:
+            "Mathematics, Life Sciences, Physical Sciences, English",
+          study_path: "MBChB → Internship → Community Service → Registration",
+          institutions:
+            "University of Cape Town, Stellenbosch University, University of the Witwatersrand",
+          aps_range: "42-46+",
+        },
+        {
+          name: "Registered Nurse",
+          field: "Science & Health Sciences",
+          description: "Provides patient care and administers medication.",
+          subjects_needed: "Mathematics, Life Sciences, English",
+          study_path: "Diploma in Nursing → Registration with SANC",
+          institutions:
+            "University of Fort Hare, Walter Sisulu University, Nelson Mandela University",
+          aps_range: "30-34+",
+        },
+      ];
+      for (const career of careers) {
+        await refDb.runAsync(
+          "INSERT INTO careers (name, field, description, subjects_needed, study_path, institutions, aps_range) VALUES (?, ?, ?, ?, ?, ?, ?)",
+          [
+            career.name,
+            career.field,
+            career.description,
+            career.subjects_needed,
+            career.study_path,
+            career.institutions,
+            career.aps_range,
+          ],
+        );
+      }
+      console.log("✅ Seeded careers");
     }
 
     // ===== INDUSTRIES =====
-    const industries = [
-      [
-        "Automotive Manufacturing",
-        "Manufacturing",
-        "Gqeberha, Kariega, East London",
-        "Vehicle assembly, car parts production",
-        "Mechanical Engineer, Technician, Machine Operator",
-        "Volkswagen, Isuzu, Mercedes-Benz",
-      ],
-      [
-        "Agriculture",
-        "Agriculture",
-        "Sundays River Valley, Mthatha",
-        "Citrus farming, dairy, livestock",
-        "Farm Manager, Agricultural Technician, Worker",
-        "Clover, Woodlands Dairy",
-      ],
-    ];
-
-    for (const industry of industries) {
-      await refDb.runAsync(
-        "INSERT INTO industries (name, sector, location, specialization, jobs_available, factories) VALUES (?, ?, ?, ?, ?, ?)",
-        industry,
-      );
+    const existingIndustries = await refDb.getAllAsync(
+      "SELECT id FROM industries LIMIT 1",
+    );
+    if (existingIndustries.length === 0) {
+      const industries = [
+        [
+          "Automotive Manufacturing",
+          "Manufacturing",
+          "Gqeberha, Kariega, East London",
+          "Vehicle assembly, car parts production",
+          "Mechanical Engineer, Technician, Machine Operator",
+          "Volkswagen, Isuzu, Mercedes-Benz",
+        ],
+        [
+          "Agriculture",
+          "Agriculture",
+          "Sundays River Valley, Mthatha",
+          "Citrus farming, dairy, livestock",
+          "Farm Manager, Agricultural Technician, Worker",
+          "Clover, Woodlands Dairy",
+        ],
+      ];
+      for (const industry of industries) {
+        await refDb.runAsync(
+          "INSERT INTO industries (name, sector, location, specialization, jobs_available, factories) VALUES (?, ?, ?, ?, ?, ?)",
+          industry,
+        );
+      }
+      console.log("✅ Seeded industries");
     }
 
     // ===== SUBJECTS =====
-    const subjects = [
-      ["Mathematics", "Science"],
-      ["Physical Sciences", "Science"],
-      ["Life Sciences", "Science"],
-      ["English", "Arts"],
-      ["History", "Arts"],
-      ["Accounting", "Commerce"],
-      ["Business Studies", "Commerce"],
-    ];
-
-    for (const subject of subjects) {
-      await refDb.runAsync(
-        "INSERT INTO subjects (name, stream) VALUES (?, ?)",
-        subject,
-      );
+    const existingSubjects = await refDb.getAllAsync(
+      "SELECT id FROM subjects LIMIT 1",
+    );
+    if (existingSubjects.length === 0) {
+      const subjects = [
+        ["Mathematics", "Science"],
+        ["Physical Sciences", "Science"],
+        ["Life Sciences", "Science"],
+        ["English", "Arts"],
+        ["History", "Arts"],
+        ["Accounting", "Commerce"],
+        ["Business Studies", "Commerce"],
+      ];
+      for (const subject of subjects) {
+        await refDb.runAsync(
+          "INSERT INTO subjects (name, stream) VALUES (?, ?)",
+          subject,
+        );
+      }
+      console.log("✅ Seeded subjects");
     }
 
-    // ===== UNIVERSITIES =====
-    const universities = [
+    // ===== UNIVERSITIES (full list of 26 public universities, with city) =====
+    const universities: [
+      string,
+      string,
+      string,
+      string,
+      string,
+      number,
+      string,
+    ][] = [
       [
         "University of Cape Town",
         "Western Cape",
+        "Cape Town",
         "www.uct.ac.za",
         "021 650 9111",
         5,
@@ -643,6 +717,7 @@ console.log("✅ University course seeding check completed");
       [
         "University of Pretoria",
         "Gauteng",
+        "Pretoria",
         "www.up.ac.za",
         "012 420 3111",
         5,
@@ -651,8 +726,216 @@ console.log("✅ University course seeding check completed");
       [
         "Stellenbosch University",
         "Western Cape",
+        "Stellenbosch",
         "www.sun.ac.za",
         "021 808 9111",
+        5,
+        "",
+      ],
+      [
+        "University of KwaZulu-Natal",
+        "KwaZulu-Natal",
+        "Durban",
+        "www.ukzn.ac.za",
+        "031 260 1111",
+        5,
+        "",
+      ],
+      [
+        "University of the Western Cape",
+        "Western Cape",
+        "Bellville, Cape Town",
+        "www.uwc.ac.za",
+        "021 959 2911",
+        5,
+        "",
+      ],
+      [
+        "Cape Peninsula University of Technology",
+        "Western Cape",
+        "Cape Town",
+        "www.cput.ac.za",
+        "021 460 3000",
+        5,
+        "",
+      ],
+      [
+        "University of the Witwatersrand",
+        "Gauteng",
+        "Johannesburg",
+        "www.wits.ac.za",
+        "011 717 1000",
+        5,
+        "",
+      ],
+      [
+        "University of Johannesburg",
+        "Gauteng",
+        "Johannesburg",
+        "www.uj.ac.za",
+        "011 559 4555",
+        5,
+        "",
+      ],
+      [
+        "University of South Africa",
+        "Gauteng",
+        "Pretoria",
+        "www.unisa.ac.za",
+        "012 429 3111",
+        5,
+        "",
+      ],
+      [
+        "Tshwane University of Technology",
+        "Gauteng",
+        "Pretoria",
+        "www.tut.ac.za",
+        "012 382 5911",
+        5,
+        "",
+      ],
+      [
+        "Vaal University of Technology",
+        "Gauteng",
+        "Vanderbijlpark",
+        "www.vut.ac.za",
+        "016 950 9000",
+        5,
+        "",
+      ],
+      [
+        "Sefako Makgatho Health Sciences University",
+        "Gauteng",
+        "Ga-Rankuwa, Pretoria",
+        "www.smu.ac.za",
+        "012 521 4111",
+        5,
+        "",
+      ],
+      [
+        "Durban University of Technology",
+        "KwaZulu-Natal",
+        "Durban",
+        "www.dut.ac.za",
+        "031 373 2000",
+        5,
+        "",
+      ],
+      [
+        "Mangosuthu University of Technology",
+        "KwaZulu-Natal",
+        "Umlazi, Durban",
+        "www.mut.ac.za",
+        "031 907 7111",
+        5,
+        "",
+      ],
+      [
+        "University of Zululand",
+        "KwaZulu-Natal",
+        "KwaDlangezwa",
+        "www.unizulu.ac.za",
+        "035 902 6000",
+        5,
+        "",
+      ],
+      [
+        "University of the Free State",
+        "Free State",
+        "Bloemfontein",
+        "www.ufs.ac.za",
+        "051 401 9111",
+        5,
+        "",
+      ],
+      [
+        "Central University of Technology",
+        "Free State",
+        "Bloemfontein",
+        "www.cut.ac.za",
+        "051 507 3911",
+        5,
+        "",
+      ],
+      [
+        "Rhodes University",
+        "Eastern Cape",
+        "Makhanda (Grahamstown)",
+        "www.ru.ac.za",
+        "046 603 8111",
+        5,
+        "",
+      ],
+      [
+        "Nelson Mandela University",
+        "Eastern Cape",
+        "Gqeberha",
+        "www.mandela.ac.za",
+        "041 504 1111",
+        5,
+        "",
+      ],
+      [
+        "University of Fort Hare",
+        "Eastern Cape",
+        "Alice",
+        "www.ufh.ac.za",
+        "040 602 2011",
+        5,
+        "",
+      ],
+      [
+        "Walter Sisulu University",
+        "Eastern Cape",
+        "Mthatha",
+        "www.wsu.ac.za",
+        "047 502 2000",
+        5,
+        "",
+      ],
+      [
+        "North-West University",
+        "North West",
+        "Potchefstroom",
+        "www.nwu.ac.za",
+        "018 299 1111",
+        5,
+        "",
+      ],
+      [
+        "University of Limpopo",
+        "Limpopo",
+        "Polokwane",
+        "www.ul.ac.za",
+        "015 268 9111",
+        5,
+        "",
+      ],
+      [
+        "University of Venda",
+        "Limpopo",
+        "Thohoyandou",
+        "www.univen.ac.za",
+        "015 962 8000",
+        5,
+        "",
+      ],
+      [
+        "University of Mpumalanga",
+        "Mpumalanga",
+        "Mbombela",
+        "www.ump.ac.za",
+        "013 002 0001",
+        5,
+        "",
+      ],
+      [
+        "Sol Plaatje University",
+        "Northern Cape",
+        "Kimberley",
+        "www.spu.ac.za",
+        "053 491 0000",
         5,
         "",
       ],
@@ -1137,61 +1420,37 @@ console.log("✅ University course seeding check completed");
       );
     }
     // ===== SCHOLARSHIPS =====
-    const scholarships = [
-      [
-        "ABSA Bursary",
-        "ABSA Bank",
-        "R50,000",
-        "South African citizen, good academic record",
-        "2025-09-30",
-        "www.absa.co.za",
-        "Business",
-      ],
-      [
-        "Sasol Bursary",
-        "Sasol",
-        "Full tuition",
-        "STEM students",
-        "2025-10-15",
-        "www.sasol.com",
-        "Engineering",
-      ],
-    ];
-
-    for (const scholarship of scholarships) {
-      await refDb.runAsync(
-        "INSERT INTO scholarships (name, provider, amount, eligibility, closing_date, apply_link, field_of_study) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        scholarship,
-      );
-    }
-
-    // ===== BURSARIES =====
-    const bursaries = [
-      [
-        "Funza Lushaka Bursary",
-        "Department of Basic Education",
-        "Full tuition",
-        "Students pursuing teaching",
-        "2025-10-31",
-        "www.funzalushaka.gov.za",
-        "Education",
-      ],
-      [
-        "NSFAS Bursary",
-        "NSFAS",
-        "Full tuition",
-        "South African citizen, financial need",
-        "2025-11-30",
-        "www.nsfas.org.za",
-        "All fields",
-      ],
-    ];
-
-    for (const bursary of bursaries) {
-      await refDb.runAsync(
-        "INSERT INTO bursaries (name, provider, amount, eligibility, closing_date, apply_link, field_of_study) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        bursary,
-      );
+    const existingScholarships = await refDb.getAllAsync(
+      "SELECT id FROM scholarships LIMIT 1",
+    );
+    if (existingScholarships.length === 0) {
+      const scholarships = [
+        [
+          "ABSA Bursary",
+          "ABSA Bank",
+          "R50,000",
+          "South African citizen, good academic record",
+          "2025-09-30",
+          "www.absa.co.za",
+          "Business",
+        ],
+        [
+          "Sasol Bursary",
+          "Sasol",
+          "Full tuition",
+          "STEM students",
+          "2025-10-15",
+          "www.sasol.com",
+          "Engineering",
+        ],
+      ];
+      for (const scholarship of scholarships) {
+        await refDb.runAsync(
+          "INSERT INTO scholarships (name, provider, amount, eligibility, closing_date, apply_link, field_of_study) VALUES (?, ?, ?, ?, ?, ?, ?)",
+          scholarship,
+        );
+      }
+      console.log("✅ Seeded scholarships");
     }
 
     // ===== MENTORS =====
@@ -1223,9 +1482,33 @@ console.log("✅ University course seeding check completed");
       );
     }
 
-    console.log("✅ Reference database seeded successfully");
+    console.log("✅ Reference database seed check complete");
   } catch (error) {
     console.error("❌ Seed reference database error:", error);
+  }
+};
+// ==================== MENTOR FUNCTIONS ====================
+
+export const getMentors = async () => {
+  try {
+    return await refDb.getAllAsync("SELECT * FROM mentors ORDER BY name ASC");
+  } catch (error) {
+    console.error("❌ Get mentors error:", error);
+    return [];
+  }
+};
+
+export const getMentorById = async (id: number) => {
+  try {
+    const result = await refDb.getAllAsync(
+      "SELECT * FROM mentors WHERE id = ?",
+      [id],
+    );
+
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("❌ Get mentor by ID error:", error);
+    return null;
   }
 };
 

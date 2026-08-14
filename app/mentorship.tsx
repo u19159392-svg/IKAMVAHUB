@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  ListRenderItemInfo,
   ScrollView,
   StyleSheet,
   Text,
@@ -68,113 +69,107 @@ export default function Mentorship() {
     );
   }, [mentors, selectedField]);
 
-  const renderMentor = ({ item }: { item: Mentor }) => {
-    return (
-      <View style={styles.card}>
-        <Text style={styles.mentorName}>{item.name}</Text>
-
-        <Text style={styles.field}>
-          {item.field}
-        </Text>
-
-        {item.bio ? (
-          <Text style={styles.bio}>
-            {item.bio}
-          </Text>
-        ) : null}
-
-        {item.availability ? (
-          <Text style={styles.availability}>
-            Availability: {item.availability}
-          </Text>
-        ) : null}
-
-        {item.email ? (
-          <Text style={styles.contact}>
-            Email: {item.email}
-          </Text>
-        ) : null}
-      </View>
+  const renderMentor = (info: ListRenderItemInfo<Mentor>) => {
+    const item = info.item;
+    return React.createElement(
+      View,
+      { style: styles.card },
+      React.createElement(Text, { style: styles.mentorName }, item.name),
+      React.createElement(Text, { style: styles.field }, item.field),
+      item.bio
+        ? React.createElement(Text, { style: styles.bio }, item.bio)
+        : null,
+      item.availability
+        ? React.createElement(
+            Text,
+            { style: styles.availability },
+            `Availability: ${item.availability}`
+          )
+        : null,
+      item.email
+        ? React.createElement(
+            Text,
+            { style: styles.contact },
+            `Email: ${item.email}`
+          )
+        : null
     );
   };
 
   if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0057A3" />
-        <Text style={styles.loadingText}>
-          Loading mentors...
-        </Text>
-      </View>
+    return React.createElement(
+      View,
+      { style: styles.loadingContainer },
+      React.createElement(ActivityIndicator, {
+        size: "large",
+        color: "#0057A3",
+      }),
+      React.createElement(Text, { style: styles.loadingText }, "Loading mentors...")
     );
   }
 
-  return (
-    <View style={styles.container}>
-
-      {/* PAGE TITLE */}
-      <Text style={styles.title}>
-        Find a Mentor
-      </Text>
-
-      <Text style={styles.subtitle}>
-        Connect with mentors in your field of interest.
-      </Text>
-
-      {/* FIELD FILTERS */}
-      <Text style={styles.filterTitle}>
-        Filter by field
-      </Text>
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filterContainer}
-      >
-        {FIELDS.map((field) => (
-          <TouchableOpacity
-            key={field}
-            style={[
+  return React.createElement(
+    View,
+    { style: styles.container },
+    React.createElement(Text, { style: styles.title }, "Find a Mentor"),
+    React.createElement(
+      Text,
+      { style: styles.subtitle },
+      "Connect with mentors in your field of interest."
+    ),
+    React.createElement(Text, { style: styles.filterTitle }, "Filter by field"),
+    React.createElement(
+      ScrollView,
+      {
+        horizontal: true,
+        showsHorizontalScrollIndicator: false,
+        contentContainerStyle: styles.filterContainer,
+      },
+      ...FIELDS.map((field) =>
+        React.createElement(
+          TouchableOpacity,
+          {
+            key: field,
+            style: [
               styles.filterButton,
-              selectedField === field &&
-                styles.activeFilterButton,
-            ]}
-            onPress={() => setSelectedField(field)}
-          >
-            <Text
-              style={[
+              selectedField === field && styles.activeFilterButton,
+            ],
+            onPress: () => setSelectedField(field),
+          },
+          React.createElement(
+            Text,
+            {
+              style: [
                 styles.filterText,
-                selectedField === field &&
-                  styles.activeFilterText,
-              ]}
-            >
-              {field}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      {/* MENTOR LIST */}
-      {filteredMentors.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyTitle}>
-            No mentors found
-          </Text>
-
-          <Text style={styles.emptyText}>
-            There are currently no mentors available in this field.
-          </Text>
-        </View>
-      ) : (
-        <FlatList
-          data={filteredMentors}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderMentor}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.list}
-        />
-      )}
-    </View>
+                selectedField === field && styles.activeFilterText,
+              ],
+            },
+            field
+          )
+        )
+      )
+    ),
+    filteredMentors.length === 0
+      ? React.createElement(
+          View,
+          { style: styles.emptyContainer },
+          React.createElement(Text, { style: styles.emptyTitle }, "No mentors found"),
+          React.createElement(
+            Text,
+            { style: styles.emptyText },
+            "There are currently no mentors available in this field."
+          )
+        )
+      : React.createElement(
+          FlatList as React.ComponentType<any>,
+          {
+            data: filteredMentors,
+            keyExtractor: (item: Mentor) => item.id.toString(),
+            renderItem: renderMentor,
+            showsVerticalScrollIndicator: false,
+            contentContainerStyle: styles.list,
+          } as any
+        )
   );
 }
 

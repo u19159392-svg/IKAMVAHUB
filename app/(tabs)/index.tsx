@@ -1,8 +1,8 @@
+/** @jsxImportSource react */
 import { useRouter } from "expo-router";
-import React from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function Homescreen(){
+export default function Homescreen() {
   const router = useRouter();
 
   return (

@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -26,25 +26,28 @@ export default function Universities() {
   const [filtered, setFiltered] = useState<University[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadUniversities();
   }, []);
 
   const loadUniversities = async () => {
-  try {
-    const data = (await getUniversities()) as University[];
+    try {
+      setError(null);
+      const data = (await getUniversities()) as University[];
 
-    console.log("🏛 Universities:", data);
+      console.log("🏛 Universities:", data);
 
-    setUniversities(data);
-    setFiltered(data);
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setLoading(false);
-  }
-};
+      setUniversities(data);
+      setFiltered(data);
+    } catch (error) {
+      console.error(error);
+      setError("Failed to load universities. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleSearch = (text: string) => {
     setSearch(text);
 
@@ -68,6 +71,20 @@ export default function Universities() {
     );
   }
 
+  if (error) {
+    return (
+      <View style={styles.center}>
+        <Text style={styles.error}>{error}</Text>
+        <TouchableOpacity
+          style={styles.retryButton}
+          onPress={loadUniversities}
+        >
+          <Text style={styles.retryText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
 
@@ -86,6 +103,13 @@ export default function Universities() {
         data={filtered}
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>
+              {search ? "No universities found matching your search" : "No universities available"}
+            </Text>
+          </View>
+        }
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
@@ -167,5 +191,38 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  error: {
+    color: "#d32f2f",
+    fontSize: 16,
+    marginBottom: 15,
+    textAlign: "center",
+  },
+
+  retryButton: {
+    backgroundColor: "#0066CC",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+
+  retryText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 40,
+  },
+
+  emptyText: {
+    fontSize: 16,
+    color: "#999",
+    textAlign: "center",
   },
 });
