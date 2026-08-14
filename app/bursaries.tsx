@@ -7622,43 +7622,40 @@ const formatCategory = (category: string) =>
   category.replace(/\s+BURSARIES?$/i, "").trim();
 
 const renderBursaryCard = ({ item }: { item: Bursary }) => (
-    <Pressable
-      onPress={() => openDetails(item)}
-      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-    >
-      <View style={styles.logoSection}>
-        <View style={styles.logoBox}>
-          <Ionicons name="school-outline" size={30} color={COLORS.primary} />
-        </View>
+  <Pressable
+    onPress={() => openDetails(item)}
+    style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+  >
+    <View style={styles.logoSection}>
+      <View style={styles.logoBox}>
+        <Ionicons name="school-outline" size={30} color={COLORS.primary} />
       </View>
+    </View>
 
-      <View style={styles.cardContent}>
-        <Text style={styles.cardTitle}>{item.name}</Text>
-        <Text style={styles.cardProvider} numberOfLines={2}>
-          {item.provider || "Provider not specified"}
+    <View style={styles.cardContent}>
+      <Text style={styles.cardTitle}>{item.name}</Text>
+
+      <Text style={styles.cardProvider} numberOfLines={2}>
+        {item.provider || "Provider not specified"}
+      </Text>
+
+      <View style={styles.infoRow}>
+        <Ionicons
+          name="calendar-outline"
+          size={17}
+          color={COLORS.primary}
+        />
+        <Text style={styles.infoText}>
+          Closing date: {item.closingDate || "Not specified"}
         </Text>
-
-        <View style={styles.infoRow}>
-          <Ionicons name="calendar-outline" size={17} color={COLORS.primary} />
-          <Text style={styles.infoText}>Closing date: Not specified</Text>
-        </View>
-
-        {item.fields.length > 0 && (
-          <View style={styles.tagsContainer}>
-            {item.fields.slice(0, 4).map((field, index) => (
-              <View key={`${field}-${index}`} style={styles.fieldTag}>
-                <Text style={styles.fieldTagText}>{formatCategory(field)}</Text>
-              </View>
-            ))}
-          </View>
-        )}
       </View>
+    </View>
 
-      <View style={styles.arrowContainer}>
-        <Ionicons name="chevron-forward" size={25} color={COLORS.text} />
-      </View>
-    </Pressable>
-  );
+    <View style={styles.arrowContainer}>
+      <Ionicons name="chevron-forward" size={25} color={COLORS.text} />
+    </View>
+  </Pressable>
+);
 
   return (
     <SafeAreaView style={styles.safeArea}>
