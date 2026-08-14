@@ -1,5 +1,11 @@
 import * as SQLite from "expo-sqlite";
+
+import { seedCPUT } from "./Seeds/seeds.CPUT";
+import { seedNMU } from "./Seeds/seeds.NMU";
 import { seedUCT } from "./Seeds/seeds.UCT";
+import { seedUP } from "./Seeds/seeds.UP";
+import { seedSPU } from "./Seeds/seeds.SPU";
+
 
 // Second database for reference data
 const refDb = SQLite.openDatabaseSync("reference.db");
@@ -462,23 +468,34 @@ export const getApsPoints = (percentage: number): number => {
 export const seedReferenceDatabase = async () => {
   try {
 
-    const existingCourses = await refDb.getAllAsync(
-  "SELECT * FROM courses"
+    console.log("🌱 Checking university courses...");
+
+// Check whether UCT courses already exist
+const uctCourses = await refDb.getAllAsync(
+  `SELECT id FROM courses
+   WHERE institution_id = (
+     SELECT id FROM universities
+     WHERE name = ?
+   )`,
+  ["University of Cape Town"]
 );
 
-console.log(existingCourses);
-console.log("Number of courses:", existingCourses.length);
+console.log("🎓 UCT courses:", uctCourses.length);
 
-console.log("Total courses in database:", existingCourses.length);
+if (uctCourses.length === 0) {
+  console.log("🌱 Seeding UCT courses...");
+  console.log("🌱 Seeding reference database...");
 
-    if (existingCourses.length > 0) {
-      console.log("ℹ️ Courses already seeded");
-      return;
-    }
+await seedUCT(refDb);
+await seedNMU(refDb);
+await seedCPUT(refDb);
+await seedUP(refDb);
+await seedSPU(refDb);
+} else {
+  console.log("ℹ️ NMU courses already seeded");
+}
 
-    console.log("🌱 Checking reference database...");
-
-    await seedUCT(refDb);
+console.log("✅ University course seeding check completed");
 
     // ===== APS RULES =====
     await refDb.runAsync(`
