@@ -10,6 +10,17 @@ import { seedUWC } from "./Seeds/seeds.UWC";
 import { seedVhembe } from "./Seeds/seeds.Vhembe TVET College";
 import { seedWits } from "./Seeds/seeds.Wits";
 import { seedWSU } from "./Seeds/seeds.WSU";
+import { seedUFS } from "./Seeds/seeds.UFS";
+import { seedUNIVEN } from "./Seeds/seeds.UNIVEN";
+import { seedMUT } from "./Seeds/seeds.MUT";
+import { seedGertSibande } from "./Seeds/seeds.GertSibande";
+import { seedLetaba } from "./Seeds/seeds.Letaba";
+import { seedMotheo } from "./Seeds/seeds.Motheo"; 
+import { seedUMNGUNGUNDLOVU } from "./Seeds/seeds.UMGUNGUNDLOVU"; 
+import { seedTALETSO } from "./Seeds.seeds.TALETSO";
+import { seedsORBIT } from "./Seeds.seeds.Orbit";
+import { seedsSU } from "./Seeds.seeds.SU"; 
+
 
 
 
