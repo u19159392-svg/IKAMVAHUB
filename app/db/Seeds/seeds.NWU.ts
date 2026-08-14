@@ -1,3 +1,4 @@
+
 export const northWestUniversityQualifications = [
   {
     //==== Faculty of Economic and Management Science ====//

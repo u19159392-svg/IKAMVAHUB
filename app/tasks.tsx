@@ -22,6 +22,8 @@ export default function Tasks() {
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("medium");
   const [userId] = useState(1);
+  const[dueDate,setDueDate]= useState(new Date());
+  const[showDatePicker,setShowDatePicker]=useState(false);
 
   useEffect(() => {
     const loadTasks = async () => {
@@ -173,6 +175,8 @@ export default function Tasks() {
               </Text>
             </TouchableOpacity>
           ))}
+
+          
         </View>
 
         <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
@@ -192,6 +196,8 @@ export default function Tasks() {
             scrollEnabled={false}
           />
         </View>
+
+        
       )}
 
       {completedTasks.length > 0 && (
