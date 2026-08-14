@@ -28,14 +28,22 @@ export default function Layout() {
   const [dbReady, setDbReady] = useState(false);
 
   useEffect(() => {
-    const setup = async () => {
-      const db = await import("./db/Database");
-      if (db?.initDatabase) await db.initDatabase();
-      if (db?.seedSchools) await db.seedSchools();
-      setDbReady(true);
-    };
-    setup();
-  }, []);
+  const setup = async () => {
+    // Main database
+    const db = await import("./db/Database");
+    if (db?.initDatabase) await db.initDatabase();
+
+    // Reference database
+    const refDb = await import("./db/ReferenceDatabase");
+    if (refDb?.initReferenceDatabase) {
+      await refDb.initReferenceDatabase();
+    }
+
+    setDbReady(true);
+  };
+
+  setup();
+}, []);
 
   if (!dbReady) {
     return (
