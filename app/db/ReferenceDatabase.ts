@@ -10,6 +10,7 @@ import { seedUWC } from "./Seeds/seeds.UWC";
 import { seedVhembe } from "./Seeds/seeds.Vhembe TVET College";
 import { seedWits } from "./Seeds/seeds.Wits";
 import { seedWSU } from "./Seeds/seeds.WSU";
+import { seedUFS } from "./seeds/seeds.UFS";
 
 
 // Second database for reference data
