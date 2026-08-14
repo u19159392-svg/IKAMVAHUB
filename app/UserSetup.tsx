@@ -212,7 +212,8 @@ export default function UserSetup() {
                   console.log("✅ Profile saved successfully");
                 }
 
-                console.log("✅ Setup complete - staying on UserSetup");
+                console.log("✅ Setup complete - going to main app");
+                router.replace("/(tabs)");
               } catch (error) {
                 console.error("❌ Error saving profile:", error);
               }
