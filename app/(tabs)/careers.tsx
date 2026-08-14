@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { getCareers } from "../db/Database";
+import {saveData, getData} from "../utils/Storage"
 
 export default function Careers() {
   const router = useRouter();
@@ -25,11 +26,31 @@ export default function Careers() {
   }, []);
 
   const loadCareers = async () => {
+    try{
+    setLoading(true);
+
     const data = await getCareers();
     console.log("📊 CAREERS LOADED:", data.length);
+
+    //Save fresh careers locally 
+    await saveData("careers", data);
+
     setCareers(data);
     setFilteredCareers(data);
+    }catch(error){
+      console.error("Could not load careers from database:", error);
+
+      //Load cached careers when offline 
+      const cachedCareers = await getData("Careers");
+      
+      if (cachedCareers) {
+      console.log("Using cached careers:", cachedCareers.length);
+      setCareers(cachedCareers);
+      setFilteredCareers(cachedCareers);
+    }
+  } finally {
     setLoading(false);
+  }
   };
 
   const filterCareers = (text: string, stream: string) => {
