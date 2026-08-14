@@ -1,0 +1,406 @@
+export const WaterbergTVETQualifications = [
+  {
+//======Business Studies =====//
+
+{
+  faculty: "Business Studies",
+  qualification: "Finance, Economics and Accounting",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: 40,
+  mathematics: 40,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Completed Grade 9; average 40%",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Office Administration",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Primary Health",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Safety in Society",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Business Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Management Assistant",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+
+//======Information Technology =====//
+
+{
+  faculty: "Information Technology",
+  qualification: "Information Technology and Computer Science",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+
+//======Hospitality and Tourism =====//
+
+{
+  faculty: "Hospitality and Tourism",
+  qualification: "Hospitality",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Hospitality and Tourism",
+  qualification: "Tourism",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Hospitality and Tourism",
+  qualification: "Tourism",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+
+//======Agriculture =====//
+
+{
+  faculty: "Agriculture",
+  qualification: "Primary Agriculture",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+
+//======Engineering Studies =====//
+
+{
+  faculty: "Engineering Studies",
+  qualification: "Civil Engineering and Building Construction",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Engineering Studies",
+  qualification: "Electrical Infrastructure Construction",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Engineering Studies",
+  qualification: "Engineering and Related Design",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Engineering Studies",
+  qualification: "Civil Engineering",
+  type: "NATED",
+  duration: "N4",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Engineering Studies - Civil Engineering",
+},
+
+{
+  faculty: "Engineering Studies",
+  qualification: "Millwright",
+  type: "NATED",
+  duration: "N1-N3",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Engineering Studies - Millwright",
+},
+
+
+//======Education and Development =====//
+
+{
+  faculty: "Education and Development",
+  qualification: "Education and Development",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+
+//======Additional Vocational and Skills Programmes =====//
+
+{
+  faculty: "Vocational and Skills Programmes",
+  qualification: "Pastel Accounting and Pastel Payroll",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Programme-specific requirements not stipulated",
+},
+
+{
+  faculty: "Vocational and Skills Programmes",
+  qualification: "End User Computing Level 3",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 3",
+},
+
+{
+  faculty: "Vocational and Skills Programmes",
+  qualification: "Wholesale Distribution Level 2",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 2",
+},
+
+{
+  faculty: "Vocational and Skills Programmes",
+  qualification: "Chain Store Operations",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Programme-specific requirements not stipulated",
+},
+
+{
+  faculty: "Vocational and Skills Programmes",
+  qualification: "Community House Building Level 2",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 2",
+},
+
+{
+  faculty: "Vocational and Skills Programmes",
+  qualification: "Early Childhood Development Level 4",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 4",
+},
+
+{
+  faculty: "Vocational and Skills Programmes",
+  qualification: "Early Childhood Development Level 5",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 5",
+},
+
+{
+  faculty: "Vocational and Skills Programmes",
+  qualification: "School Business Administration Level 3",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 3",
+},
+
+{
+  faculty: "Agricultural Skills Programmes",
+  qualification: "Land Care Facilitation Level 5",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 5",
+},
+
+{
+  faculty: "Agricultural Skills Programmes",
+  qualification: "Land Care Level 5",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 5",
+},
+
+{
+  faculty: "Agricultural Skills Programmes",
+  qualification: "Horticulture Level 1",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 1",
+},
+
+{
+  faculty: "Agricultural Skills Programmes",
+  qualification: "Land Care Level 3",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 3",
+},
+
+{
+  faculty: "Agricultural Skills Programmes",
+  qualification: "Mixed Farming Level 2",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 2",
+},
+
+{
+  faculty: "Agricultural Skills Programmes",
+  qualification: "Animal Production Level 2",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 2",
+},
+
+{
+  faculty: "Agricultural Skills Programmes",
+  qualification: "Plant Production Level 2",
+  type: "Skills Programme",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Level 2",
+},
+  }]
