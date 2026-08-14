@@ -1,0 +1,217 @@
+export const sefakoMakgathoyQualifications = [
+  {
+
+    //======Medicine Faculty =====//
+
+{
+  faculty: "Medicine",
+  qualification: "Bachelor of Medicine and Bachelor of Surgery (MBChB)",
+  type: "Bachelor",
+  duration: "6 years",
+  aps: 38,
+  english: 6,
+  mathematics: 6,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 6; Life Sciences level 6; Additional Subject 1 level 5; Additional Subject 2 level 4; Life Orientation level 5; Entry into the programme is very competitive; Offered at SMU",
+},
+
+{
+  faculty: "Medicine",
+  qualification: "Bachelor of Medicine and Bachelor of Surgery Extended Curriculum (MBChB - ECP)",
+  type: "Extended Bachelor",
+  duration: "7 years including the one-year foundation programme",
+  aps: 32,
+  english: 5,
+  mathematics: 5,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 5; Life Sciences level 5; Life Orientation level 4; Additional Subject 1 level 4; Additional Subject 2 level 4; Reserved for South African Black learners from Quintile 1 and 2 schools who have not previously attended tertiary education and who were not admitted to the six-year MBChB programme; Maximum 50 spaces; Competitive selection",
+},
+
+{
+  faculty: "Medicine",
+  qualification: "Diploma in Emergency Medical Care (DIP EMC)",
+  type: "Diploma",
+  duration: "2 years",
+  aps: 18,
+  english: 3,
+  mathematics: 3,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Life Sciences level 3; Physical Sciences level 3; Additional Subject 1 level 3; Additional Subject 2 level 3; Applicants with older matric grading require Matriculation exemption or M-score of 10 and minimum E on Higher Grade or D on Standard Grade for English, Mathematics, Biology/Physiology and Physical Sciences; National Certificate applicants require at least 60% for English, Mathematics, Life Sciences and Physical Sciences; Medical Fitness and Physical Fitness Evaluations required",
+},
+
+{
+  faculty: "Medicine",
+  qualification: "Higher Certificate in Emergency Medical Care (HCERT EMC)",
+  type: "Higher Certificate",
+  duration: "1 year",
+  aps: 15,
+  english: 3,
+  mathematics: "3 OR Mathematical Literacy 4",
+  mathematicalLiteracy: "4",
+  additionalRequirements: "Life Sciences level 3 and/or Physical Sciences level 3; Additional Subject 1 level 3; Additional Subject 2 level 3; Applicants with older matric grading require minimum E on Higher Grade or D on Standard Grade for English, Mathematics, Biology and/or Physical Sciences; Medical Fitness and Physical Fitness Evaluations required",
+},
+
+{
+  faculty: "Medicine",
+  qualification: "Bachelor of Diagnostic Radiography (B RAD)",
+  type: "Bachelor",
+  duration: "4 years minimum; 6 years maximum",
+  aps: 16,
+  english: 4,
+  mathematics: 4,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 4; Life Sciences level 4; Life Orientation level 3; Other subjects contribute 6 points; National Senior Certificate for degree purposes; Clinical training at accredited hospitals in Gauteng, Limpopo and North West provinces",
+},
+
+//======Dentistry Faculty =====//
+
+{
+  faculty: "Dentistry",
+  qualification: "Bachelor of Dental Surgery (BDS)",
+  type: "Bachelor",
+  duration: "5 years",
+  aps: 37,
+  english: 5,
+  mathematics: 6,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 6; Life Sciences level 6; Additional Subject 1 level 5; Additional Subject 2 level 5; Life Orientation level 4; Selection applies; Different requirements may apply to applicants with qualifications or partial qualifications",
+},
+
+{
+  faculty: "Dentistry",
+  qualification: "Bachelor of Dental Therapy (BDT)",
+  type: "Bachelor",
+  duration: "3 years",
+  aps: 28,
+  english: 4,
+  mathematics: 4,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 4; Life Sciences level 4; Additional 2 subjects level 4 each; Life Orientation level 4; Selection applies; Applicants with completed first-year BSc or equivalent may be considered; Foreign nationals require relevant matriculation/examination results, SAQA matric exemption and proof of identification",
+},
+
+{
+  faculty: "Dentistry",
+  qualification: "Bachelor of Oral Hygiene (BOH)",
+  type: "Bachelor",
+  duration: "3 years",
+  aps: 31,
+  english: 4,
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: 7,
+  additionalRequirements: "Physical Sciences level 4; Life Sciences level 4; Additional 2 subjects level 4 each; Life Orientation level 4; Selection applies",
+},
+
+//======Pharmacy Faculty =====//
+
+{
+  faculty: "Pharmacy",
+  qualification: "Bachelor of Pharmacy (BPharm)",
+  type: "Bachelor",
+  duration: "4 years",
+  aps: "Not Stipulated",
+  english: 5,
+  mathematics: 5,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 5; Life Sciences level 5; Mathematics, Physical Sciences, Life Sciences and English must each be at least level 5; Applicant must indicate BPharm as first choice; Selection and screening apply; Limited number of places; Registration with the South African Pharmacy Council is required; One-year internship and one-year community service are required after qualification",
+},
+
+//======Health Care Sciences Faculty =====//
+
+{
+  faculty: "Health Care Sciences",
+  qualification: "Bachelor of Nursing and Midwifery (BNAM)",
+  type: "Bachelor",
+  duration: "4 years",
+  aps: 26,
+  english: 5,
+  mathematics: 4,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 4; Life Sciences level 4; Additional Subject 1 level 4; Additional Subject 2 level 4; Life Orientation level 3; For old matric grading, Mathematics, Physical Science, Biology and English required with C on Higher Grade or D on Standard Grade; The prospectus also states a combined APS of 18 under the old matric grading",
+},
+
+{
+  faculty: "Health Care Sciences",
+  qualification: "Bachelor of Occupational Therapy (B Occ Ther)",
+  type: "Bachelor",
+  duration: "4 years",
+  aps: 25,
+  english: 4,
+  mathematics: 4,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 4; Life Sciences level 4; Additional Subject 1 level 3; Additional Subject 2 level 3; Life Orientation level 3; English must be at least level 4; Life Orientation must be at least level 3; Full-time programme; Registration with HPCSA required",
+},
+
+{
+  faculty: "Health Care Sciences",
+  qualification: "Bachelor of Science in Physiotherapy (BSc Physio)",
+  type: "Bachelor",
+  duration: "4 years",
+  aps: 28,
+  english: 4,
+  mathematics: 4,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 4; Life Sciences level 4; Additional Subject 1 level 4; Additional Subject 2 level 4; Life Orientation level 4",
+},
+
+{
+  faculty: "Health Care Sciences",
+  qualification: "Bachelor of Audiology (B. AUD01)",
+  type: "Bachelor",
+  duration: "Not Stipulated",
+  aps: 25,
+  english: 4,
+  mathematics: 4,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 4; Life Sciences level 4; Any Home Language or First Additional Language level 4; Life Orientation level 3; Additional 2 subjects level 3 each; Selection criteria determined by the Department of Speech-Language Pathology and Audiology; Applicants must observe at hospitals, private practices and/or clinics before initial selection; Limited number of applicants",
+},
+
+{
+  faculty: "Health Care Sciences",
+  qualification: "Bachelor of Speech-Language Pathology",
+  type: "Bachelor",
+  duration: "Not Stipulated",
+  aps: 25,
+  english: 4,
+  mathematics: 4,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Life Sciences level 4; Any Home Language or First Additional Language level 4; Life Orientation level 3; Additional 2 subjects level 3 each; Selection criteria determined by the Department of Speech-Language Pathology and Audiology; Applicants must observe at hospitals, private practices and/or clinics before initial selection; Limited number of applicants",
+},
+
+{
+  faculty: "Health Care Sciences",
+  qualification: "Bachelor of Science in Dietetics (BSc Dietetics)",
+  type: "Bachelor",
+  duration: "4 years",
+  aps: 25,
+  english: 4,
+  mathematics: 4,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 4; Life Sciences level 4; Additional Subject 1 level 3; Additional Subject 2 level 3; Life Orientation level 3; Includes 34 weeks of integrated internship, with 23 weeks continuous during fourth year; One year of community service required after completion",
+},
+
+//======Science and Technology Faculty =====//
+
+{
+  faculty: "Science and Technology",
+  qualification: "Bachelor of Science (BSc)",
+  type: "Bachelor",
+  duration: "Not Stipulated",
+  aps: 25,
+  english: 4,
+  mathematics: 5,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 4; Life Sciences level 4; Any two other NSC subjects with a minimum NSC score of 4 each; Fields include Chemistry and Chemical Technology, Biochemistry and Chemical Technology, Physiology, Psychology, Physics, Biology and Environmental Sciences, Mathematics and Applied Mathematics, Statistics and Operations Research, and Computer Science",
+},
+
+{
+  faculty: "Science and Technology",
+  qualification: "Bachelor of Science (BSc) - Extended Curriculum Programme (BSc-ECP)",
+  type: "Extended Bachelor",
+  duration: "4 years",
+  aps: 24,
+  english: 4,
+  mathematics: 4,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Physical Sciences level 4; Life Sciences level 4; Any two other NSC subjects with a minimum NSC score of 4 each; Fields include Chemistry and Chemical Technology and Biochemistry and Chemical Technology; The prospectus identifies additional BSc fields including Physiology, Psychology, Physics, Biology and Environmental Sciences, Mathematics and Applied Mathematics, Statistics and Operations Research, and Computer Science",
+},
+  }]

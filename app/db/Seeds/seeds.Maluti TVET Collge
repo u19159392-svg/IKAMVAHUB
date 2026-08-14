@@ -1,0 +1,397 @@
+export const malutiTVETQualifications = [
+  {
+
+//======Engineering Related NCV =====//
+
+{
+  faculty: "Engineering Related Studies",
+  qualification: "Information Technology",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Engineering Related Studies",
+  qualification: "Electrical Infrastructure Construction",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Engineering Related Studies",
+  qualification: "Engineering and Related Design",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Engineering Related Studies",
+  qualification: "Civil Engineering and Building Construction",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+
+//======Business Related NCV =====//
+
+{
+  faculty: "Business Studies",
+  qualification: "Marketing",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Finance, Economics and Accounting",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Office Administration",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Primary Agriculture",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+
+//======Service Related NCV =====//
+
+{
+  faculty: "Service Studies",
+  qualification: "Tourism",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Service Studies",
+  qualification: "Education and Development",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Service Studies",
+  qualification: "Hospitality",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+{
+  faculty: "Service Studies",
+  qualification: "Primary Health",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NCV Levels 2-4",
+},
+
+
+//======NATED Engineering Studies =====//
+
+{
+  faculty: "Engineering Studies",
+  qualification: "Electrical Engineering",
+  type: "NATED",
+  duration: "N1-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N1-N6",
+},
+
+{
+  faculty: "Engineering Studies",
+  qualification: "Mechanical Engineering",
+  type: "NATED",
+  duration: "N1-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N1-N6",
+},
+
+{
+  faculty: "Engineering Studies",
+  qualification: "Civil Engineering",
+  type: "NATED",
+  duration: "N1-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N1-N6",
+},
+
+
+//======NATED Business Studies =====//
+
+{
+  faculty: "Business Studies",
+  qualification: "Business Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Marketing Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Management Assistant",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Financial Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Public Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Human Resources Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+{
+  faculty: "Business Studies",
+  qualification: "Educare",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+
+//======NATED Utility Studies =====//
+
+{
+  faculty: "Utility Studies",
+  qualification: "Hospitality",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+{
+  faculty: "Utility Studies",
+  qualification: "Clothing Production",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+{
+  faculty: "Utility Studies",
+  qualification: "Art",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4-N6",
+},
+
+
+//======Occupational Programmes =====//
+
+{
+  faculty: "Occupational Programmes",
+  qualification: "Bricklayer",
+  type: "Occupational",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level 4",
+},
+
+{
+  faculty: "Occupational Programmes",
+  qualification: "Electrician",
+  type: "Occupational",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level 4",
+},
+
+{
+  faculty: "Occupational Programmes",
+  qualification: "ECD Practitioner",
+  type: "Occupational",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level 4",
+},
+
+{
+  faculty: "Occupational Programmes",
+  qualification: "Computer Technician",
+  type: "Occupational",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level 5",
+},
+
+{
+  faculty: "Occupational Programmes",
+  qualification: "Automotive Motor Mechanic",
+  type: "Occupational",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level not specified",
+},
+
+{
+  faculty: "Occupational Programmes",
+  qualification: "Long Term Insurance",
+  type: "Occupational",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level 5",
+},
+
+
+  }]

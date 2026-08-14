@@ -1,0 +1,231 @@
+export const esayidiTVETyQualifications = [
+  {
+
+//======NCV Hospitality =====//
+
+{
+  faculty: "NCV Hospitality",
+  qualification: "National Certificate (Vocational): Hospitality",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "English First Additional Language",
+  mathematics: "Mathematical Literacy",
+  mathematicalLiteracy: "Accepted",
+  additionalRequirements: "NQF Levels 2, 3 and 4; Fundamental subjects include English First Additional Language, Life Orientation and Mathematical Literacy; Vocational subjects include Hospitality Services, Hospitality Generics, Client Services and Human Relations, and Food Preparation; Offered at Gamalakhe Campus",
+},
+
+//======NCV Tourism =====//
+
+{
+  faculty: "NCV Tourism",
+  qualification: "National Certificate (Vocational): Tourism",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "English First Additional Language",
+  mathematics: "Mathematical Literacy",
+  mathematicalLiteracy: "Accepted",
+  additionalRequirements: "NQF Levels 2, 3 and 4; Fundamental subjects include English First Additional Language, Life Orientation and Mathematical Literacy; Vocational subjects include Science of Tourism, Sustainable Tourism in SA, Tourism Operations, and Client Services and Human Relations; Offered at Gamalakhe Campus",
+},
+
+//======NCV Primary Agriculture =====//
+
+{
+  faculty: "NCV Primary Agriculture",
+  qualification: "National Certificate (Vocational): Primary Agriculture",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "English First Additional Language",
+  mathematics: "Mathematical Literacy",
+  mathematicalLiteracy: "Accepted",
+  additionalRequirements: "NQF Levels 2, 3 and 4; Vocational subjects include Agri-business, Animal Production, Plant Production, Soil Science, Advanced Plant Production and Farm Planning & Mechanization; Offered at Gamalakhe and uMzimkhulu Campuses",
+},
+
+//======NCV Finance, Economics and Accounting =====//
+
+{
+  faculty: "NCV Finance, Economics and Accounting",
+  qualification: "National Certificate (Vocational): Finance, Economics and Accounting",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "English First Additional Language",
+  mathematics: "Mathematical Literacy",
+  mathematicalLiteracy: "Accepted",
+  additionalRequirements: "NQF Levels 2, 3 and 4; Vocational subjects include Applied Accounting, Financial Management, Economic Environment and Wholesale & Retail; Offered at Gamalakhe Campus",
+},
+
+//======NCV Office Administration =====//
+
+{
+  faculty: "NCV Office Administration",
+  qualification: "National Certificate (Vocational): Office Administration",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "English First Additional Language",
+  mathematics: "Mathematical Literacy",
+  mathematicalLiteracy: "Accepted",
+  additionalRequirements: "NQF Levels 2, 3 and 4; Vocational subjects include Business Practice, Wholesale & Retail, Office Data Processing and Office Practice; Offered at Enyenyezi, Kokstad and Clydesdale Campuses",
+},
+
+//======NCV Electrical Infrastructure Construction =====//
+
+{
+  faculty: "NCV Electrical Infrastructure Construction",
+  qualification: "National Certificate (Vocational): Electrical Infrastructure Construction",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "English First Additional Language",
+  mathematics: "Mathematical Literacy",
+  mathematicalLiteracy: "Accepted",
+  additionalRequirements: "NQF Levels 2, 3 and 4; Vocational subjects include Electrical Principles & Practice, Workshop Practice, Electronic Control & Digital Electronics, and Renewable Energy Technologies; Offered at Enyenyezi Campus",
+},
+
+//======NCV Civil Engineering =====//
+
+{
+  faculty: "NCV Civil Engineering",
+  qualification: "National Certificate (Vocational): Civil Engineering",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "English First Additional Language",
+  mathematics: "Mathematical Literacy",
+  mathematicalLiteracy: "Accepted",
+  additionalRequirements: "NQF Levels 2, 3 and 4; Vocational subjects at Kokstad include Carpentry & Roof Work, Materials, Construction Planning and Plant & Equipment; Offered at Kokstad Campus",
+},
+
+//======NCV Education and Development =====//
+
+{
+  faculty: "NCV Education and Development",
+  qualification: "National Certificate (Vocational): Education and Development",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "English First Additional Language",
+  mathematics: "Mathematical Literacy",
+  mathematicalLiteracy: "Accepted",
+  additionalRequirements: "NQF Levels 2, 3 and 4; Vocational subjects include Art and Science of Teaching, Human and Social Development, Learning Psychology and Early Childhood Development; Offered at Clydesdale Campus",
+},
+
+//======Report 191 Tourism =====//
+
+{
+  faculty: "Report 191 Tourism",
+  qualification: "Report 191: Tourism",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4, N5 and N6; Subjects include Travel Office Procedures, Tourism Communication, Travel Services and Tourist Destinations; Offered at Gamalakhe Campus",
+},
+
+//======Report 191 Business Management =====//
+
+{
+  faculty: "Report 191 Business Management",
+  qualification: "Report 191: Business Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4, N5 and N6; Subjects include Entrepreneurship & Business Management, Introductory Accounting, Sales Management, Cost & Management Accounting, Management Communication, Computer Practice and Financial Accounting",
+},
+
+//======Report 191 Public Management =====//
+
+{
+  faculty: "Report 191 Public Management",
+  qualification: "Report 191: Public Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "N4, N5 and N6; Subjects include Public Administration, Municipal Administration, Public Finance, Public Law, Management Communication, Computer Practice and Entrepreneurship & Business Management",
+},
+
+//======Occupational Programmes =====//
+
+{
+  faculty: "Occupational Programmes",
+  qualification: "Occupational Certificate: Tourist Information Officer",
+  type: "Occupational Certificate",
+  duration: "2 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Offered at Gamalakhe Campus",
+},
+
+{
+  faculty: "Occupational Programmes",
+  qualification: "Occupational Certificate: Hairdresser",
+  type: "Occupational Certificate",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Offered at Gamalakhe Campus",
+},
+
+{
+  faculty: "Occupational Programmes",
+  qualification: "Occupational Certificate: Chef",
+  type: "Occupational Certificate",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Offered at Gamalakhe Campus",
+},
+
+{
+  faculty: "Occupational Programmes",
+  qualification: "Occupational Certificate: Cook",
+  type: "Occupational Certificate",
+  duration: "1 year",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Offered at Gamalakhe Campus",
+},
+
+{
+  faculty: "Occupational Programmes",
+  qualification: "Occupational Certificate: Electrician",
+  type: "Occupational Certificate",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Offered at Enyenyezi Campus",
+},
+
+{
+  faculty: "Occupational Programmes",
+  qualification: "Occupational Certificate: Bricklayer",
+  type: "Occupational Certificate",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Offered at Kokstad Campus",
+},
+  }]

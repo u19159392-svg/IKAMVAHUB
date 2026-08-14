@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   ScrollView,
@@ -14,16 +15,24 @@ import {
   seedSchools,
   updateUser,
 } from "./db/Database";
+import {
+  initReferenceDatabase,
+  seedReferenceDatabase,
+} from "./db/ReferenceDatabase";
 
 export default function DebugScreen() {
   const [users, setUsers] = useState<any[]>([]);
 
   const handleInit = async () => {
-    await initDatabase();
-    await seedSchools();
+  await initDatabase();
+  await seedSchools();
 
-    console.log("✅ Database initialized");
-  };
+  await initReferenceDatabase();
+  await seedReferenceDatabase();
+
+  console.log("✅ Main database initialized");
+  console.log("✅ Reference database initialized");
+};
 
   const handleAddUser = async () => {
     const name = `User ${Math.floor(Math.random() * 100)}`;
@@ -82,6 +91,13 @@ export default function DebugScreen() {
 
       <TouchableOpacity style={styles.button} onPress={handleDeleteUser}>
         <Text style={styles.buttonText}>Delete First User</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push('/qualifying-courses')}
+      >
+        <Text style={styles.buttonText}>Test: Qualifying Courses</Text>
       </TouchableOpacity>
 
       <View style={styles.userList}>

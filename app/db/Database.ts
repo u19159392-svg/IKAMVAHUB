@@ -234,7 +234,7 @@ const mentors = [
 ];
 
 for (const mentor of mentors) {
-  await refDb.runAsync(
+  await db.runAsync(
     `INSERT INTO mentors
     (name, field, bio, phone, email, profile_pic, availability)
     VALUES (?, ?, ?, ?, ?, ?, ?)`,

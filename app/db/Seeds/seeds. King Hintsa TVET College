@@ -1,0 +1,484 @@
+export const kingHintsaQualifications = [
+  {
+
+
+//======King Hintsa TVET College - Report 191 / NATED =====//
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Farming Management",
+  type: "NATED",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: 3,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 12 pass; Agriculture minimum level 3; Mathematics minimum level 3; Offered at Teko Campus",
+},
+
+//======King Hintsa TVET College - NCV Agriculture =====//
+
+{
+  faculty: "NCV Agriculture",
+  qualification: "National Certificate (Vocational): Primary Agriculture",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: 3,
+  additionalRequirements: "Grade 9 pass to Grade 12; Agriculture minimum level 3; Mathematical Literacy minimum level 3; Mathematics also listed as a requirement; Offered at Teko Campus",
+},
+
+//======King Hintsa TVET College - NCV Engineering =====//
+
+{
+  faculty: "NCV Engineering",
+  qualification: "National Certificate (Vocational): Civil Engineering and Building Construction",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: 3,
+  mathematicalLiteracy: 3,
+  additionalRequirements: "Grade 9 pass to Grade 12; Mathematics minimum level 3; Physical Science minimum level 3; Maths also listed; Offered at Teko Campus",
+},
+
+{
+  faculty: "NCV Engineering",
+  qualification: "National Certificate (Vocational): Electrical Infrastructure Construction",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: 3,
+  mathematicalLiteracy: 3,
+  additionalRequirements: "Grade 9 pass to Grade 12; Mathematics minimum level 3; Physical Science minimum level 3; Maths also listed; Offered at Teko Campus",
+},
+
+{
+  faculty: "NCV Engineering",
+  qualification: "National Certificate (Vocational): Engineering and Related Design",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: 3,
+  mathematicalLiteracy: 3,
+  additionalRequirements: "Grade 9 pass to Grade 12; Mathematics minimum level 3; Physical Science minimum level 3; Maths also listed; Offered at Teko Campus",
+},
+
+//======King Hintsa TVET College - Business Studies =====//
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Marketing Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 12; NCV Level 4; Business Studies 40%; Offered at Dutywa Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Public Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 12; NCV Level 4; Business Studies 40%; Offered at Dutywa Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Public Relations",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 12; NCV Level 4; Business Studies 40%; Offered at Dutywa Campus",
+},
+
+{
+  faculty: "NCV Business Studies",
+  qualification: "National Certificate (Vocational): Marketing",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Accepted",
+  additionalRequirements: "Grade 9; Business Studies; Mathematical Literacy; Levels 2-4; Offered at Dutywa Campus",
+},
+
+{
+  faculty: "NCV Information Technology",
+  qualification: "National Certificate (Vocational): Information Technology and Computer Science",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: 4,
+  mathematics: 4,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 9; Mathematics 40%; English 40%; Levels 2-4; Offered at Dutywa Campus",
+},
+
+//======King Hintsa TVET College - Business Studies =====//
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Human Resource Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 12; NCV Level 4; Life Sciences 40%; Offered at Willowvale Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Financial Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 12; NCV Level 4; Accounting 45%; Offered at Willowvale Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Management Assistant",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 12; NCV Level 4; Consumer Studies 40%; Offered at Willowvale Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Business Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 12; NCV Level 4; Accounting 40%; Offered at Willowvale Campus",
+},
+
+{
+  faculty: "NCV Finance, Economics and Accounting",
+  qualification: "National Certificate (Vocational): Finance, Economics and Accounting",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: 4,
+  additionalRequirements: "Grade 9; Accounting 40%; Mathematical Literacy 40%; Levels 2-4; Offered at Willowvale Campus",
+},
+
+{
+  faculty: "NCV Office Administration",
+  qualification: "National Certificate (Vocational): Office Administration",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: 4,
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 9; Maths 40%; Life Orientation 50%; Levels 2-4; Offered at Willowvale Campus",
+},
+
+//======King Hintsa TVET College - Hospitality & Tourism =====//
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Hospitality",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 12; NCV Level 4; Business Studies 40%; Offered at Centane Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Tourism",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 12; NCV Level 4; Commercial Studies 40%; Offered at Centane Campus",
+},
+
+{
+  faculty: "NCV Hospitality",
+  qualification: "National Certificate (Vocational): Hospitality",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: 3,
+  additionalRequirements: "Grade 9; Mathematical Literacy 30%; Life Science 40%; Levels 2-4; Offered at Centane Campus",
+},
+
+{
+  faculty: "NCV Tourism",
+  qualification: "National Certificate (Vocational): Tourism",
+  type: "NCV",
+  duration: "3 years",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: 3,
+  additionalRequirements: "Grade 9; Mathematical Literacy 30%; Business Studies 50%; Levels 2-4; Offered at Centane Campus",
+},
+
+//======King Hintsa TVET College - Engineering =====//
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Civil Engineering",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "40%",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 12 Technical; Grade 12 Mathematics and Physical Science 40%; OR N3/NQF Level 4 vocational; Offered at Msobomvu Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Electrical Engineering",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "45%",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Grade 12 passed; Mathematics and Physical Science 45% and above; Offered at Msobomvu Campus",
+},
+
+//======King Hintsa TVET College - Report 191 Business =====//
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Human Resources Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Subjects include Management Communication, Computer Practice, Entrepreneurship and Business Management, Personnel Management, Personnel Training and Labour Relations; Offered at Willowvale Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Financial Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Subjects include Financial Accounting, Entrepreneurship and Business Management, Computerised Financial System and Cost and Management Accounting; Offered at Willowvale Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Management Assistant",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Subjects include Communication, Computer Practice, Information Processing and Office Practice; Offered at Willowvale Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Business Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Subjects include Management Communication, Entrepreneurship and Business Management, Computer Practice, Financial Accounting, Sales Management and Economics; Offered at Willowvale Campus",
+},
+
+//======King Hintsa TVET College - Report 191 Business =====//
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Public Relations",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Subjects include Office Practice, Public Administration, Information Processing and Communication; Offered at Dutywa Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Marketing Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Subjects include Marketing Management, Management Communication, Computer Practice, Entrepreneurship and Business Management, Sales Management, Public Relations and Marketing Research; Offered at Dutywa Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Public Management",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Subjects include Public Administration, Computer Practice, Management Communication, Entrepreneurship and Business Management, Public Finance, Municipal Administration and Public Law; Offered at Dutywa Campus",
+},
+
+//======King Hintsa TVET College - Report 191 Hospitality =====//
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Hospitality",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Subjects include Applied Management, Catering Theory and Practical, Nutrition and Menu Planning, Sanitation and Safety, Entrepreneurship and Business Management, Communication and Human Relations, and Computer Practice; Offered at Centane Campus",
+},
+
+{
+  faculty: "Report 191 / NATED",
+  qualification: "Tourism",
+  type: "NATED",
+  duration: "N4-N6",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "Subjects include Tourists Destinations, Travel Office Procedures, Tourism Communication, Travel Services and Hotel Reception; Offered at Centane Campus",
+},
+
+//======King Hintsa TVET College - Learnerships =====//
+
+{
+  faculty: "Learnerships",
+  qualification: "Animal Production",
+  type: "Learnership",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level 2; Enrolment depends on availability of funding",
+},
+
+{
+  faculty: "Learnerships",
+  qualification: "Wholesale & Retail",
+  type: "Learnership",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level 3; Enrolment depends on availability of funding",
+},
+
+{
+  faculty: "Learnerships",
+  qualification: "End-user Computing",
+  type: "Learnership",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level 3; Enrolment depends on availability of funding",
+},
+
+//======King Hintsa TVET College - Short Skills =====//
+
+{
+  faculty: "Short Skills",
+  qualification: "Assistant Chef",
+  type: "Short Skills",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level 2; Enrolment depends on availability of funding",
+},
+
+{
+  faculty: "Short Skills",
+  qualification: "Hot Water Installer",
+  type: "Short Skills",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level 2; Enrolment depends on availability of funding",
+},
+
+{
+  faculty: "Short Skills",
+  qualification: "Customer Care",
+  type: "Short Skills",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level 4; Enrolment depends on availability of funding",
+},
+
+{
+  faculty: "Short Skills",
+  qualification: "Customer Care",
+  type: "Short Skills",
+  duration: "Not Stipulated",
+  aps: "Not Applicable",
+  english: "Not Stipulated",
+  mathematics: "Not Stipulated",
+  mathematicalLiteracy: "Not Stipulated",
+  additionalRequirements: "NQF Level 5; Enrolment depends on availability of funding",
+},
+  }]
