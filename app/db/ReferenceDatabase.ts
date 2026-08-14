@@ -2,9 +2,9 @@ import * as SQLite from "expo-sqlite";
 
 import { seedCPUT } from "./Seeds/seeds.CPUT";
 import { seedNMU } from "./Seeds/seeds.NMU";
+import { seedSPU } from "./Seeds/seeds.SPU";
 import { seedUCT } from "./Seeds/seeds.UCT";
 import { seedUP } from "./Seeds/seeds.UP";
-import { seedSPU } from "./Seeds/seeds.SPU";
 
 
 // Second database for reference data
