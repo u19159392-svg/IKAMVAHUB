@@ -1,6 +1,7 @@
 import { Redirect } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
+import OfflineBanner from "./OfflineBanner";
 
 export default function Index() {
   const [loading, setLoading] = useState(true);
@@ -19,6 +20,15 @@ export default function Index() {
           alignItems: "center",
         }}
       >
+
+        return(
+          <>
+          <OfflineBanner/>
+          <View>
+            {/* Your existing UI */}
+          </View>
+          </>
+        );
         <ActivityIndicator size="large" />
       </View>
     );
