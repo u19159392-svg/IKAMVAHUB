@@ -10,7 +10,6 @@ import { seedUWC } from "./Seeds/seeds.UWC";
 import { seedVhembe } from "./Seeds/seeds.Vhembe TVET College";
 import { seedWits } from "./Seeds/seeds.Wits";
 import { seedWSU } from "./Seeds/seeds.WSU";
-import { seedUFS } from "./seeds/seeds.UFS";
 
 
 // Second database for reference data
@@ -1096,36 +1095,468 @@ console.log(
     
 
     // ===== TVET COLLEGES =====
-    const existingTvet = await refDb.getAllAsync(
-      "SELECT id FROM tvet_colleges LIMIT 1",
+const tvetColleges = [
+  // Eastern Cape
+  [
+    "Eastcape Midlands TVET College",
+    "Eastern Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Buffalo City TVET College",
+    "Eastern Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "King Sabata Dalindyebo TVET College",
+    "Eastern Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "King Hintsa TVET College",
+    "Eastern Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Lovedale TVET College",
+    "Eastern Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Port Elizabeth TVET College",
+    "Eastern Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Ikhala TVET College",
+    "Eastern Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+
+  // Western Cape
+  [
+    "False Bay TVET College",
+    "Western Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Northlink TVET College",
+    "Western Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "South Cape TVET College",
+    "Western Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "West Coast TVET College",
+    "Western Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+
+  // KwaZulu-Natal
+  [
+    "Mnambithi TVET College",
+    "KwaZulu-Natal",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "uMfolozi TVET College",
+    "KwaZulu-Natal",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Mthashana TVET College",
+    "KwaZulu-Natal",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Thekwini TVET College",
+    "KwaZulu-Natal",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "uMgungundlovu TVET College",
+    "KwaZulu-Natal",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Coastal KZN TVET College",
+    "KwaZulu-Natal",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Elangeni TVET College",
+    "KwaZulu-Natal",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Majuba TVET College",
+    "KwaZulu-Natal",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Esayidi TVET College",
+    "KwaZulu-Natal",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+
+  // Gauteng
+  [
+    "Ekurhuleni East TVET College",
+    "Gauteng",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Ekurhuleni West TVET College",
+    "Gauteng",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "South West Gauteng TVET College",
+    "Gauteng",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Central Johannesburg TVET College",
+    "Gauteng",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Sedibeng TVET College",
+    "Gauteng",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Tshwane North TVET College",
+    "Gauteng",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Tshwane South TVET College",
+    "Gauteng",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Tshwane West TVET College",
+    "Gauteng",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Western TVET College",
+    "Gauteng",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+
+  // Limpopo
+  [
+    "Capricorn TVET College",
+    "Limpopo",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Lephalale TVET College",
+    "Limpopo",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Mopani South East TVET College",
+    "Limpopo",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Letaba TVET College",
+    "Limpopo",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Vhembe TVET College",
+    "Limpopo",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Sekhukhune TVET College",
+    "Limpopo",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Waterberg TVET College",
+    "Limpopo",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Taletso TVET College",
+    "Limpopo",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Tshwane North TVET College",
+    "Gauteng",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Mthashana TVET College",
+    "KwaZulu-Natal",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+
+  // Free State
+  [
+    "Flavius Mareka TVET College",
+    "Free State",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Goldfields TVET College",
+    "Free State",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Motheo TVET College",
+    "Free State",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Maluti TVET College",
+    "Free State",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+
+  // Mpumalanga
+  [
+    "Ehlanzeni TVET College",
+    "Mpumalanga",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Gert Sibande TVET College",
+    "Mpumalanga",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Nkangala TVET College",
+    "Mpumalanga",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+
+  // North West
+  [
+    "Orbit TVET College",
+    "North West",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Vuselela TVET College",
+    "North West",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+
+  // Northern Cape
+  [
+    "Northern Cape Urban TVET College",
+    "Northern Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+  [
+    "Northern Cape Rural TVET College",
+    "Northern Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+
+  // Limpopo / Xitsonga
+  [
+    "Mopani South East TVET College",
+    "Limpopo",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+
+  // Eastern Cape / Xitsonga entry from supplied list
+  [
+    "West Coast TVET College",
+    "Western Cape",
+    "",
+    "",
+    "Public",
+    "",
+  ],
+];
+
+// Add colleges individually.
+// This is important because the database may already contain
+// Buffalo City and Port Elizabeth from an earlier seed.
+for (const college of tvetColleges) {
+  const existing = await refDb.getAllAsync(
+    "SELECT id FROM tvet_colleges WHERE name = ?",
+    [college[0]],
+  );
+
+  if (existing.length === 0) {
+    await refDb.runAsync(
+      `INSERT INTO tvet_colleges
+       (name, province, website, contact, type, image_url)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      college,
     );
-    if (existingTvet.length === 0) {
-      const tvetColleges = [
-        [
-          "Buffalo City TVET College",
-          "Eastern Cape",
-          "www.bccollege.co.za",
-          "043 704 9800",
-          "Public",
-          "",
-        ],
-        [
-          "Port Elizabeth TVET College",
-          "Eastern Cape",
-          "www.pecollege.edu.za",
-          "041 509 9000",
-          "Public",
-          "",
-        ],
-      ];
-      for (const college of tvetColleges) {
-        await refDb.runAsync(
-          "INSERT INTO tvet_colleges (name, province, website, contact, type, image_url) VALUES (?, ?, ?, ?, ?, ?)",
-          college,
-        );
-      }
-      console.log("✅ Seeded tvet_colleges");
-    }
+  }
+}
+
+console.log(
+  `✅ TVET colleges up to date (${tvetColleges.length} colleges)`
+);
 
     // ===== SCHOLARSHIPS =====
     const existingScholarships = await refDb.getAllAsync(
