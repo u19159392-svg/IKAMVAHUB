@@ -1,4 +1,4 @@
-import { SQLiteDatabase } from "expo-sqlite";
+﻿import { SQLiteDatabase } from "expo-sqlite";
 
 export async function seedUCT(db: SQLiteDatabase) {
   console.log("🌱 Seeding University of Cape Town courses...");
@@ -960,6 +960,7 @@ null,
       duration,
       province,
       minimum_aps,
+      fps TEXT,
       english_hl,
       english_fal,
       mathematics,
@@ -979,3 +980,4 @@ null,
 
   console.log("✅ UCT courses seeded successfully");
 }
+//

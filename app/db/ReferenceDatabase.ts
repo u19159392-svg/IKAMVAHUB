@@ -1,16 +1,16 @@
 import * as SQLite from "expo-sqlite";
-import { seedMthashana } from "./Seeds/seeds.Mthashana TVET College";
-import { seedPortElizabeth } from "./Seeds/seeds.Port Elizabeth TVET College";
-import { seedThekwini } from "./Seeds/seeds.Thekwini TVET College";
-import { seedTUT } from "./Seeds/seeds.TUT";
+
+import { seedCPUT } from "./Seeds/seeds.CPUT";
+import { seedNMU } from "./Seeds/seeds.NMU";
+import { seedSPU } from "./Seeds/seeds.SPU";
 import { seedUCT } from "./Seeds/seeds.UCT";
 import { seedUKZN } from "./Seeds/seeds.UKZN";
 import { seedUmgungundlovu } from "./Seeds/seeds.Umgungundlovu TVET College";
+import { seedUP } from "./Seeds/seeds.UP";
 import { seedUWC } from "./Seeds/seeds.UWC";
 import { seedVhembe } from "./Seeds/seeds.Vhembe TVET College";
 import { seedWits } from "./Seeds/seeds.Wits";
 import { seedWSU } from "./Seeds/seeds.WSU";
-
 
 // Second database for reference data
 const refDb = SQLite.openDatabaseSync("reference.db");
@@ -79,7 +79,6 @@ export const initReferenceDatabase = async () => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         province TEXT,
-        city TEXT,
         website TEXT,
         contact TEXT,
         minimum_aps INTEGER,
@@ -120,48 +119,42 @@ export const initReferenceDatabase = async () => {
     apply_url TEXT,
     FOREIGN KEY (institution_id) REFERENCES universities(id)
 );
-  
+
       -- SCHOLARSHIPS TABLE
       CREATE TABLE IF NOT EXISTS scholarships (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         provider TEXT,
-    
+        amount TEXT,
+        eligibility TEXT,
         closing_date TEXT,
         apply_link TEXT,
         field_of_study TEXT
       );
 
       -- BURSARIES TABLE
-CREATE TABLE IF NOT EXISTS bursaries (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  provider TEXT,
-  closing_date TEXT,
-  apply_link TEXT
-);
-
--- BURSARY CATEGORIES TABLE
-CREATE TABLE IF NOT EXISTS bursary_categories (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  bursary_id INTEGER NOT NULL,
-  category TEXT NOT NULL,
-  FOREIGN KEY (bursary_id) REFERENCES bursaries(id) ON DELETE CASCADE
-);
+      CREATE TABLE IF NOT EXISTS bursaries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        provider TEXT,
+        amount TEXT,
+        eligibility TEXT,
+        closing_date TEXT,
+        apply_link TEXT,
+        field_of_study TEXT
+      );
 
       -- MENTORS TABLE
-     CREATE TABLE IF NOT EXISTS mentors (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    field TEXT NOT NULL,
-    bio TEXT,
-    phone TEXT,
-    email TEXT,
-    availability TEXT,
-    faculty TEXT,
-    course TEXT,
-    years_of_study INTEGER
-);
+      CREATE TABLE IF NOT EXISTS mentors (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        field TEXT NOT NULL,
+        bio TEXT,
+        phone TEXT,
+        email TEXT,
+        profile_pic TEXT,
+        availability TEXT
+      );
 
       -- APS RULES TABLE
       CREATE TABLE IF NOT EXISTS aps_rules (
@@ -171,9 +164,13 @@ CREATE TABLE IF NOT EXISTS bursary_categories (
         points INTEGER NOT NULL
       );
     `);
-    console.log("✅ Reference database schema ready");
+// Seed the reference database
+await seedReferenceDatabase();
+
+console.log("✅ Reference database seeded successfully");
+    console.log("✅ Reference database initialized");
   } catch (error) {
-    console.error("❌ Init reference database error:", error);
+    console.error("❌ Reference database init error:", error);
   }
 };
 
@@ -304,6 +301,15 @@ export const getSubjectsByStream = async (stream: string) => {
 };
 
 // ==================== UNIVERSITY FUNCTIONS ====================
+export const testUniversities = async () => {
+  const data = await refDb.getAllAsync(
+    "SELECT * FROM universities"
+  );
+
+  console.log("🏛 Universities:", data);
+
+  return data;
+};
 export const getUniversities = async () => {
   try {
     return await refDb.getAllAsync(
@@ -339,16 +345,6 @@ export const getCoursesByInstitution = async (
     );
   } catch (error) {
     console.error("❌ Get courses error:", error);
-    return [];
-  }
-};
-
-// ==================== ELIGIBILITY SUPPORT ====================
-export const getAllCourses = async () => {
-  try {
-    return await refDb.getAllAsync("SELECT * FROM courses");
-  } catch (error) {
-    console.error("❌ Get all courses error:", error);
     return [];
   }
 };
@@ -404,7 +400,6 @@ export const getScholarshipById = async (id: number) => {
 };
 
 // ==================== BURSARY FUNCTIONS ====================
-
 export const getBursaries = async () => {
   try {
     return await refDb.getAllAsync(
@@ -422,7 +417,6 @@ export const getBursaryById = async (id: number) => {
       "SELECT * FROM bursaries WHERE id = ?",
       [id],
     );
-
     return result.length > 0 ? result[0] : null;
   } catch (error) {
     console.error("❌ Get bursary error:", error);
@@ -430,47 +424,36 @@ export const getBursaryById = async (id: number) => {
   }
 };
 
-export const getBursaryCategories = async (bursaryId: number) => {
+// ==================== MENTOR FUNCTIONS ====================
+export const getMentors = async () => {
   try {
-    return await refDb.getAllAsync(
-      `SELECT category
-       FROM bursary_categories
-       WHERE bursary_id = ?
-       ORDER BY category ASC`,
-      [bursaryId],
-    );
+    return await refDb.getAllAsync("SELECT * FROM mentors ORDER BY name ASC");
   } catch (error) {
-    console.error("❌ Get bursary categories error:", error);
+    console.error("❌ Get mentors error:", error);
     return [];
   }
 };
 
-export const filterBursariesByCategory = async (category: string) => {
+export const getMentorById = async (id: number) => {
   try {
-    return await refDb.getAllAsync(
-      `SELECT DISTINCT b.*
-       FROM bursaries b
-       INNER JOIN bursary_categories bc
-         ON b.id = bc.bursary_id
-       WHERE bc.category = ?
-       ORDER BY b.closing_date ASC`,
-      [category],
+    const result = await refDb.getAllAsync(
+      "SELECT * FROM mentors WHERE id = ?",
+      [id],
     );
+    return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("❌ Filter bursaries by category error:", error);
-    return [];
+    console.error("❌ Get mentor error:", error);
+    return null;
   }
 };
 
-export const getBursaryCategoriesList = async () => {
+export const filterMentorsByField = async (field: string) => {
   try {
-    return await refDb.getAllAsync(
-      `SELECT DISTINCT category
-       FROM bursary_categories
-       ORDER BY category ASC`,
-    );
+    return await refDb.getAllAsync("SELECT * FROM mentors WHERE field = ?", [
+      field,
+    ]);
   } catch (error) {
-    console.error("❌ Get bursary categories error:", error);
+    console.error("❌ Filter mentors by field error:", error);
     return [];
   }
 };
@@ -489,182 +472,175 @@ export const getApsPoints = (percentage: number): number => {
 // ==================== SEED FUNCTIONS ====================
 export const seedReferenceDatabase = async () => {
   try {
-    console.log("🌱 Checking reference database seed status...");
+
+    console.log("🌱 Checking university courses...");
+
+// Check whether UCT courses already exist
+const uctCourses = await refDb.getAllAsync(
+  `SELECT id FROM courses
+   WHERE institution_id = (
+     SELECT id FROM universities
+     WHERE name = ?
+   )`,
+  ["University of Cape Town"]
+);
+
+console.log("🎓 UCT courses:", uctCourses.length);
+
+if (uctCourses.length === 0) {
+  console.log("🌱 Seeding UCT courses...");
+  console.log("🌱 Seeding reference database...");
+
+await seedUCT(refDb);
+await seedNMU(refDb);
+await seedCPUT(refDb);
+await seedUP(refDb);
+await seedSPU(refDb);
+} else {
+  console.log("ℹ️ NMU courses already seeded");
+}
+
+console.log("✅ University course seeding check completed");
 
     // ===== APS RULES =====
-    const existingApsRules = await refDb.getAllAsync(
-      "SELECT id FROM aps_rules LIMIT 1",
-    );
-    if (existingApsRules.length === 0) {
-      await refDb.runAsync(`
-        INSERT INTO aps_rules (min_percentage, max_percentage, points) VALUES
-        (80, 100, 7),
-        (70, 79, 6),
-        (60, 69, 5),
-        (50, 59, 4),
-        (40, 49, 3),
-        (30, 39, 2),
-        (0, 29, 1)
-      `);
-      console.log("✅ Seeded aps_rules");
-    }
+    await refDb.runAsync(`
+      INSERT INTO aps_rules (min_percentage, max_percentage, points) VALUES
+      (80, 100, 7),
+      (70, 79, 6),
+      (60, 69, 5),
+      (50, 59, 4),
+      (40, 49, 3),
+      (30, 39, 2),
+      (0, 29, 1)
+    `);
 
-    // SCHOOLS 
-    const existingSchools = await refDb.getAllAsync(
-      "SELECT id FROM schools LIMIT 1",
-    );
-    if (existingSchools.length === 0) {
-      const schools = [
-        ["Baleni Secondary School", "Eastern Cape", "Public", "Bizana", "", ""],
-        [
-          "Tyelimhlophe Secondary School",
-          "Eastern Cape",
-          "Public",
-          "Mount Frere",
-          "",
-          "",
-        ],
-        [
-          "Toleni Secondary School",
-          "Eastern Cape",
-          "Public",
-          "Mount Frere",
-          "",
-          "",
-        ],
-        ["Bonxa High School", "Eastern Cape", "Public", "Tabankulu", "", ""],
-        [
-          "Dumsi Senior Secondary School",
-          "Eastern Cape",
-          "Public",
-          "Mount Frere",
-          "",
-          "",
-        ],
-      ];
-      for (const school of schools) {
-        await refDb.runAsync(
-          "INSERT INTO schools (name, province, type, location, contact, email) VALUES (?, ?, ?, ?, ?, ?)",
-          school,
-        );
-      }
-      console.log("✅ Seeded schools");
+    // ===== SCHOOLS =====
+    const schools = [
+      ["Baleni Secondary School", "Eastern Cape", "Public", "Bizana", "", ""],
+      [
+        "Tyelimhlophe Secondary School",
+        "Eastern Cape",
+        "Public",
+        "Mount Frere",
+        "",
+        "",
+      ],
+      [
+        "Toleni Secondary School",
+        "Eastern Cape",
+        "Public",
+        "Mount Frere",
+        "",
+        "",
+      ],
+      ["Bonxa High School", "Eastern Cape", "Public", "Tabankulu", "", ""],
+      [
+        "Dumsi Senior Secondary School",
+        "Eastern Cape",
+        "Public",
+        "Mount Frere",
+        "",
+        "",
+      ],
+    ];
+
+    for (const school of schools) {
+      await refDb.runAsync(
+        "INSERT INTO schools (name, province, type, location, contact, email) VALUES (?, ?, ?, ?, ?, ?)",
+        school,
+      );
     }
 
     // ===== CAREERS =====
-    const existingCareers = await refDb.getAllAsync(
-      "SELECT id FROM careers LIMIT 1",
-    );
-    if (existingCareers.length === 0) {
-      const careers = [
-        {
-          name: "General Practitioner",
-          field: "Science & Health Sciences",
-          description: "Diagnoses and treats common illnesses.",
-          subjects_needed:
-            "Mathematics, Life Sciences, Physical Sciences, English",
-          study_path: "MBChB → Internship → Community Service → Registration",
-          institutions:
-            "University of Cape Town, Stellenbosch University, University of the Witwatersrand",
-          aps_range: "42-46+",
-        },
-        {
-          name: "Registered Nurse",
-          field: "Science & Health Sciences",
-          description: "Provides patient care and administers medication.",
-          subjects_needed: "Mathematics, Life Sciences, English",
-          study_path: "Diploma in Nursing → Registration with SANC",
-          institutions:
-            "University of Fort Hare, Walter Sisulu University, Nelson Mandela University",
-          aps_range: "30-34+",
-        },
-      ];
-      for (const career of careers) {
-        await refDb.runAsync(
-          "INSERT INTO careers (name, field, description, subjects_needed, study_path, institutions, aps_range) VALUES (?, ?, ?, ?, ?, ?, ?)",
-          [
-            career.name,
-            career.field,
-            career.description,
-            career.subjects_needed,
-            career.study_path,
-            career.institutions,
-            career.aps_range,
-          ],
-        );
-      }
-      console.log("✅ Seeded careers");
+    const careers = [
+      {
+        name: "General Practitioner",
+        field: "Science & Health Sciences",
+        description: "Diagnoses and treats common illnesses.",
+        subjects_needed:
+          "Mathematics, Life Sciences, Physical Sciences, English",
+        study_path: "MBChB → Internship → Community Service → Registration",
+        institutions:
+          "University of Cape Town, Stellenbosch University, University of the Witwatersrand",
+        aps_range: "42-46+",
+      },
+      {
+        name: "Registered Nurse",
+        field: "Science & Health Sciences",
+        description: "Provides patient care and administers medication.",
+        subjects_needed: "Mathematics, Life Sciences, English",
+        study_path: "Diploma in Nursing → Registration with SANC",
+        institutions:
+          "University of Fort Hare, Walter Sisulu University, Nelson Mandela University",
+        aps_range: "30-34+",
+      },
+    ];
+
+    for (const career of careers) {
+      await refDb.runAsync(
+        "INSERT INTO careers (name, field, description, subjects_needed, study_path, institutions, aps_range) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [
+          career.name,
+          career.field,
+          career.description,
+          career.subjects_needed,
+          career.study_path,
+          career.institutions,
+          career.aps_range,
+        ],
+      );
     }
 
     // ===== INDUSTRIES =====
-    const existingIndustries = await refDb.getAllAsync(
-      "SELECT id FROM industries LIMIT 1",
-    );
-    if (existingIndustries.length === 0) {
-      const industries = [
-        [
-          "Automotive Manufacturing",
-          "Manufacturing",
-          "Gqeberha, Kariega, East London",
-          "Vehicle assembly, car parts production",
-          "Mechanical Engineer, Technician, Machine Operator",
-          "Volkswagen, Isuzu, Mercedes-Benz",
-        ],
-        [
-          "Agriculture",
-          "Agriculture",
-          "Sundays River Valley, Mthatha",
-          "Citrus farming, dairy, livestock",
-          "Farm Manager, Agricultural Technician, Worker",
-          "Clover, Woodlands Dairy",
-        ],
-      ];
-      for (const industry of industries) {
-        await refDb.runAsync(
-          "INSERT INTO industries (name, sector, location, specialization, jobs_available, factories) VALUES (?, ?, ?, ?, ?, ?)",
-          industry,
-        );
-      }
-      console.log("✅ Seeded industries");
+    const industries = [
+      [
+        "Automotive Manufacturing",
+        "Manufacturing",
+        "Gqeberha, Kariega, East London",
+        "Vehicle assembly, car parts production",
+        "Mechanical Engineer, Technician, Machine Operator",
+        "Volkswagen, Isuzu, Mercedes-Benz",
+      ],
+      [
+        "Agriculture",
+        "Agriculture",
+        "Sundays River Valley, Mthatha",
+        "Citrus farming, dairy, livestock",
+        "Farm Manager, Agricultural Technician, Worker",
+        "Clover, Woodlands Dairy",
+      ],
+    ];
+
+    for (const industry of industries) {
+      await refDb.runAsync(
+        "INSERT INTO industries (name, sector, location, specialization, jobs_available, factories) VALUES (?, ?, ?, ?, ?, ?)",
+        industry,
+      );
     }
 
     // ===== SUBJECTS =====
-    const existingSubjects = await refDb.getAllAsync(
-      "SELECT id FROM subjects LIMIT 1",
-    );
-    if (existingSubjects.length === 0) {
-      const subjects = [
-        ["Mathematics", "Science"],
-        ["Physical Sciences", "Science"],
-        ["Life Sciences", "Science"],
-        ["English", "Arts"],
-        ["History", "Arts"],
-        ["Accounting", "Commerce"],
-        ["Business Studies", "Commerce"],
-      ];
-      for (const subject of subjects) {
-        await refDb.runAsync(
-          "INSERT INTO subjects (name, stream) VALUES (?, ?)",
-          subject,
-        );
-      }
-      console.log("✅ Seeded subjects");
+    const subjects = [
+      ["Mathematics", "Science"],
+      ["Physical Sciences", "Science"],
+      ["Life Sciences", "Science"],
+      ["English", "Arts"],
+      ["History", "Arts"],
+      ["Accounting", "Commerce"],
+      ["Business Studies", "Commerce"],
+    ];
+
+    for (const subject of subjects) {
+      await refDb.runAsync(
+        "INSERT INTO subjects (name, stream) VALUES (?, ?)",
+        subject,
+      );
     }
 
-    // ===== UNIVERSITIES (full list of 26 public universities, with city) =====
-    const universities: [
-      string,
-      string,
-      string,
-      string,
-      string,
-      number,
-      string,
-    ][] = [
+    // ===== UNIVERSITIES =====
+    const universities = [
       [
         "University of Cape Town",
         "Western Cape",
-        "Cape Town",
         "www.uct.ac.za",
         "021 650 9111",
         5,
@@ -673,7 +649,6 @@ export const seedReferenceDatabase = async () => {
       [
         "University of Pretoria",
         "Gauteng",
-        "Pretoria",
         "www.up.ac.za",
         "012 420 3111",
         5,
@@ -682,419 +657,22 @@ export const seedReferenceDatabase = async () => {
       [
         "Stellenbosch University",
         "Western Cape",
-        "Stellenbosch",
         "www.sun.ac.za",
         "021 808 9111",
-        5,
-        "",
-      ],
-      [
-        "University of KwaZulu-Natal",
-        "KwaZulu-Natal",
-        "Durban",
-        "www.ukzn.ac.za",
-        "031 260 1111",
-        5,
-        "",
-      ],
-      [
-        "University of the Western Cape",
-        "Western Cape",
-        "Bellville, Cape Town",
-        "www.uwc.ac.za",
-        "021 959 2911",
-        5,
-        "",
-      ],
-      [
-        "Cape Peninsula University of Technology",
-        "Western Cape",
-        "Cape Town",
-        "www.cput.ac.za",
-        "021 460 3000",
-        5,
-        "",
-      ],
-      [
-        "University of the Witwatersrand",
-        "Gauteng",
-        "Johannesburg",
-        "www.wits.ac.za",
-        "011 717 1000",
-        5,
-        "",
-      ],
-      [
-        "University of Johannesburg",
-        "Gauteng",
-        "Johannesburg",
-        "www.uj.ac.za",
-        "011 559 4555",
-        5,
-        "",
-      ],
-      [
-        "University of South Africa",
-        "Gauteng",
-        "Pretoria",
-        "www.unisa.ac.za",
-        "012 429 3111",
-        5,
-        "",
-      ],
-      [
-        "Tshwane University of Technology",
-        "Gauteng",
-        "Pretoria",
-        "www.tut.ac.za",
-        "012 382 5911",
-        5,
-        "",
-      ],
-      [
-        "Vaal University of Technology",
-        "Gauteng",
-        "Vanderbijlpark",
-        "www.vut.ac.za",
-        "016 950 9000",
-        5,
-        "",
-      ],
-      [
-        "Sefako Makgatho Health Sciences University",
-        "Gauteng",
-        "Ga-Rankuwa, Pretoria",
-        "www.smu.ac.za",
-        "012 521 4111",
-        5,
-        "",
-      ],
-      [
-        "Durban University of Technology",
-        "KwaZulu-Natal",
-        "Durban",
-        "www.dut.ac.za",
-        "031 373 2000",
-        5,
-        "",
-      ],
-      [
-        "Mangosuthu University of Technology",
-        "KwaZulu-Natal",
-        "Umlazi, Durban",
-        "www.mut.ac.za",
-        "031 907 7111",
-        5,
-        "",
-      ],
-      [
-        "University of Zululand",
-        "KwaZulu-Natal",
-        "KwaDlangezwa",
-        "www.unizulu.ac.za",
-        "035 902 6000",
-        5,
-        "",
-      ],
-      [
-        "University of the Free State",
-        "Free State",
-        "Bloemfontein",
-        "www.ufs.ac.za",
-        "051 401 9111",
-        5,
-        "",
-      ],
-      [
-        "Central University of Technology",
-        "Free State",
-        "Bloemfontein",
-        "www.cut.ac.za",
-        "051 507 3911",
-        5,
-        "",
-      ],
-      [
-        "Rhodes University",
-        "Eastern Cape",
-        "Makhanda (Grahamstown)",
-        "www.ru.ac.za",
-        "046 603 8111",
-        5,
-        "",
-      ],
-      [
-        "Nelson Mandela University",
-        "Eastern Cape",
-        "Gqeberha",
-        "www.mandela.ac.za",
-        "041 504 1111",
-        5,
-        "",
-      ],
-      [
-        "University of Fort Hare",
-        "Eastern Cape",
-        "Alice",
-        "www.ufh.ac.za",
-        "040 602 2011",
-        5,
-        "",
-      ],
-      [
-        "Walter Sisulu University",
-        "Eastern Cape",
-        "Mthatha",
-        "www.wsu.ac.za",
-        "047 502 2000",
-        5,
-        "",
-      ],
-      [
-        "North-West University",
-        "North West",
-        "Potchefstroom",
-        "www.nwu.ac.za",
-        "018 299 1111",
-        5,
-        "",
-      ],
-      [
-        "University of Limpopo",
-        "Limpopo",
-        "Polokwane",
-        "www.ul.ac.za",
-        "015 268 9111",
-        5,
-        "",
-      ],
-      [
-        "University of Venda",
-        "Limpopo",
-        "Thohoyandou",
-        "www.univen.ac.za",
-        "015 962 8000",
-        5,
-        "",
-      ],
-      [
-        "University of Mpumalanga",
-        "Mpumalanga",
-        "Mbombela",
-        "www.ump.ac.za",
-        "013 002 0001",
-        5,
-        "",
-      ],
-      [
-        "Sol Plaatje University",
-        "Northern Cape",
-        "Kimberley",
-        "www.spu.ac.za",
-        "053 491 0000",
         5,
         "",
       ],
     ];
 
     for (const uni of universities) {
-      const [name, province, city, website, contact, minimum_aps, image_url] =
-        uni;
-      const existing = (await refDb.getAllAsync(
-        "SELECT id, city FROM universities WHERE name = ?",
-        [name],
-      )) as any[];
-
-      if (existing.length === 0) {
-        // Not seeded yet — insert it (existing UCT/Pretoria/Stellenbosch/UKZN rows keep their original IDs
-        // because they're found above and skip this branch, so course foreign keys stay intact)
-        await refDb.runAsync(
-          "INSERT INTO universities (name, province, city, website, contact, minimum_aps, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)",
-          [name, province, city, website, contact, minimum_aps, image_url],
-        );
-      } else if (!existing[0].city) {
-        // Already exists from an earlier seed run but is missing its city — fill it in
-        await refDb.runAsync("UPDATE universities SET city = ? WHERE id = ?", [
-          city,
-          existing[0].id,
-        ]);
-      }
+      await refDb.runAsync(
+        "INSERT INTO universities (name, province, website, contact, minimum_aps, image_url) VALUES (?, ?, ?, ?, ?, ?)",
+        uni,
+      );
     }
-    console.log("✅ Universities up to date (26 total, with cities)");
-
-    // ===== COURSES (incl. per-institution seed files) =====
-    
-
-const existingUCT = await refDb.getAllAsync(
-  `SELECT id FROM courses
-   WHERE institution_id = (
-     SELECT id FROM universities
-     WHERE name = ?
-   )
-   LIMIT 1`,
-  ["University of Cape Town"],
-);
-
-if (existingUCT.length === 0) {
-  await seedUCT(refDb);
-}
-
-const existingUKZN = await refDb.getAllAsync(
-  `SELECT id FROM courses
-   WHERE institution_id = (
-     SELECT id FROM universities
-     WHERE name = ?
-   )
-   LIMIT 1`,
-  ["University of KwaZulu-Natal"],
-);
-
-if (existingUKZN.length === 0) {
-  await seedUKZN(refDb);
-}
-
-const existingWits = await refDb.getAllAsync(
-  `SELECT id FROM courses
-   WHERE institution_id = (
-     SELECT id FROM universities
-     WHERE name = ?
-   )
-   LIMIT 1`,
-  ["University of the Witwatersrand"],
-);
-
-if (existingWits.length === 0) {
-  await seedWits(refDb);
-}
-
-const existingWSU = await refDb.getAllAsync(
-  `SELECT id FROM courses
-   WHERE institution_id = (
-     SELECT id FROM universities
-     WHERE name = ?
-   )
-   LIMIT 1`,
-  ["Walter Sisulu University"],
-);
-
-if (existingWSU.length === 0) {
-  await seedWSU(refDb);
-}
-
-const existingUWC = await refDb.getAllAsync(
-  `SELECT id FROM courses
-   WHERE institution_id = (
-     SELECT id FROM universities
-     WHERE name = ?
-   )
-   LIMIT 1`,
-  ["University of the Western Cape"],
-);
-
-if (existingUWC.length === 0) {
-  await seedUWC(refDb);
-}
-
-const existingTUT = await refDb.getAllAsync(
-  `SELECT id FROM courses
-   WHERE institution_id = (
-     SELECT id FROM universities
-     WHERE name = ?
-   )
-   LIMIT 1`,
-  ["Tshwane University of Technology"],
-);
-
-if (existingTUT.length === 0) {
-  await seedTUT(refDb);
-}
-
-
-// ============================================================
-// TVET COLLEGE COURSES
-// ============================================================
-
-const existingMthashana = await refDb.getAllAsync(
-  `SELECT id FROM courses
-   WHERE institution_id = (
-     SELECT id FROM tvet_colleges
-     WHERE name = ?
-   )
-   LIMIT 1`,
-  ["Mthashana TVET College"],
-);
-
-if (existingMthashana.length === 0) {
-  await seedMthashana(refDb);
-}
-
-
-const existingPortElizabeth = await refDb.getAllAsync(
-  `SELECT id FROM courses
-   WHERE institution_id = (
-     SELECT id FROM tvet_colleges
-     WHERE name = ?
-   )
-   LIMIT 1`,
-  ["Port Elizabeth TVET College"],
-);
-
-if (existingPortElizabeth.length === 0) {
-  await seedPortElizabeth(refDb);
-}
-
-
-const existingThekwini = await refDb.getAllAsync(
-  `SELECT id FROM courses
-   WHERE institution_id = (
-     SELECT id FROM tvet_colleges
-     WHERE name = ?
-   )
-   LIMIT 1`,
-  ["Thekwini TVET College"],
-);
-
-if (existingThekwini.length === 0) {
-  await seedThekwini(refDb);
-}
-
-
-const existingVhembe = await refDb.getAllAsync(
-  `SELECT id FROM courses
-   WHERE institution_id = (
-     SELECT id FROM tvet_colleges
-     WHERE name = ?
-   )
-   LIMIT 1`,
-  ["Vhembe TVET College"],
-);
-
-if (existingVhembe.length === 0) {
-  await seedVhembe(refDb);
-}
-
-
-const existingUmgungundlovu = await refDb.getAllAsync(
-  `SELECT id FROM courses
-   WHERE institution_id = (
-     SELECT id FROM tvet_colleges
-     WHERE name = ?
-   )
-   LIMIT 1`,
-  ["Umgungundlovu TVET College"],
-);
-
-if (existingUmgungundlovu.length === 0) {
-  await seedUmgungundlovu(refDb);
-}
-
-
-console.log(
-  "✅ Seeded courses (UCT, UKZN, Wits, WSU, UWC, TUT and TVET colleges)"
-);
-    
 
     // ===== TVET COLLEGES =====
+<<<<<<< HEAD
 const tvetColleges = [
   // Eastern Cape
   [
@@ -1557,160 +1135,206 @@ for (const college of tvetColleges) {
 console.log(
   `✅ TVET colleges up to date (${tvetColleges.length} colleges)`
 );
+=======
+    const tvetColleges = [
+      [
+        "Buffalo City TVET College",
+        "Eastern Cape",
+        "www.bccollege.co.za",
+        "043 704 9800",
+        "Public",
+        "",
+      ],
+      [
+        "Port Elizabeth TVET College",
+        "Eastern Cape",
+        "www.pecollege.edu.za",
+        "041 509 9000",
+        "Public",
+        "",
+      ],
+    ];
+
+    for (const college of tvetColleges) {
+      await refDb.runAsync(
+        "INSERT INTO tvet_colleges (name, province, website, contact, type, image_url) VALUES (?, ?, ?, ?, ?, ?)",
+        college,
+      );
+    }
+
+    // ===== COURSES =====
+    const courses = [
+      [
+        1,
+        "university",
+        "Commerce",
+        "Bachelor of Business Science specialising in Computer Science",
+        "Bachelor's Degree",
+        "4 Years",
+        "Western Cape",
+        36,
+        "50%",
+        "60%",
+        "70%",
+        "No",
+        "",
+        "",
+        "Upper Intermediate (AL & QL)",
+        "Mathematical Studies and Maths Main are not accepted.",
+        "https://applyonline.uct.ac.za"
+      ],
+    ];
+
+    for (const course of courses) {
+      await refDb.runAsync(
+        `INSERT INTO courses (
+          institution_id,
+          institution_type,
+          faculty,
+          qualification,
+          qualification_type,
+          duration,
+          province,
+          minimum_aps,
+          english_hl,
+          english_fal,
+          mathematics,
+          mathematical_literacy,
+          physical_sciences,
+          life_sciences,
+          nbt,
+          additional_requirements,
+          apply_url
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        course,
+      );
+    }
+>>>>>>> 5aec490bbbe5a7f428e539867d06e317e21390e8
 
     // ===== SCHOLARSHIPS =====
-    const existingScholarships = await refDb.getAllAsync(
-      "SELECT id FROM scholarships LIMIT 1",
-    );
-    if (existingScholarships.length === 0) {
-      const scholarships = [
-        [
-          "ABSA Bursary",
-          "ABSA Bank",
-          "R50,000",
-          "South African citizen, good academic record",
-          "2025-09-30",
-          "www.absa.co.za",
-          "Business",
-        ],
-        [
-          "Sasol Bursary",
-          "Sasol",
-          "Full tuition",
-          "STEM students",
-          "2025-10-15",
-          "www.sasol.com",
-          "Engineering",
-        ],
-      ];
-      for (const scholarship of scholarships) {
-        await refDb.runAsync(
-          "INSERT INTO scholarships (name, provider, amount, eligibility, closing_date, apply_link, field_of_study) VALUES (?, ?, ?, ?, ?, ?, ?)",
-          scholarship,
-        );
-      }
-      console.log("✅ Seeded scholarships");
+    const scholarships = [
+      [
+        "ABSA Bursary",
+        "ABSA Bank",
+        "R50,000",
+        "South African citizen, good academic record",
+        "2025-09-30",
+        "www.absa.co.za",
+        "Business",
+      ],
+      [
+        "Sasol Bursary",
+        "Sasol",
+        "Full tuition",
+        "STEM students",
+        "2025-10-15",
+        "www.sasol.com",
+        "Engineering",
+      ],
+    ];
+
+    for (const scholarship of scholarships) {
+      await refDb.runAsync(
+        "INSERT INTO scholarships (name, provider, amount, eligibility, closing_date, apply_link, field_of_study) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        scholarship,
+      );
+    }
+
+    // ===== BURSARIES =====
+    const bursaries = [
+      [
+        "Funza Lushaka Bursary",
+        "Department of Basic Education",
+        "Full tuition",
+        "Students pursuing teaching",
+        "2025-10-31",
+        "www.funzalushaka.gov.za",
+        "Education",
+      ],
+      [
+        "NSFAS Bursary",
+        "NSFAS",
+        "Full tuition",
+        "South African citizen, financial need",
+        "2025-11-30",
+        "www.nsfas.org.za",
+        "All fields",
+      ],
+    ];
+
+    for (const bursary of bursaries) {
+      await refDb.runAsync(
+        "INSERT INTO bursaries (name, provider, amount, eligibility, closing_date, apply_link, field_of_study) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        bursary,
+      );
     }
 
     // ===== MENTORS =====
-    const existingMentors = await refDb.getAllAsync(
-      "SELECT id FROM mentors LIMIT 1",
-    );
-    if (existingMentors.length === 0) {
-      const mentors = [
-        [
-          "Ms Nadia Mavika",
-          "Economic Management Sciences faculty - Bachelor of Accounting Sciences",
-          "Student mentor",
-          "062 889 9560",
-          "nadiamavika663@gmail.com",
-          "https://i.pravatar.cc/150?img=1(profile picture)",
-          "Weekends",
-        ],
-        [
-          "Mr Lesiba Pitseng",
-          "Economic Management Sciences faculty-Bachelor of Accounting Sciences",
-          "Student mentor",
-          "071 299 4145",
-          "u23752379@tuks.co.za",
-          "https://i.pravatar.cc/150?img=2",
-          "Weekdays",
-        ],
-        [
-          "Mr Celukwanda Mtshali",
-          "Education faculty- Senoir Phase and FET Phase",
-          "student mentor",
-          "063 810 9315",
-          "u24828752@tuks.co.za",
-          "https://i.pravatar.cc/150?img=3",
-          "Evenings",
-        ],
-
-        [
-          "Ms Morabusioluwa Abolarin",
-          "Engineering, Built Environment and Information Technology faculty- Bachelor of Engineering in Mechanical Engineering",
-          "Student mentor",
-          " 061 187 9226",
-          "abusi.abolarin@gmail.com",
-          "https://i.pravatar.cc/150?img=4",
-          "Weekends",
-        ],
-
-        [
-          "Ms Nomzi Phosa",
-          "Engineering, Built Environment and Information Technology faculty- Bachelor of Science in Computer Science",
-          "Student mentor",
-          "081 098 5238",
-          "nomzimphosa@gmail.com",
-          "https://i.pravatar.cc/150?img=5",
-          "Weekdays",
-        ],
-        [
-          "Silothabo Chimboza",
-          "Health Sciences faculty- Human Physiology majoring in Phamacology",
-          "Student mentor",
-          " 062 977 2580",
-          "silothabo.chimboza@gmail.com",
-          "https://i.pravatar.cc/150?img=6",
-          "Weekends", 
-        ],
-
-        [
-          "Ms Kealeboga Moothai",
-          "Health Sciences faculty- Bachelor of  ",
-          "Student mentor",
-          " 068 096 7003",
-          "Moothaikealeboga@gmail.com",
-          "https://i.pravatar.cc/150?img=7",
-          "Weekdays",
-        ],
-
-        [
-          ""
-        ]
-
-    
-
-      ];
-      for (const mentor of mentors) {
-        await refDb.runAsync(
-          "INSERT INTO mentors (name, field, bio, phone, email, profile_pic, availability) VALUES (?, ?, ?, ?, ?, ?, ?)",
-          mentor,
-        );
-      }
-      console.log("✅ Seeded mentors");
+    const mentors = [
+      [
+        "Sipho Dlamini",
+        "Engineering",
+        "Experienced mechanical engineer mentoring students in STEM fields.",
+        "012 345 6789",
+        "sipho.dlamini@example.com",
+        "https://example.com/sipho.jpg",
+        "Mon-Fri 9am-5pm",
+      ],
+      [
+        "Anele Khumalo",
+        "Business",
+        "Career coach focusing on business and finance careers.",
+        "098 765 4321",
+        "anele.khumalo@example.com",
+        "https://example.com/anele.jpg",
+        "Weekends 10am-2pm",
+      ],
+    ];
+  
+    for (const mentor of mentors) {
+      await refDb.runAsync(
+        "INSERT INTO mentors (name, field, bio, phone, email, profile_pic, availability) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        mentor,
+      );
     }
 
-    console.log("✅ Reference database seed check complete");
+    console.log("✅ Reference database seeded successfully");
   } catch (error) {
     console.error("❌ Seed reference database error:", error);
   }
 };
-// ==================== MENTOR FUNCTIONS ====================
 
-export const getMentors = async () => {
+export default refDb;
+// ==================== GET COURSES BY UNIVERSITY ====================
+
+export const getCoursesByUniversity = async (
+  universityId: number
+) => {
   try {
-    return await refDb.getAllAsync("SELECT * FROM mentors ORDER BY name ASC");
+    console.log("🔍 Searching for university ID:", universityId);
+
+    const allCourses = await refDb.getAllAsync(`
+      SELECT id, institution_id, faculty, qualification
+      FROM courses
+    `);
+
+    console.log("📚 ALL COURSES:", allCourses);
+
+    const courses = await refDb.getAllAsync(
+      `
+      SELECT *
+      FROM courses
+      WHERE institution_id = ?
+      ORDER BY faculty, qualification
+      `,
+      [universityId]
+    );
+
+    console.log("✅ MATCHING COURSES:", courses);
+
+    return courses;
   } catch (error) {
-    console.error("❌ Get mentors error:", error);
+    console.error("❌ Error getting courses:", error);
     return [];
   }
 };
-
-export const getMentorById = async (id: number) => {
-  try {
-    const result = await refDb.getAllAsync(
-      "SELECT * FROM mentors WHERE id = ?",
-      [id],
-    );
-
-    return result.length > 0 ? result[0] : null;
-  } catch (error) {
-    console.error("❌ Get mentor by ID error:", error);
-    return null;
-  }
-};
-
-export default refDb;
-
-

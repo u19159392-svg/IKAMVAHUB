@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 import { getSubjectsByStream } from "./db/Database";
+import {saveData,getData} from "../app/utils/Storage";
 
 type Stream = "Science" | "Arts" | "Commerce";
 
@@ -24,9 +25,26 @@ export default function SubjectsScreen() {
 
   const loadSubjectsByStream = async (stream: Stream) => {
     setSelectedStream(stream);
+
+    try{
     const data = await getSubjectsByStream(stream);
+
+    //Save subjects for this stream locally
+    await saveData(`subjects_${stream}`, data);
+
     setSubjects(data as Subject[]);
-  };
+  }catch(error){
+    console.error("Could not load subjects from database:", error);
+
+    //Load cached subjects for this stream
+    const cachedSubjects = await getData(`subjects_${stream}`);
+
+    if (cachedSubjects) {
+      setSubjects(cachedSubjects as Subject[]);
+    }
+  }
+};
+  
 
   useEffect(() => {
     loadSubjectsByStream("Science");

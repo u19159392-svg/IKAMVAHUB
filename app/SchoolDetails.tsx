@@ -14,11 +14,11 @@ export default function SchoolDetails() {
   const [school, setSchool] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [contacts, setContacts] = useState<any>(null);
-
+     
   useEffect(() => {
-    const loadSchool = async () => {
+        const loadSchool = async () => {
       const data = await getSchoolById(Number(id));
-      setSchool(data);
+            setSchool(data);
 
       try {
         const contactData = await getSchoolContacts(Number(id));
@@ -29,10 +29,10 @@ export default function SchoolDetails() {
       }
 
       setLoading(false);
-    };
-    loadSchool();
-  }, [id]);
-
+        };
+        loadSchool();
+    }, [id]);
+    
   if (loading) {
     return (
       <View style={styles.centered}>
@@ -43,15 +43,15 @@ export default function SchoolDetails() {
 
   if (!school) {
     return (
-      <View style={styles.container}>
+        <View style={styles.container}>
         <Text style={styles.schoolName}>{school?.name}</Text>
         <Text style={styles.info}>{school?.type}</Text>
         <Text style={styles.info}>{school?.province}</Text>
         <Text style={styles.info}>{school?.address}</Text>
         <Text style={styles.info}>{school?.contactNumber}</Text>
-      </View>
+        </View>
     );
-  }
+}
 
   // Parse subjects_offered into sections
   const subjectsText = school.subjects_offered || "";
@@ -171,20 +171,20 @@ export default function SchoolDetails() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  schoolName: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  info: {
-    fontSize: 16,
-    marginBottom: 4,
-  },
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            padding: 20,
+        },
+        schoolName: {
+            fontSize: 24,
+            fontWeight: "bold",
+            marginBottom: 8,
+        },
+        info: {
+            fontSize: 16,
+            marginBottom: 4,
+        },
 
   centered: {
     flex: 1,

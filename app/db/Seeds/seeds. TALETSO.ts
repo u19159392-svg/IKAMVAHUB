@@ -1,5 +1,3 @@
-import * as SQLite from "expo-sqlite";
-
 type CourseSeed = {
   faculty: string;
   qualification: string;
@@ -18,7 +16,7 @@ type CourseSeed = {
   apply_url: string;
 };
 
-const TALETSO_COURSES: CourseSeed[] = [
+export const TALETSO_COURSES: CourseSeed[] = [
   // ======================================================
   // BUSINESS STUDIES
   // ======================================================
