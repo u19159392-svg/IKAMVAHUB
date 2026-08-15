@@ -1,6 +1,5 @@
 import * as SQLite from "expo-sqlite";
 
-
 // Second database for reference data
 const refDb = SQLite.openDatabaseSync("reference.db");
 
@@ -1165,7 +1164,7 @@ console.log("✅ Universities seeded");
       [
         "Sipho Dlamini",
         "Engineering",
-        "Experienced mechanical engineer mentoring students in STEM fields.",
+        "Experienced mechanicl engineer mentoring students in STEM fields.",
         "012 345 6789",
         "sipho.dlamini@example.com",
         "https://example.com/sipho.jpg",

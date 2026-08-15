@@ -1,12 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { createProfile, createUser, initDatabase } from "./db/Database";
+import { useEffect, useState } from "react";
+import {
+  createProfile,
+  createUser,
+  initDatabase,
+} from "./db/Database";
+
 import {
   initReferenceDatabase,
   seedReferenceDatabase,
 } from "./db/ReferenceDatabase";
 
-import { FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+
 import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,23 +25,26 @@ import {
 } from "react-native";
 
 import { useRouter } from "expo-router";
+
 export default function UserSetup() {
   const router = useRouter();
-  const [step, setStep] = useState(1);
+
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
-  const [school, setSchool] = useState("");
-  const [grade, setGrade] = useState("");
-  const [career, setCareer] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // =========================
+  // DATABASE SETUP
+  // =========================
   useEffect(() => {
     const setupDatabases = async () => {
       try {
-        // Your existing initDatabase()
         await initDatabase();
-
-        // ✅ ADD THIS — Initialize reference database
         await initReferenceDatabase();
         await seedReferenceDatabase();
 
@@ -45,311 +57,590 @@ export default function UserSetup() {
     setupDatabases();
   }, []);
 
+  // =========================
+  // CREATE ACCOUNT
+  // =========================
+  const handleCreateAccount = async () => {
+    if (!name.trim()) {
+      Alert.alert("Missing information", "Please enter your full name.");
+      return;
+    }
+
+    if (!age.trim()) {
+      Alert.alert("Missing information", "Please enter your age.");
+      return;
+    }
+
+    if (!gender) {
+      Alert.alert("Missing information", "Please select your gender.");
+      return;
+    }
+
+    if (!email.trim()) {
+      Alert.alert("Missing information", "Please enter your email address.");
+      return;
+    }
+
+    if (!password.trim()) {
+      Alert.alert("Missing information", "Please enter a password.");
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert(
+        "Password too short",
+        "Your password must be at least 6 characters long."
+      );
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const userId = await createUser(
+        name.trim(),
+        email.trim(),
+        password
+      );
+
+      if (userId) {
+        await createProfile({
+          user_id: userId,
+          age,
+          gender,
+          school: "",
+          grade: "",
+          career_interest: "",
+          bio: "",
+          profile_pic: "",
+          phone: "",
+          location: "",
+        });
+
+        console.log("✅ Profile saved successfully");
+
+        Alert.alert(
+          "Welcome to IKAMVAHUB! 🎓",
+          "Your account has been created successfully.",
+          [
+            {
+              text: "Get Started",
+              onPress: () => router.replace("/(tabs)"),
+            },
+          ]
+        );
+      }
+    } catch (error) {
+      console.error("❌ Error creating account:", error);
+
+      Alert.alert(
+        "Account creation failed",
+        "Something went wrong while creating your account. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>🎓 IkamvaHub</Text>
-
-        <Text style={styles.title}>Welcome! 👋</Text>
-        <Text style={styles.subtitle}>Let&apos;s set up your profile</Text>
-        <Text style={{ fontSize: 20, color: "red", fontWeight: "bold" }}>
-          Current step:{step}
-        </Text>
-
-        {[1, 2, 3, 4].map((item) => (
-          <View
-            key={item}
-            style={[styles.dot, item <= step && styles.activeDot]}
-          />
-        ))}
-      </View>
-
-      <TouchableOpacity
-        style={styles.schoolFinderButton}
-        onPress={() => router.push("/schools")}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.schoolFinderButtonText}>🔍 School Finder</Text>
-      </TouchableOpacity>
-      <View style={styles.card}>
-        <Text style={styles.sectionTitle}>
-          {step === 1 && "Personal Information"}
-          {step === 2 && "School Information"}
-          {step === 3 && "Interests & Accessibility Information"}
-          {step === 4 && "Profile Setup Complete!"}
-        </Text>
-        <Text style={styles.subtitle}>step {step} of 4</Text>
 
-        {/* STEP 1 */}
-        {step === 1 && (
-          <>
-            <View style={styles.inputContainer}>
-              <Ionicons name="person-outline" size={20} color="#14B8A6" />
-              <TextInput
-                placeholder="Full Name"
-                style={styles.input}
-                value={name}
-                onChangeText={setName}
-              />
-            </View>
+        {/* TOP BAR */}
+        <View style={styles.topBar}>
 
-            <View style={styles.inputContainer}>
-              <MaterialIcons name="cake" size={20} color="#14B8A6" />
-              <TextInput
-                placeholder="Age"
-                keyboardType="numeric"
-                style={styles.input}
-                value={age}
-                onChangeText={setAge}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Ionicons name="male-female-outline" size={20} color="#14B8A6" />
-              <TextInput
-                placeholder="Gender"
-                style={styles.input}
-                value={gender}
-                onChangeText={setGender}
-              />
-            </View>
-          </>
-        )}
-
-        {/* STEP 2 */}
-        {step === 2 && (
-          <>
-            <View style={styles.inputContainer}>
-              <Ionicons name="school-outline" size={20} color="#14B8A6" />
-              <TextInput
-                placeholder="School"
-                style={styles.input}
-                value={school}
-                onChangeText={setSchool}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <FontAwesome5 name="graduation-cap" size={18} color="#14B8A6" />
-              <TextInput
-                placeholder="Grade"
-                style={styles.input}
-                value={grade}
-                onChangeText={setGrade}
-              />
-            </View>
-          </>
-        )}
-
-        {/* STEP 3 */}
-        {step === 3 && (
-          <>
-            <View style={styles.inputContainer}>
-              <Ionicons name="briefcase-outline" size={20} color="#14B8A6" />
-              <TextInput
-                placeholder="Career Interest"
-                style={styles.input}
-                value={career}
-                onChangeText={setCareer}
-              />
-            </View>
-          </>
-        )}
-
-        {/* STEP 4 */}
-        {step === 4 && (
-          <>
-            <Text style={{ fontSize: 18, marginBottom: 10 }}>
-              Review your information
-            </Text>
-
-            <Text> Name: {name}</Text>
-            <Text> Age: {age}</Text>
-            <Text> Gender: {gender}</Text>
-            <Text> School: {school}</Text>
-            <Text> Grade: {grade}</Text>
-            <Text> Career Interest: {career}</Text>
-          </>
-        )}
-
-        {step > 1 && (
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => setStep(step - 1)}
+            onPress={() => router.back()}
           >
-            <Text style={styles.backButtonText}>← Back</Text>
+            <Ionicons
+              name="chevron-back"
+              size={28}
+              color="#FFFFFF"
+            />
           </TouchableOpacity>
-        )}
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={async () => {
-            if (step < 4) {
-              setStep(step + 1);
-            } else {
-              try {
-                // Create user first
-                const userId = await createUser(
-                  name,
-                  `${name.toLowerCase().replace(/\s/g, "")}@ikamvahub.com`,
-                  "",
-                );
+          <View style={styles.progressContainer}>
+            <View style={styles.activeProgress} />
 
-                if (userId) {
-                  // Save profile information
-                  await createProfile({
-                    user_id: userId,
-                    age,
-                    gender,
-                    school,
-                    grade,
-                    career_interest: career,
-                    bio: "",
-                    profile_pic: "",
-                    phone: "",
-                    location: "",
-                  });
+            <View style={styles.progressLine} />
 
-                  console.log("✅ Profile saved successfully");
+            <View style={styles.inactiveProgress} />
+
+            <View style={styles.progressLine} />
+
+            <View style={styles.inactiveProgress} />
+          </View>
+
+          <View style={{ width: 40 }} />
+
+        </View>
+
+        {/* HEADER */}
+        <View style={styles.header}>
+
+          <View style={styles.iconCircle}>
+            <Ionicons
+              name="person-outline"
+              size={32}
+              color="#FFFFFF"
+            />
+          </View>
+
+          <Text style={styles.title}>
+            Create your{"\n"}IKAMVAHUB account
+          </Text>
+
+          <Text style={styles.subtitle}>
+            Let's personalize your experience
+          </Text>
+
+        </View>
+
+        {/* FORM */}
+        <View style={styles.form}>
+
+          {/* FULL NAME */}
+          <View style={styles.inputContainer}>
+
+            <Ionicons
+              name="person-outline"
+              size={21}
+              color="#FFFFFF"
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Full Name"
+              placeholderTextColor="rgba(255,255,255,0.7)"
+              value={name}
+              onChangeText={setName}
+              autoCapitalize="words"
+            />
+
+          </View>
+
+          {/* AGE */}
+          <View style={styles.inputContainer}>
+
+            <MaterialIcons
+              name="cake"
+              size={21}
+              color="#FFFFFF"
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Age"
+              placeholderTextColor="rgba(255,255,255,0.7)"
+              value={age}
+              onChangeText={setAge}
+              keyboardType="numeric"
+              maxLength={2}
+            />
+
+          </View>
+
+          {/* GENDER */}
+          <View style={styles.genderContainer}>
+
+            <View style={styles.genderTitleRow}>
+
+              <Ionicons
+                name="male-female-outline"
+                size={21}
+                color="#FFFFFF"
+              />
+
+              <Text style={styles.genderTitle}>
+                Gender
+              </Text>
+
+            </View>
+
+            <View style={styles.genderRow}>
+
+              <TouchableOpacity
+                style={[
+                  styles.genderButton,
+                  gender === "Male" &&
+                    styles.selectedGender,
+                ]}
+                onPress={() => setGender("Male")}
+              >
+                <Text style={styles.genderText}>
+                  Male
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.genderButton,
+                  gender === "Female" &&
+                    styles.selectedGender,
+                ]}
+                onPress={() => setGender("Female")}
+              >
+                <Text style={styles.genderText}>
+                  Female
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.genderButton,
+                  gender === "Prefer not to say" &&
+                    styles.selectedGender,
+                ]}
+                onPress={() =>
+                  setGender("Prefer not to say")
                 }
+              >
+                <Text style={styles.genderText}>
+                  Prefer not
+                </Text>
+              </TouchableOpacity>
 
-                console.log("✅ Setup complete - going to main app");
-                router.replace("/(tabs)");
-              } catch (error) {
-                console.error("❌ Error saving profile:", error);
+            </View>
+
+          </View>
+
+          {/* EMAIL */}
+          <View style={styles.inputContainer}>
+
+            <Ionicons
+              name="mail-outline"
+              size={21}
+              color="#FFFFFF"
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Email Address"
+              placeholderTextColor="rgba(255,255,255,0.7)"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+
+          </View>
+
+          {/* PASSWORD */}
+          <View style={styles.inputContainer}>
+
+            <Ionicons
+              name="lock-closed-outline"
+              size={21}
+              color="#FFFFFF"
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="rgba(255,255,255,0.7)"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+
+            <TouchableOpacity
+              onPress={() =>
+                setShowPassword(!showPassword)
               }
-            }
-          }}
-        >
-          <Text style={styles.buttonText}>Continue →</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+            >
+              <Ionicons
+                name={
+                  showPassword
+                    ? "eye-off-outline"
+                    : "eye-outline"
+                }
+                size={22}
+                color="#FFFFFF"
+              />
+            </TouchableOpacity>
+
+          </View>
+
+          {/* BUTTON */}
+          <TouchableOpacity
+            style={[
+              styles.button,
+              loading && styles.buttonDisabled,
+            ]}
+            onPress={handleCreateAccount}
+            disabled={loading}
+          >
+
+            <Text style={styles.buttonText}>
+              {loading
+                ? "Creating Account..."
+                : "Get Started"}
+            </Text>
+
+            {!loading && (
+              <Ionicons
+                name="arrow-forward"
+                size={21}
+                color="#087F7A"
+              />
+            )}
+
+          </TouchableOpacity>
+
+          {/* LOGIN */}
+          <View style={styles.loginRow}>
+
+            <Text style={styles.loginText}>
+              Already have an account?
+            </Text>
+
+            <TouchableOpacity
+              onPress={() => router.push("/login")}
+            >
+              <Text style={styles.loginLink}>
+                {" "}Login
+              </Text>
+            </TouchableOpacity>
+
+          </View>
+
+        </View>
+
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+
+  // =========================
+  // MAIN
+  // =========================
+
   container: {
     flex: 1,
-    backgroundColor: "#F4F7FB",
+    backgroundColor: "#087F7A",
+  },
+
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 24,
+    paddingTop: 55,
+    paddingBottom: 35,
+  },
+
+  // =========================
+  // TOP BAR
+  // =========================
+
+  topBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 
   backButton: {
-    alignItems: "center",
-    marginTop: 15,
+    width: 40,
+    height: 40,
+    justifyContent: "center",
   },
 
-  backButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#2563EB",
+  progressContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
+
+  activeProgress: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: "#FFFFFF",
+  },
+
+  inactiveProgress: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "rgba(255,255,255,0.4)",
+  },
+
+  progressLine: {
+    width: 45,
+    height: 2,
+    backgroundColor: "rgba(255,255,255,0.4)",
+    marginHorizontal: 7,
+  },
+
+  // =========================
+  // HEADER
+  // =========================
 
   header: {
-    padding: 25,
-    paddingTop: 60,
+    alignItems: "center",
+    marginTop: 40,
+    marginBottom: 35,
   },
 
-  schoolFinderButton: {
-    backgroundColor: "#14B8A6",
-    marginHorizontal: 25,
-    marginBottom: 15,
-    padding: 14,
-    borderRadius: 12,
+  iconCircle: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.35)",
+    justifyContent: "center",
     alignItems: "center",
-  },
-  schoolFinderButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  logo: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#2563EB",
     marginBottom: 20,
   },
 
   title: {
-    fontSize: 34,
-    fontWeight: "bold",
-    color: "#111827",
+    color: "#FFFFFF",
+    fontSize: 30,
+    fontWeight: "800",
+    textAlign: "center",
+    lineHeight: 37,
   },
 
   subtitle: {
-    fontSize: 18,
-    color: "#6B7280",
-    marginTop: 5,
+    color: "rgba(255,255,255,0.72)",
+    fontSize: 15,
+    marginTop: 10,
+    textAlign: "center",
   },
 
-  progress: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 25,
-  },
+  // =========================
+  // FORM
+  // =========================
 
-  activeDot: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: "#14B8A6",
-  },
-
-  dot: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: "#D1D5DB",
-  },
-
-  line: {
-    flex: 1,
-    height: 3,
-    backgroundColor: "#D1D5DB",
-  },
-
-  card: {
-    backgroundColor: "#fff",
-    margin: 20,
-    padding: 20,
-    borderRadius: 20,
-    elevation: 4,
-  },
-
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: "700",
-    marginBottom: 20,
-    color: "#111827",
+  form: {
+    width: "100%",
   },
 
   inputContainer: {
+    height: 62,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "rgba(255,255,255,0.14)",
+    borderRadius: 31,
+    paddingHorizontal: 20,
+    marginBottom: 15,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    borderRadius: 14,
-    paddingHorizontal: 15,
-    marginBottom: 18,
+    borderColor: "rgba(255,255,255,0.08)",
   },
 
   input: {
     flex: 1,
-    padding: 15,
+    color: "#FFFFFF",
     fontSize: 16,
+    marginLeft: 13,
   },
 
-  button: {
-    backgroundColor: "#2563EB",
-    padding: 18,
-    borderRadius: 15,
+  // =========================
+  // GENDER
+  // =========================
+
+  genderContainer: {
+    backgroundColor: "rgba(255,255,255,0.12)",
+    borderRadius: 22,
+    padding: 15,
+    marginBottom: 15,
+  },
+
+  genderTitleRow: {
+    flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
+    marginBottom: 12,
+  },
+
+  genderTitle: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    marginLeft: 13,
+    fontWeight: "500",
+  },
+
+  genderRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+
+  genderButton: {
+    flex: 1,
+    height: 42,
+    borderRadius: 21,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.3)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  selectedGender: {
+    backgroundColor: "rgba(255,255,255,0.28)",
+    borderColor: "#FFFFFF",
+  },
+
+  genderText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "600",
+  },
+
+  // =========================
+  // GET STARTED
+  // =========================
+
+  button: {
+    height: 62,
+    borderRadius: 31,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 12,
+    elevation: 4,
+  },
+
+  buttonDisabled: {
+    opacity: 0.6,
   },
 
   buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+    color: "#087F7A",
+    fontSize: 17,
+    fontWeight: "800",
   },
+
+  // =========================
+  // LOGIN
+  // =========================
+
+  loginRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 26,
+  },
+
+  loginText: {
+    color: "rgba(255,255,255,0.7)",
+    fontSize: 14,
+  },
+
+  loginLink: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "800",
+  },
+
 });

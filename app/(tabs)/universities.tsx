@@ -21,7 +21,6 @@ interface University {
 
 export default function Universities() {
   const router = useRouter();
-
   const [universities, setUniversities] = useState<University[]>([]);
   const [filtered, setFiltered] = useState<University[]>([]);
   const [search, setSearch] = useState("");
