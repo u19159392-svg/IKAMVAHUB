@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { getCareers } from "../db/Database";
+import { getCareers } from "../db/ReferenceDatabase";
 import {saveData, getData} from "../utils/Storage"
 
 export default function Careers() {

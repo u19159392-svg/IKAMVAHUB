@@ -9,7 +9,8 @@ import {
 } from "react-native";
 
 import SchoolCard from "../components/SchoolCard";
-import { getSchools, searchSchools } from "./db/Database";
+import { getSchools, searchSchools } from "./db/ReferenceDatabase";
+import {saveData, getData} from "../app/utils/Storage";
 
 export default function Schools() {
   const [schools, setSchools] = useState<any[]>([]);
@@ -27,10 +28,22 @@ export default function Schools() {
 
       console.log("Schools:", data);
 
+      //Save schools locally(saving database data locally)
+      await saveData("schools",data);
+
+      //use the data
       setSchools(data);
-    } catch (error) {
-      console.log("LOAD ERROR:", error);
-    } finally {
+    }catch(error){
+      console.error("Could not load schools from database:",error);
+
+      //Try cached data instead
+      const cachedSchools= await getData("schools");
+
+      if (cachedSchools){
+        console.log("Using cached schools", cachedSchools);
+        setSchools(cachedSchools);
+      }
+    }finally{
       setLoading(false);
     }
   };

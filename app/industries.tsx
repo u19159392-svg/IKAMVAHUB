@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { getIndustries } from "./db/Database";
+import { getIndustries } from "./db/ReferenceDatabase";
 
 export default function Industries() {
   const [industries, setIndustries] = useState<any[]>([]);
