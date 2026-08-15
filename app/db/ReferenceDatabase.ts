@@ -1,7 +1,5 @@
 import * as SQLite from "expo-sqlite";
 
-<<<<<<< HEAD
-=======
 import { seedCPUT } from "./Seeds/seeds.CPUT";
 import { seedCUT } from "./Seeds/seeds.CUT";
 import { seedMUT } from "./Seeds/seeds.MUT";
@@ -24,7 +22,6 @@ import { seedWits } from "./Seeds/seeds.Wits";
 import { seedWSU } from "./Seeds/seeds.WSU";
 
 // Second database for reference data
->>>>>>> 2ce418e8edfbad96db7e25fcd18524c284fb6950
 const refDb = SQLite.openDatabaseSync("reference.db");
 
 // ============================================================

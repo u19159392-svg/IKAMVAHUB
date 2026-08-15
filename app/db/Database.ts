@@ -6182,14 +6182,14 @@ export const getSubjectById = async (id: number) => {
 };
 
 // ==================== CAREER FUNCTIONS ====================
-export const getCareers = async () => {
+export const  getCareers =async() => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
   try {
     return await db.getAllAsync("SELECT * FROM careers ORDER BY name ASC");
   } catch (error) {
     console.error("❌ Get careers error:", error);
     return [];
   }
-};
+  };
 
 export const getCareerById = async (id: number) => {
   try {
