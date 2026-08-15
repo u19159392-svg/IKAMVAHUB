@@ -1,5 +1,30 @@
 import * as SQLite from "expo-sqlite";
 
+<<<<<<< HEAD
+=======
+import { seedCPUT } from "./Seeds/seeds.CPUT";
+import { seedCUT } from "./Seeds/seeds.CUT";
+import { seedMUT } from "./Seeds/seeds.MUT";
+import { seedNMU } from "./Seeds/seeds.NMU";
+import { seedNWU } from "./Seeds/seeds.NWU";
+import { seedSPU } from "./Seeds/seeds.SPU";
+import { seedTUT } from "./Seeds/seeds.TUT";
+import { seedUCT } from "./Seeds/seeds.UCT";
+import { seedUFH } from "./Seeds/seeds.UFH";
+import { seedUFS } from "./Seeds/seeds.UFS";
+import { seedUJ } from "./Seeds/seeds.UJ";
+import { seedUKZN } from "./Seeds/seeds.UKZN";
+import { seedUNISA } from "./Seeds/seeds.UNISA";
+import { seedUNIVEN } from "./Seeds/seeds.UNIVEN";
+import { seedUNW } from "./Seeds/seeds.UNW";
+import { seedUP } from "./Seeds/seeds.UP";
+import { seedUWC } from "./Seeds/seeds.UWC";
+import { seedVUT } from "./Seeds/seeds.VUT";
+import { seedWits } from "./Seeds/seeds.Wits";
+import { seedWSU } from "./Seeds/seeds.WSU";
+
+// Second database for reference data
+>>>>>>> 2ce418e8edfbad96db7e25fcd18524c284fb6950
 const refDb = SQLite.openDatabaseSync("reference.db");
 
 // ============================================================
