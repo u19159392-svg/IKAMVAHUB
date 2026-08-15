@@ -32,7 +32,6 @@ export default function TabLayout() {
   name="universities"
   options={{
     title: "Universities",
-    headerShown: false,
     tabBarIcon: ({ color, size }) => (
       <Ionicons name="school" size={size} color={color} />
     ),
@@ -55,15 +54,6 @@ export default function TabLayout() {
           title: "Explore",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="compass" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="universities"
-        options={{
-          title: "Universities",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="school" size={size} color={color} />
           ),
         }}
       />
