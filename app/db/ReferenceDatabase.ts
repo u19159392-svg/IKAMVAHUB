@@ -720,15 +720,14 @@ export const seedReferenceDatabase = async () => {
     // SCHOOLS
     // ========================================================
 
-    const schools = [
+    const schools = 
       [
-        "Baleni Secondary School",
-        "Eastern Cape",
-        "Public",
-        "Bizana",
-        "",
-        "",
-      ],
+      ["Baleni Secondary School",
+         "Eastern Cape",
+          "Public", 
+          "Bizana", 
+          "", 
+          ""],
       [
         "Tyelimhlophe Secondary School",
         "Eastern Cape",
@@ -745,14 +744,13 @@ export const seedReferenceDatabase = async () => {
         "",
         "",
       ],
-      [
-        "Bonxa High School",
-        "Eastern Cape",
-        "Public",
-        "Tabankulu",
+      ["Bonxa High School", 
+        "Eastern Cape", 
+        "Public", 
+        "Tabankulu", 
         "",
-        "",
-      ],
+         ""
+        ],
       [
         "Dumsi Senior Secondary School",
         "Eastern Cape",
@@ -761,7 +759,77 @@ export const seedReferenceDatabase = async () => {
         "",
         "",
       ],
+      [
+        "Zibokwana High School",
+        "Eastern Cape",
+        "Public",
+        "Mount Frere",
+        "",
+        "",
+      ],
+      ["Dangwana High School", 
+        "Eastern Cape", 
+        "Public", 
+        "Mount Frere", 
+        "", 
+        ""
+      ],
+      [
+        "Zwelitsha High Secondary School",
+        "Eastern Cape",
+        "Public",
+        "Mount Frere",
+        "",
+        "",
+      ],
+      ["Mbodleli High School", 
+        "Eastern Cape", 
+        "Public", 
+        "Mount Frere", 
+        "", 
+        ""
+      ],
+      [
+        "Mfazwe Tech High School",
+        "Eastern Cape",
+        "Public",
+        "Tabankulu",
+        "",
+        "",
+      ],
+      [
+        "Mpondombini Secondary School",
+        "Eastern Cape",
+        "Public",
+        "Mount Frere",
+        "",
+        "",
+      ],
+      ["Mvenyane High School",
+         "Eastern Cape", 
+         "Public", 
+         "Mount Frere", 
+         "", 
+         ""
+        ],
+      [
+        "Nzululwazi High School",
+        "Eastern Cape",
+        "Public",
+        "Mount Frere",
+        "",
+        "",
+      ],
+      [
+        "Nomaqwathekana Secondary School",
+        "Eastern Cape",
+        "Public",
+        "Mount Frere",
+        "",
+        "",
+      ],
     ];
+
 
     for (const school of schools) {
       const exists = await refDb.getFirstAsync<{ id: number }>(
