@@ -29,19 +29,18 @@
     },
 
     "plugins": [
-      "expo-router",
       [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
-          "dark": {
-            "backgroundColor": "#000000"
-          }
-        }
-      ],
+  "expo-splash-screen",
+  {
+    "image": "./assets/images/ikamva-logo.png",
+    "imageWidth": 300,
+    "resizeMode": "contain",
+    "backgroundColor": "#000000",
+    "dark": {
+      "backgroundColor": "#000000"
+    }
+  }
+],
       "expo-sqlite"
     ],
 

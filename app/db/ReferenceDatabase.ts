@@ -243,7 +243,22 @@ export const searchSchools = async (query: string) => {
     return [];
   }
 };
+export const checkTyelimhlophe = async () => {
+  try {
+    const result = await refDb.getAllAsync(
+      `SELECT id, name, province, location, contact, email
+       FROM schools
+       WHERE name LIKE '%Tyelimhlophe%'`
+    );
 
+    console.log("🔎 TYELIMHLOPHE RECORDS:", result);
+
+    return result;
+  } catch (error) {
+    console.error("❌ Tyelimhlophe check error:", error);
+    return [];
+  }
+};
 export const filterSchools = async (
   province: string,
   type: string,
@@ -1345,21 +1360,19 @@ console.log("✅ Universities seeded");
 
     const mentors = [
       [
-        "Sipho Dlamini",
-        "Engineering",
-        "Experienced mechanicl engineer mentoring students in STEM fields.",
-        "012 345 6789",
-        "sipho.dlamini@example.com",
+        "Naidia Mavika",
+        "Accounting Science",
+        "062 889 9560",
+        "naidiamavika663@gmail.com",
         "https://example.com/sipho.jpg",
-        "Mon-Fri 9am-5pm",
+        "MWeekend 10am-2pm",
       ],
       [
-        "Anele Khumalo",
-        "Business",
-        "Career coach focusing on business and finance careers.",
-        "098 765 4321",
-        "anele.khumalo@example.com",
-        "https://example.com/anele.jpg",
+        "Lesiba Pitseng",
+        "Bcom Accounting Science",
+        "071 299 4145",
+        "u23752379@tuks.co.za",
+        "https://ibb.co/My39FmqC",
         "Weekends 10am-2pm",
       ],
     ];

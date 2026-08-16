@@ -1,7 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+
 import {
-  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
@@ -11,8 +9,8 @@ import {
   View,
 } from "react-native";
 
-const { width } = Dimensions.get("window");
-
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 const TEAL = "#14B8A6";
 const DARK = "#111B4A";
 const LIGHT_TEAL = "#E8FAF7";
@@ -43,6 +41,46 @@ const schools = [
     type: "Secondary School",
     location: "Mount Frere",
   },
+  {name: "Zibokwana",
+    type: "High School",
+    location: "Mount Frere"
+  },
+  {name: "Dangwana",
+    type: "High School",
+    location: "Mount Frere"
+  },
+  {name: "Zwelitsha",
+    type: "Secondary School",
+    location: "Mount Frere"
+  },
+  {name:"Mbodleni",
+    type: "Secondary School",
+    location: "Mount Frere"
+  },
+  {name:"Mfazwe",
+    type: "Technical Secondary School",
+  location: "Tabankulu"
+  },
+  {name:"Mpondombini",
+    type: "Secondary School",
+    location: "Mount Frere"
+  },
+  {name: "Mvenyane",
+  type: "Secondary School",
+  location:"Mount Frere"
+  },
+  { name:"Nzululwazi",
+    type:"Secondary School",
+    location:"Mount Frere"
+  },
+  {name:"Nomaqwathekana",
+    type:"Secondary School",
+    location:"Mount Frere"
+  },
+  
+
+
+
 ];
 
 const universities = [
@@ -87,7 +125,10 @@ export default function HomeScreen() {
             <Ionicons name="menu-outline" size={34} color={DARK} />
           </TouchableOpacity>
 
-          <Text style={styles.logoText}>IKAMVA HUB</Text>
+          <Image
+  source={require("../assets/images/ikamva-logo.png")}
+  style={styles.headerLogo}
+/>
 
           <TouchableOpacity>
             <Ionicons
@@ -485,13 +526,11 @@ const styles = StyleSheet.create({
     paddingTop: 55,
     paddingBottom: 4,
   },
-
-  logoText: {
-    fontSize: 29,
-    fontWeight: "800",
-    color: TEAL,
-    letterSpacing: -1,
-  },
+headerLogo: {
+  width: 130,
+  height: 55,
+  resizeMode: "contain",
+},
 
   tagline: {
     textAlign: "center",
