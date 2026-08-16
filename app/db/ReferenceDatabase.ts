@@ -720,132 +720,247 @@ export const seedReferenceDatabase = async () => {
     // SCHOOLS
     // ========================================================
 
-    const schools = 
+    const schools = [
+  [
+    "Baleni Secondary School",
+    "Eastern Cape",
+    "Public Secondary School — No-Fee School",
+    "Amadiba A/A, Baleni Location, Bizana, 4800",
+    "+27 39 273 1184",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences, Physical Sciences",
+    "Soccer, Netball",
+    "Cultural activities, community engagement programs",
+    "Classrooms; limited rural infrastructure typical of Quintile 1 schools",
+  ],
+
+  [
+    "Tyelimhlophe Secondary School (Agricultural)",
+    "Eastern Cape",
+    "Public Secondary School (Agricultural) — No-Fee School",
+    "Lugangeni A/A, Ntenetyana Location, Mount Frere, 5090",
+    "+27 72 695 2704",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, Agricultural Sciences, Agricultural Technology, Life Sciences, Geography",
+    "Soccer, Netball",
+    "Agricultural projects, school garden/farm activities, community environmental programs",
+    "Classrooms, agricultural demonstration/practical areas",
+  ],
+
+  [
+    "Toleni Secondary School",
+    "Eastern Cape",
+    "Public Secondary School — No-Fee School",
+    "Toleni A/A, Mount Frere, 5090",
+    "+27 83 765 3530",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences",
+    "Soccer, Netball",
+    "Cultural activities, community participation",
+    "Standard classrooms; rural school infrastructure",
+  ],
+
+  [
+    "Bonxa High School",
+    "Eastern Cape",
+    "Public Secondary School — No-Fee School",
+    "Ntlamvini A/A, Tabankulu, 5090",
+    "+27 39 254 1102",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, Accounting, Life Sciences, Geography, History, Agricultural Sciences",
+    "Soccer, Netball",
+    "Cultural programs, community projects",
+    "Classrooms; government-owned buildings and land",
+  ],
+
+  [
+    "Dumsi Senior Secondary School",
+    "Eastern Cape",
+    "Public Secondary School — No-Fee School",
+    "Mount Frere area, Umzimvubu Local Municipality, 5090",
+    "+27 39 255 0204",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, Life Sciences, Geography, History",
+    "Soccer, Netball",
+    "Cultural activities",
+    "Standard government school facilities",
+  ],
+
+  [
+    "Zibokwana High School",
+    "Eastern Cape",
+    "Public Secondary School — No-Fee School",
+    "Box 366, Mount Frere, 5090",
+    "+27 78 047 6019",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences",
+    "Soccer, Netball",
+    "Cultural events, community involvement activities",
+    "Classrooms; government-owned buildings and land",
+  ],
+
+  [
+    "Dangwana High School",
+    "Eastern Cape",
+    "Public Secondary School — No-Fee School",
+    "Dangwana A/A, Mt Frere, 5090 | P O Box 548, Mount Frere, 5090",
+    "+27 83 487 4922 / +27 39 255 0095",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences",
+    "Soccer, Netball",
+    "Cultural and community activities",
+    "Classrooms; government-owned buildings; grounds",
+  ],
+
+  [
+    "Zwelitsha High Secondary School",
+    "Eastern Cape",
+    "Public Secondary School — No-Fee School",
+    "Mvuzo area, Mount Frere, 5090",
+    "+27 39 254 0068",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences",
+    "Soccer, Netball",
+    "Cultural and community activities",
+    "Standard government classrooms and grounds",
+  ],
+
+  [
+    "Mbodleni High School",
+    "Eastern Cape",
+    "Public Secondary School — No-Fee School",
+    "Mpendla A/A, Mount Frere, 5090 | P O Box 405, Mount Frere, 5090",
+    "+27 72 150 1808 / +27 82 334 1997",
+    "",
+    "Compulsory: isiXhosa, English, Mathematics or Mathematical Literacy, Life Orientation. Optional: Life Sciences, Geography, History, Agricultural Sciences, Physical Sciences, Accounting, Business Studies, Economics, Tourism, Consumer Studies, and more",
+    "Soccer, Netball",
+    "School cultural events, community programs",
+    "Classrooms; government-owned buildings and land; manages own maintenance",
+  ],
+
+  [
+    "Mfazwe Tech High School",
+    "Eastern Cape",
+    "Public Comprehensive Technical Secondary School — No-Fee School",
+    "Tabankulu, 5130 | P.O. Box 117, Tabankulu, 5130",
+    "+27 39 257 0031",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, Civil Technology, Electrical Technology, Mechanical Technology, Engineering Graphics & Design (EGD), Technical Sciences",
+    "Soccer, Netball, technical/vocational enrichment activities",
+    "Technical workshops, practical demonstrations, skills development activities",
+    "Technical workshops; classrooms; practical labs for engineering/technical subjects",
+  ],
+
+  [
+    "Mpondombini Secondary School",
+    "Eastern Cape",
+    "Public Secondary School — No-Fee School",
+    "Mount Frere area, Umzimvubu Local Municipality, 5090",
+    "+27 39 255 0317",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences",
+    "Soccer, Netball",
+    "Cultural activities, community programs",
+    "Standard government classrooms",
+  ],
+
+  [
+    "Mvenyane High School",
+    "Eastern Cape",
+    "Public Secondary School — No-Fee School",
+    "Mvenyane area, Mount Frere, 5090",
+    "+27 39 255 0459",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences",
+    "Soccer, Netball",
+    "Cultural and community activities",
+    "Standard government school facilities",
+  ],
+
+  [
+    "Nzululwazi High School",
+    "Eastern Cape",
+    "Public Secondary School — No-Fee School",
+    "Cabazi A/A, Mount Frere, 5090 | P.O. Box 91633, Mount Frere, 5090",
+    "+27 79 209 2377",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences",
+    "Soccer, Netball",
+    "Cultural events, community involvement",
+    "Classrooms; government-owned buildings and land",
+  ],
+
+  [
+    "Nomaqwathekana",
+    "Eastern Cape",
+    "Public School — No-Fee School",
+    "Mount Frere area, Umzimvubu Local Municipality, 5090",
+    "+27 83 741 7608",
+    "",
+    "isiXhosa, English, Mathematics / Mathematical Literacy, Life Orientation, and elective subjects per CAPS NSC curriculum",
+    "Soccer, Netball",
+    "Cultural and community activities",
+    "Standard government school facilities",
+  ],
+];
+for (const school of schools) {
+  const exists = await refDb.getFirstAsync<{ id: number }>(
+    "SELECT id FROM schools WHERE name = ?",
+    [school[0]],
+  );
+
+  if (exists) {
+    // School already exists → UPDATE its information
+    await refDb.runAsync(
+      `UPDATE schools
+       SET
+         province = ?,
+         type = ?,
+         location = ?,
+         contact = ?,
+         email = ?,
+         subjects_offered = ?,
+         sports = ?,
+         extracurricular = ?,
+         facilities = ?
+       WHERE name = ?`,
       [
-      ["Baleni Secondary School",
-         "Eastern Cape",
-          "Public", 
-          "Bizana", 
-          "", 
-          ""],
-      [
-        "Tyelimhlophe Secondary School",
-        "Eastern Cape",
-        "Public",
-        "Mount Frere",
-        "",
-        "",
+        school[1],
+        school[2],
+        school[3],
+        school[4],
+        school[5],
+        school[6],
+        school[7],
+        school[8],
+        school[9],
+        school[0],
       ],
-      [
-        "Toleni Secondary School",
-        "Eastern Cape",
-        "Public",
-        "Mount Frere",
-        "",
-        "",
-      ],
-      ["Bonxa High School", 
-        "Eastern Cape", 
-        "Public", 
-        "Tabankulu", 
-        "",
-         ""
-        ],
-      [
-        "Dumsi Senior Secondary School",
-        "Eastern Cape",
-        "Public",
-        "Mount Frere",
-        "",
-        "",
-      ],
-      [
-        "Zibokwana High School",
-        "Eastern Cape",
-        "Public",
-        "Mount Frere",
-        "",
-        "",
-      ],
-      ["Dangwana High School", 
-        "Eastern Cape", 
-        "Public", 
-        "Mount Frere", 
-        "", 
-        ""
-      ],
-      [
-        "Zwelitsha High Secondary School",
-        "Eastern Cape",
-        "Public",
-        "Mount Frere",
-        "",
-        "",
-      ],
-      ["Mbodleli High School", 
-        "Eastern Cape", 
-        "Public", 
-        "Mount Frere", 
-        "", 
-        ""
-      ],
-      [
-        "Mfazwe Tech High School",
-        "Eastern Cape",
-        "Public",
-        "Tabankulu",
-        "",
-        "",
-      ],
-      [
-        "Mpondombini Secondary School",
-        "Eastern Cape",
-        "Public",
-        "Mount Frere",
-        "",
-        "",
-      ],
-      ["Mvenyane High School",
-         "Eastern Cape", 
-         "Public", 
-         "Mount Frere", 
-         "", 
-         ""
-        ],
-      [
-        "Nzululwazi High School",
-        "Eastern Cape",
-        "Public",
-        "Mount Frere",
-        "",
-        "",
-      ],
-      [
-        "Nomaqwathekana Secondary School",
-        "Eastern Cape",
-        "Public",
-        "Mount Frere",
-        "",
-        "",
-      ],
-    ];
+    );
+  } else {
+    // School does not exist → INSERT it
+    await refDb.runAsync(
+      `INSERT INTO schools
+       (
+         name,
+         province,
+         type,
+         location,
+         contact,
+         email,
+         subjects_offered,
+         sports,
+         extracurricular,
+         facilities
+       )
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      school,
+    );
+  }
+}
 
 
-    for (const school of schools) {
-      const exists = await refDb.getFirstAsync<{ id: number }>(
-        "SELECT id FROM schools WHERE name = ?",
-        [school[0]],
-      );
-
-      if (!exists) {
-        await refDb.runAsync(
-          `INSERT INTO schools
-          (name, province, type, location, contact, email)
-          VALUES (?, ?, ?, ?, ?, ?)`,
-          school,
-        );
-      }
-    }
+    
 
     console.log("✅ Schools seeded");
 

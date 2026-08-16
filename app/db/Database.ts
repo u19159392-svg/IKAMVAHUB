@@ -543,13 +543,15 @@ export const clearDuplicateSchools = async () => {
 export const seedSchools = async () => {
   try {
     const existing = await db.getAllAsync("SELECT id FROM schools LIMIT 1");
-    if (existing.length > 0) {
-      console.log("ℹ️ Schools already seeded, skipping");
-      return;
-    }
-
-    const schools = [
-      ["Baleni Secondary School", "Eastern Cape", "Public", "Bizana", "", ""],
+    console.log("Existing schools:",existing.length);
+      const schools = [
+      ["Baleni Secondary School",
+         "Eastern Cape",
+          "Public", 
+          "Bizana", 
+          "",
+           "",
+          ],
       [
         "Tyelimhlophe Secondary School",
         "Eastern Cape",
@@ -566,7 +568,12 @@ export const seedSchools = async () => {
         "",
         "",
       ],
-      ["Bonxa High School", "Eastern Cape", "Public", "Tabankulu", "", ""],
+      ["Bonxa High School",
+         "Eastern Cape", 
+         "Public", "Tabankulu", 
+         "", 
+         ""
+        ],
       [
         "Dumsi Senior Secondary School",
         "Eastern Cape",
@@ -583,7 +590,13 @@ export const seedSchools = async () => {
         "",
         "",
       ],
-      ["Dangwana High School", "Eastern Cape", "Public", "Mount Frere", "", ""],
+      ["Dangwana High School",
+         "Eastern Cape", 
+         "Public",
+          "Mount Frere", 
+          "", 
+          ""
+        ],
       [
         "Zwelitsha High Secondary School",
         "Eastern Cape",
@@ -592,7 +605,13 @@ export const seedSchools = async () => {
         "",
         "",
       ],
-      ["Mbodleli High School", "Eastern Cape", "Public", "Mount Frere", "", ""],
+      ["Mbodleni High School",
+         "Eastern Cape",
+          "Public", 
+          "Mount Frere",
+           "", 
+           ""
+          ],
       [
         "Mfazwe Tech High School",
         "Eastern Cape",
@@ -609,7 +628,13 @@ export const seedSchools = async () => {
         "",
         "",
       ],
-      ["Mvenyane High School", "Eastern Cape", "Public", "Mount Frere", "", ""],
+      ["Mvenyane High School",
+         "Eastern Cape", 
+         "Public",
+          "Mount Frere",
+           "",
+            "",
+          ],
       [
         "Nzululwazi High School",
         "Eastern Cape",
@@ -618,14 +643,7 @@ export const seedSchools = async () => {
         "",
         "",
       ],
-      [
-        "Nomaqwathekana Secondary School",
-        "Eastern Cape",
-        "Public",
-        "Mount Frere",
-        "",
-        "",
-      ],
+      
     ];
 
     for (const school of schools) {
@@ -645,9 +663,9 @@ export const seedSchools = async () => {
         "Tyelimhlophe Secondary School",
         "Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Agricultural Sciences, Agricultural Technology, Life Sciences, Geography\nPrograms: NSC CAPS curriculum with Agricultural specialisation (Gr 8-12)",
       ],
-      [
+            [
         "Toleni Secondary School",
-        "Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences\nPrograms: NSC CAPS curriculum (Gr 8-12)",
+        "Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History\nPrograms: NSC CAPS curriculum (Gr 8-12)",
       ],
       [
         "Bonxa High School",
@@ -670,7 +688,7 @@ export const seedSchools = async () => {
         "Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences\nPrograms: NSC CAPS curriculum (Gr 8-12)",
       ],
       [
-        "Mbodleli High School",
+        "Mbodleni High School",
         "Languages: isiXhosa (HL), English (FAL)\nSubjects: Compulsory: Mathematics, Mathematical Literacy, Life Orientation. Optional (choose 3): Life Sciences, Geography, History, Agricultural Sciences, Physical Sciences, Accounting, Business Studies, Economics, Tourism, Consumer Studies\nPrograms: NSC CAPS curriculum (Gr 10-12)",
       ],
       [
@@ -689,10 +707,7 @@ export const seedSchools = async () => {
         "Nzululwazi High School",
         "Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, Life Sciences, Geography, History, Agricultural Sciences\nPrograms: NSC CAPS curriculum (Gr 8-12)",
       ],
-      [
-        "Nomaqwathekana Secondary School",
-        "Languages: isiXhosa (HL), English (FAL)\nSubjects: Mathematics, Mathematical Literacy, Life Orientation, and elective subjects per CAPS\nPrograms: NSC CAPS curriculum",
-      ],
+      
     ];
 
     for (const [name, subjects] of schoolSubjects) {
@@ -701,8 +716,164 @@ export const seedSchools = async () => {
         [subjects, name],
       );
     }
+// ===== SCHOOL DETAILS =====
+const schoolDetails = [
+  [
+    "Baleni Secondary School",
+    "Amadiba A/A, Baleni Location, Bizana, 4800",
+    "+27 39 273 1184",
+    "Soccer, Netball",
+    "Cultural activities, community engagement programs",
+    "Classrooms; limited rural infrastructure typical of Quintile 1 schools",
+  ],
 
+  [
+    "Tyelimhlophe Secondary School",
+    "Lugangeni A/A, Ntenetyana Location, Mount Frere, 5090",
+    "+27 72 695 2704",
+    "Soccer, Netball",
+    "Agricultural projects, school garden/farm activities, community environmental programs",
+    "Classrooms, agricultural demonstration/practical areas",
+  ],
+
+  [
+    "Toleni Secondary School",
+    "Toleni A/A, Mount Frere, 5090",
+    "+27 83 765 3530",
+    "Soccer, Netball",
+    "Cultural activities, community participation",
+    "Standard classrooms; rural school infrastructure",
+  ],
+
+  [
+    "Bonxa High School",
+    "Ntlamvini A/A, Tabankulu, 5090",
+    "+27 39 254 1102",
+    "Soccer, Netball",
+    "Cultural programs, community projects",
+    "Classrooms; government-owned buildings and land",
+  ],
+
+  [
+    "Dumsi Senior Secondary School",
+    "Mount Frere area, Umzimvubu Local Municipality, 5090",
+    "+27 39 255 0204",
+    "Soccer, Netball",
+    "Cultural activities",
+    "Standard government school facilities",
+  ],
+
+  [
+    "Zibokwana High School",
+    "Box 366, Mount Frere, 5090",
+    "+27 78 047 6019",
+    "Soccer, Netball",
+    "Cultural events, community involvement activities",
+    "Classrooms; government-owned buildings and land",
+  ],
+
+  [
+    "Dangwana High School",
+    "Dangwana A/A, Mt Frere, 5090",
+    "+27 83 487 4922 / +27 39 255 0095",
+    "Soccer, Netball",
+    "Cultural and community activities",
+    "Classrooms; government-owned buildings; grounds",
+  ],
+
+  [
+    "Zwelitsha High Secondary School",
+    "Mvuzo area, Mount Frere, 5090",
+    "+27 39 254 0068",
+    "Soccer, Netball",
+    "Cultural and community activities",
+    "Standard government classrooms and grounds",
+  ],
+
+  [
+    "Mbodleni High School",
+    "Mpendla A/A, Mount Frere, 5090",
+    "+27 72 150 1808 / +27 82 334 1999",
+    "Soccer, Netball",
+    "School cultural events, community programs",
+    "Classrooms; government-owned buildings and land; manages own maintenance",
+  ],
+
+  [
+    "Mfazwe Tech High School",
+    "Tabankulu, 5130",
+    "+27 39 257 0031",
+    "Soccer, Netball",
+    "Technical workshops, practical demonstrations, skills development activities",
+    "Technical workshops; classrooms; practical labs for engineering/technical subjects",
+  ],
+
+  [
+    "Mpondombini Secondary School",
+    "Mount Frere area, Umzimvubu Local Municipality, 5090",
+    "+27 39 255 0317",
+    "Soccer, Netball",
+    "Cultural activities, community programs",
+    "Standard government classrooms",
+  ],
+
+  [
+    "Mvenyane High School",
+    "Mvenyane area, Mount Frere, 5090",
+    "+27 39 255 0459",
+    "Soccer, Netball",
+    "Cultural and community activities",
+    "Standard government school facilities",
+  ],
+
+  [
+    "Nzululwazi High School",
+    "Cabazi A/A, Mount Frere, 5090",
+    "+27 79 209 2377",
+    "Soccer, Netball",
+    "Cultural events, community involvement",
+    "Classrooms; government-owned buildings and land",
+  ],
+];
+
+for (const [
+  name,
+  location,
+  contact,
+  email,
+  sports,
+  extracurricular,
+  facilities,
+] of schoolDetails) {
+  await db.runAsync(
+    `UPDATE schools
+     SET
+       location = ?,
+       contact = ?,
+       email = ?,
+       sports = ?,
+       extracurricular = ?,
+       facilities = ?
+     WHERE name = ?`,
+    [
+      location,
+      contact,
+      email,
+      sports,
+      extracurricular,
+      facilities,
+      name,
+    ],
+  );
+}
+const testSchools = await db.getAllAsync(
+  `SELECT name, subjects_offered, sports, extracurricular, facilities, contact
+   FROM schools`
+);
+
+console.log("🔎 SCHOOL DATA:", testSchools);
     console.log("✅ Schools seeded successfully");
+    
     await db.runAsync(`
 INSERT INTO career_subjects (career_id, subject_id) VALUES
 (1, 1),
@@ -715,7 +886,7 @@ INSERT INTO career_subjects (career_id, subject_id) VALUES
   } catch (error) {
     console.error("❌ Seed schools error:", error);
   }
-};
+}
 
 export const seedCareers = async () => {
   try {

@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
   FlatList,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 // TYPE
@@ -120,13 +120,7 @@ const schools: Item[] = [
     province: "Eastern Cape",
     details: ["Applications: In person"],
   },
-  {
-    id: "14",
-    name: "Nomaqwathekana Secondary School",
-    type: "Public",
-    province: "Eastern Cape",
-    details: ["Applications: In person"],
-  },
+  
 ];
 
 // CAREERS
