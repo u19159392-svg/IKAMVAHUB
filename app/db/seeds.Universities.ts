@@ -2,6 +2,7 @@
 
 import * as SQLite from "expo-sqlite";
 
+
 type UniversitySeed = {
   name: string;
   province: string;
