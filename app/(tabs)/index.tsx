@@ -17,6 +17,9 @@ const { width } = Dimensions.get("window");
 const TEAL = "#14B8A6";
 const DARK = "#111B4A";
 const LIGHT_TEAL = "#E8FAF7";
+const BLUE = "#1671D9";
+const GREY = "#697397";
+const WHITE = "#FFFFFF";
 
 const schools = [
   {
@@ -83,32 +86,54 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
+        {/* =====================================================
+            HEADER
+        ===================================================== */}
 
-        {/* HEADER */}
         <View style={styles.header}>
-          <TouchableOpacity>
-            <Ionicons name="menu-outline" size={34} color={DARK} />
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => {}}
+          >
+            <Ionicons
+              name="menu-outline"
+              size={34}
+              color={DARK}
+            />
           </TouchableOpacity>
 
-          <Text style={styles.logoText}>IKAMVA HUB</Text>
+          <View style={styles.logoContainer}>
+            <Text style={styles.logoText}>
+              IKAMVA HUB
+            </Text>
 
-          <TouchableOpacity>
+            <Text style={styles.tagline}>
+              Your Future. Your Choice. Your Journey.
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => {}}
+          >
             <Ionicons
               name="notifications-outline"
               size={30}
               color={DARK}
             />
+
             <View style={styles.notificationDot} />
           </TouchableOpacity>
         </View>
 
-        {/* TAGLINE */}
-        <Text style={styles.tagline}>
-          Your Future. Your Choice. Your Journey.
-        </Text>
+        {/* =====================================================
+            HERO
+            TEXT AND IMAGE ARE SEPARATED
+        ===================================================== */}
 
-        {/* HERO */}
         <View style={styles.hero}>
+          {/* LEFT SIDE - TEXT */}
+
           <View style={styles.heroText}>
             <Text style={styles.heroTitle}>
               Find your school,
@@ -119,21 +144,27 @@ export default function HomeScreen() {
             </Text>
 
             <Text style={styles.heroDescription}>
-              Explore opportunities, discover your
-              passion and build the future you deserve.
+              Discover opportunities and build
+              {"\n"}
+              the future you deserve.
             </Text>
           </View>
 
-          {/* STUDENT IMAGE */}
+          {/* RIGHT SIDE - IMAGE */}
+
           <View style={styles.studentContainer}>
             <Image
-  source={require("../../assets/images/schoolkid.png")}
-  style={styles.studentImage}
-/>
+              source={require("../../assets/images/schoolkid.png")}
+              style={styles.studentImage}
+              resizeMode="cover"
+            />
           </View>
         </View>
 
-        {/* SEARCH */}
+        {/* =====================================================
+            SEARCH
+        ===================================================== */}
+
         <View style={styles.searchContainer}>
           <Ionicons
             name="search-outline"
@@ -143,27 +174,34 @@ export default function HomeScreen() {
 
           <TextInput
             placeholder="Search schools, careers, bursaries..."
+            placeholderTextColor="#98A2B3"
             value={search}
             onChangeText={setSearch}
             style={styles.searchInput}
           />
 
-          <TouchableOpacity>
+          <TouchableOpacity style={styles.filterButton}>
             <Ionicons
               name="options-outline"
-              size={28}
+              size={26}
               color="#65709A"
             />
           </TouchableOpacity>
         </View>
 
-        {/* QUICK OPTIONS */}
+        {/* =====================================================
+            QUICK OPTIONS
+        ===================================================== */}
+
+        <Text style={styles.quickHeading}>
+          Quick Options
+        </Text>
+
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.quickScroll}
         >
-
           <QuickCard
             icon="school-outline"
             title="Schools"
@@ -176,7 +214,7 @@ export default function HomeScreen() {
             icon="school-outline"
             title="Universities"
             description="Explore universities, programmes and admission requirements."
-            color="#1671D9"
+            color={BLUE}
             onPress={() => router.push("/universities")}
           />
 
@@ -203,10 +241,12 @@ export default function HomeScreen() {
             color="#F52E63"
             onPress={() => router.push("/bursaries")}
           />
-
         </ScrollView>
 
-        {/* EASTERN CAPE SCHOOLS */}
+        {/* =====================================================
+            EASTERN CAPE SCHOOLS
+        ===================================================== */}
+
         <SectionHeader
           title="Eastern Cape Schools"
           onPress={() => router.push("/schools")}
@@ -252,7 +292,10 @@ export default function HomeScreen() {
           ))}
         </ScrollView>
 
-        {/* UNIVERSITIES */}
+        {/* =====================================================
+            POPULAR UNIVERSITIES
+        ===================================================== */}
+
         <SectionHeader
           title="Popular Universities"
           onPress={() => router.push("/universities")}
@@ -294,50 +337,15 @@ export default function HomeScreen() {
           ))}
         </ScrollView>
 
-        <View style={{ height: 30 }} />
-
+        <View style={{ height: 40 }} />
       </ScrollView>
-
-      {/* BOTTOM NAVIGATION */}
-      <View style={styles.bottomNav}>
-
-        <BottomButton
-          icon="home"
-          title="Home"
-          active
-          onPress={() => router.push("/")}
-        />
-
-        <BottomButton
-          icon="school-outline"
-          title="Schools"
-          onPress={() => router.push("/schools")}
-        />
-
-        <BottomButton
-          icon="school-outline"
-          title="Universities"
-          onPress={() => router.push("/universities")}
-        />
-
-        <BottomButton
-          icon="calculator-outline"
-          title="APS Calculator"
-          onPress={() => router.push("/aps-calculator")}
-        />
-
-        <BottomButton
-          icon="cash-outline"
-          title="Bursaries"
-          onPress={() => router.push("/bursaries")}
-        />
-
-      </View>
     </View>
   );
 }
 
-/* QUICK CARD */
+/* =====================================================
+   QUICK CARD
+===================================================== */
 
 function QuickCard({
   icon,
@@ -356,11 +364,14 @@ function QuickCard({
     <TouchableOpacity
       style={styles.quickCard}
       onPress={onPress}
+      activeOpacity={0.85}
     >
       <View
         style={[
           styles.quickIcon,
-          { backgroundColor: color },
+          {
+            backgroundColor: color,
+          },
         ]}
       >
         <Ionicons
@@ -373,7 +384,9 @@ function QuickCard({
       <Text
         style={[
           styles.quickTitle,
-          { color },
+          {
+            color,
+          },
         ]}
       >
         {title}
@@ -386,7 +399,9 @@ function QuickCard({
       <View
         style={[
           styles.arrowButton,
-          { backgroundColor: color },
+          {
+            backgroundColor: color,
+          },
         ]}
       >
         <Ionicons
@@ -399,7 +414,9 @@ function QuickCard({
   );
 }
 
-/* SECTION HEADER */
+/* =====================================================
+   SECTION HEADER
+===================================================== */
 
 function SectionHeader({
   title,
@@ -431,246 +448,267 @@ function SectionHeader({
   );
 }
 
-/* BOTTOM BUTTON */
-
-function BottomButton({
-  icon,
-  title,
-  active,
-  onPress,
-}: {
-  icon: any;
-  title: string;
-  active?: boolean;
-  onPress: () => void;
-}) {
-  return (
-    <TouchableOpacity
-      style={styles.bottomButton}
-      onPress={onPress}
-    >
-      <Ionicons
-        name={icon}
-        size={25}
-        color={active ? TEAL : "#697397"}
-      />
-
-      <Text
-        style={[
-          styles.bottomText,
-          active && styles.bottomTextActive,
-        ]}
-      >
-        {title}
-      </Text>
-    </TouchableOpacity>
-  );
-}
+/* =====================================================
+   STYLES
+===================================================== */
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: WHITE,
   },
 
   scrollContent: {
-    paddingBottom: 90,
+    paddingBottom: 30,
   },
 
-  /* HEADER */
+  /* ===================================================
+     HEADER
+  =================================================== */
 
   header: {
+    height: 78,
+    paddingHorizontal: 18,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 25,
-    paddingTop: 55,
-    paddingBottom: 4,
+    backgroundColor: WHITE,
+  },
+
+  headerButton: {
+    width: 42,
+    height: 42,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+  },
+
+  logoContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   logoText: {
-    fontSize: 29,
-    fontWeight: "800",
+    fontSize: 24,
+    fontWeight: "900",
     color: TEAL,
-    letterSpacing: -1,
+    letterSpacing: 0.5,
   },
 
   tagline: {
-    textAlign: "center",
+    marginTop: 3,
+    fontSize: 10,
     color: DARK,
-    fontSize: 15,
-    marginBottom: 8,
+    fontWeight: "500",
+    textAlign: "center",
   },
 
   notificationDot: {
     position: "absolute",
-    right: 0,
-    top: 0,
+    top: 6,
+    right: 5,
     width: 9,
     height: 9,
-    borderRadius: 10,
-    backgroundColor: "#F52E63",
+    borderRadius: 5,
+    backgroundColor: "#EF476F",
+    borderWidth: 1.5,
+    borderColor: WHITE,
   },
 
-  /* HERO */
+  /* ===================================================
+     HERO
+     
+     LEFT = TEXT
+     RIGHT = IMAGE
+     
+     No overlap.
+  =================================================== */
 
   hero: {
-    minHeight: 320,
-    position: "relative",
+    width: "100%",
+    minHeight: 340,
+    flexDirection: "row",
+    backgroundColor: WHITE,
     overflow: "hidden",
-    paddingHorizontal: 40,
-    paddingTop: 45,
   },
 
   heroText: {
-    width: "65%",
+    width: "52%",
+    paddingLeft: 23,
+    paddingRight: 8,
+    paddingTop: 52,
+    backgroundColor: WHITE,
+    justifyContent: "flex-start",
     zIndex: 2,
   },
 
   heroTitle: {
-    fontSize: 22,
-    fontWeight: "800",
-    color: DARK,
-    lineHeight: 48,
-  },
+  fontSize: 27,
+  lineHeight: 33,
+  fontWeight: "900",
+  color: "#000000",
+},
 
   heroTitleTeal: {
-    fontSize: 22,
-    fontWeight: "800",
+    fontSize: 27,
+    lineHeight: 33,
+    fontWeight: "900",
     color: TEAL,
-    lineHeight: 48,
   },
 
   heroDescription: {
-    color: DARK,
+    marginTop: 22,
     fontSize: 14,
-    lineHeight: 27,
-    marginTop: 20,
+    lineHeight: 21,
+    fontWeight: "500",
+    color: DARK,
+    paddingRight: 2,
   },
 
   studentContainer: {
-    position: "absolute",
-    right: -10,
-    bottom: 0,
-    width: 220,
-    height: 260,
-    borderTopLeftRadius: 130,
+    width: "48%",
+    height: 270,
     overflow: "hidden",
-    backgroundColor: TEAL,
+    borderBottomLeftRadius: 100,
+    backgroundColor: LIGHT_TEAL,
   },
 
   studentImage: {
-    width: "130%",
-    height: "130%",
-    borderRadius: 20,
+    width: "100%",
+    height: "100%",
   },
 
-  /* SEARCH */
+  /* ===================================================
+     SEARCH
+  =================================================== */
 
   searchContainer: {
-    marginHorizontal: 35,
-    marginTop: -5,
-    height: 70,
-    borderRadius: 40,
-    backgroundColor: "#FFFFFF",
+    height: 58,
+    marginHorizontal: 20,
+    marginTop: 18,
+    marginBottom: 8,
+    paddingLeft: 17,
+    paddingRight: 8,
+    borderRadius: 30,
+    backgroundColor: WHITE,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 22,
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-
-    elevation: 6,
-  },
-
-  searchInput: {
-    flex: 1,
-    fontSize: 15,
-    marginHorizontal: 12,
-    color: DARK,
-  },
-
-  /* QUICK CARDS */
-
-  quickScroll: {
-    paddingHorizontal: 35,
-    paddingTop: 28,
-    paddingBottom: 15,
-  },
-
-  quickCard: {
-    width: 175,
-    minHeight: 285,
-    borderRadius: 18,
-    backgroundColor: "#FFFFFF",
-    marginRight: 15,
-    padding: 18,
-
     borderWidth: 1,
-    borderColor: "#E7EAF4",
-
+    borderColor: "#E6EAF0",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 3,
     },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
+    elevation: 4,
+  },
 
-    elevation: 2,
+  searchInput: {
+    flex: 1,
+    marginLeft: 10,
+    marginRight: 8,
+    fontSize: 13,
+    color: DARK,
+  },
+
+  filterButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: LIGHT_TEAL,
+  },
+
+  /* ===================================================
+     QUICK OPTIONS
+  =================================================== */
+
+  quickHeading: {
+    marginTop: 20,
+    marginLeft: 20,
+    marginBottom: 5,
+    fontSize: 19,
+    fontWeight: "900",
+    color: DARK,
+  },
+
+  quickScroll: {
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+  },
+
+  quickCard: {
+    width: 190,
+    height: 215,
+    marginRight: 13,
+    padding: 17,
+    borderRadius: 20,
+    backgroundColor: WHITE,
+    borderWidth: 1,
+    borderColor: "#E8ECF2",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
   },
 
   quickIcon: {
-    width: 70,
-    height: 70,
-    borderRadius: 40,
-    justifyContent: "center",
+    width: 55,
+    height: 55,
+    borderRadius: 28,
     alignItems: "center",
-    marginBottom: 18,
+    justifyContent: "center",
   },
 
   quickTitle: {
-    fontSize: 21,
-    fontWeight: "800",
-    marginBottom: 10,
+    marginTop: 13,
+    fontSize: 18,
+    fontWeight: "900",
   },
 
   quickDescription: {
-    fontSize: 14,
-    lineHeight: 21,
-    color: DARK,
+    marginTop: 7,
+    paddingRight: 5,
+    fontSize: 12,
+    lineHeight: 17,
+    color: "#697397",
   },
 
   arrowButton: {
     position: "absolute",
     right: 15,
     bottom: 15,
-    width: 42,
-    height: 42,
-    borderRadius: 25,
-    justifyContent: "center",
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     alignItems: "center",
+    justifyContent: "center",
   },
 
-  /* SECTIONS */
+  /* ===================================================
+     SECTION HEADERS
+  =================================================== */
 
   sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 35,
     marginTop: 25,
-    marginBottom: 15,
+    marginHorizontal: 20,
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 
   sectionTitle: {
-    fontSize: 23,
-    fontWeight: "800",
+    fontSize: 18,
+    fontWeight: "900",
     color: DARK,
   },
 
@@ -680,181 +718,136 @@ const styles = StyleSheet.create({
   },
 
   viewAllText: {
+    marginRight: 4,
+    fontSize: 13,
+    fontWeight: "800",
     color: TEAL,
-    fontWeight: "700",
-    marginRight: 5,
   },
 
-  /* SCHOOL CARDS */
+  /* ===================================================
+     SCHOOL CARDS
+  =================================================== */
 
   cardsScroll: {
-    paddingHorizontal: 35,
+    paddingHorizontal: 18,
+    paddingVertical: 5,
   },
 
   schoolCard: {
-    width: 170,
-    height: 230,
-    borderRadius: 17,
-    backgroundColor: "#FFFFFF",
-    marginRight: 15,
-    alignItems: "center",
-    padding: 15,
-
+    width: 190,
+    minHeight: 220,
+    marginRight: 13,
+    padding: 16,
+    borderRadius: 20,
+    backgroundColor: WHITE,
     borderWidth: 1,
-    borderColor: "#E8EAF2",
-
+    borderColor: "#E8ECF2",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 3,
     },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-
-    elevation: 2,
+    shadowOpacity: 0.07,
+    shadowRadius: 7,
+    elevation: 3,
   },
 
   schoolIcon: {
-    width: 70,
-    height: 70,
-    borderRadius: 40,
-    backgroundColor: LIGHT_TEAL,
-    justifyContent: "center",
+    width: 58,
+    height: 58,
+    borderRadius: 29,
     alignItems: "center",
-    marginBottom: 12,
+    justifyContent: "center",
+    backgroundColor: LIGHT_TEAL,
+    marginBottom: 13,
   },
 
   schoolName: {
     fontSize: 16,
-    fontWeight: "800",
+    lineHeight: 21,
+    fontWeight: "900",
     color: DARK,
-    textAlign: "center",
   },
 
   schoolType: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: DARK,
-    textAlign: "center",
-    marginTop: 3,
+    marginTop: 4,
+    fontSize: 12,
+    color: GREY,
   },
 
   location: {
-    fontSize: 13,
-    color: "#4F5875",
-    marginTop: 7,
+    marginTop: 5,
+    fontSize: 12,
+    color: "#7A849C",
   },
 
   publicBadge: {
+    alignSelf: "flex-start",
+    marginTop: 13,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
     backgroundColor: LIGHT_TEAL,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 9,
-    marginTop: 12,
   },
 
   publicText: {
+    fontSize: 10,
+    fontWeight: "800",
     color: TEAL,
-    fontSize: 12,
-    fontWeight: "700",
   },
 
-  /* UNIVERSITY */
+  /* ===================================================
+     UNIVERSITY CARDS
+  =================================================== */
 
   universityCard: {
-    width: 170,
-    height: 230,
-    borderRadius: 17,
-    backgroundColor: "#FFFFFF",
-    marginRight: 15,
-    alignItems: "center",
-    padding: 15,
-
+    width: 190,
+    minHeight: 220,
+    marginRight: 13,
+    padding: 16,
+    borderRadius: 20,
+    backgroundColor: WHITE,
     borderWidth: 1,
-    borderColor: "#E8EAF2",
-
+    borderColor: "#E8ECF2",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 3,
     },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-
-    elevation: 2,
+    shadowOpacity: 0.07,
+    shadowRadius: 7,
+    elevation: 3,
   },
 
   universityLogo: {
-    width: 70,
-    height: 70,
-    borderRadius: 40,
-    backgroundColor: LIGHT_TEAL,
-    justifyContent: "center",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     alignItems: "center",
-    marginBottom: 12,
+    justifyContent: "center",
+    backgroundColor: LIGHT_TEAL,
+    marginBottom: 13,
   },
 
   universityName: {
-    fontSize: 15,
-    fontWeight: "800",
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: "900",
     color: DARK,
-    textAlign: "center",
-    minHeight: 45,
   },
 
   apsBadge: {
-    backgroundColor: LIGHT_TEAL,
-    paddingHorizontal: 13,
-    paddingVertical: 7,
-    borderRadius: 9,
-    marginTop: 12,
+    alignSelf: "flex-start",
+    marginTop: 14,
+    paddingHorizontal: 11,
+    paddingVertical: 6,
+    borderRadius: 12,
+    backgroundColor: TEAL,
   },
 
   apsText: {
-    color: TEAL,
-    fontWeight: "800",
-    fontSize: 12,
-  },
-
-  /* BOTTOM NAV */
-
-  bottomNav: {
-    position: "absolute",
-    bottom: 0,
-    left: 15,
-    right: 15,
-    height: 75,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 40,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-
-    elevation: 10,
-  },
-
-  bottomButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-  },
-
-  bottomText: {
     fontSize: 10,
-    marginTop: 3,
-    color: "#697397",
-  },
-
-  bottomTextActive: {
-    color: TEAL,
-    fontWeight: "700",
+    fontWeight: "900",
+    color: WHITE,
   },
 });

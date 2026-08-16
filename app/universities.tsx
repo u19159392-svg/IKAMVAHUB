@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { getUniversities } from "../db/ReferenceDatabase";
+import { getUniversities } from "./db/ReferenceDatabase";
 
 const TURQUOISE = "#14B8A6";
 

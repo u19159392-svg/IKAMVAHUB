@@ -1,20 +1,20 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-    Alert,
-    FlatList,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import {
-    createTask,
-    deleteTask,
-    getTasksByUser,
-    updateTaskStatus,
-} from "./db/Database";
+  createTask,
+  deleteTask,
+  getTasksByUser,
+  updateTaskStatus,
+} from "../db/Database";
 
 export default function Tasks() {
   const [tasks, setTasks] = useState<any[]>([]);

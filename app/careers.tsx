@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { getCareers } from "../db/Database";
-import { getData, saveData } from "../utils/Storage";
+import { getCareers } from "./db/Database";
+import { getData, saveData } from "./utils/Storage";
 
 export default function Careers() {
   const router = useRouter();

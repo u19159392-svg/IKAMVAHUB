@@ -1,19 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
+const TEAL = "#14B8A6";
+
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#14B8A6",
-        tabBarInactiveTintColor: "#9CA3AF",
+        tabBarActiveTintColor: TEAL,
+        tabBarInactiveTintColor: "#999",
         tabBarStyle: {
-          height: 65,
-          paddingBottom: 8,
+          height: 70,
+          paddingBottom: 10,
+          paddingTop: 10,
         },
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 12,
         },
       }}
     >
@@ -36,16 +39,20 @@ export default function TabLayout() {
           ),
         }}
       />
-
-      <Tabs.Screen
-        name="Task"
-        options={{
-          title: "Tasks",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="checkmark-done" size={size} color={color} />
-          ),
-        }}
+<Tabs.Screen
+  name="tasks"
+  options={{
+    title: "Tasks",
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons
+        name="checkmark-circle-outline"
+        size={size}
+        color={color}
       />
+    ),
+  }}
+/>
+    
 
       <Tabs.Screen
         name="notifications"
@@ -57,15 +64,19 @@ export default function TabLayout() {
         }}
       />
 
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
-          ),
-        }}
+    <Tabs.Screen
+  name="profile"
+  options={{
+    title: "Profile",
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons
+        name="person-outline"
+        size={size}
+        color={color}
       />
+    ),
+  }}
+/>
     </Tabs>
   );
 }
