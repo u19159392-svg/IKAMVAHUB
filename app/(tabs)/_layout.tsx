@@ -6,57 +6,110 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#00838F",
+
+        // Bottom navigation colours
+        tabBarActiveTintColor: "#14B8A6",
+        tabBarInactiveTintColor: "#777",
+
+        // Make the navigation comfortable to tap
+        tabBarStyle: {
+          height: 68,
+          paddingTop: 6,
+          paddingBottom: 8,
+          backgroundColor: "#FFFFFF",
+          borderTopWidth: 1,
+          borderTopColor: "#E5E7EB",
+        },
+
+        // Slightly smaller font
+        tabBarLabelStyle: {
+          fontSize: 10,
+          fontWeight: "500",
+          marginTop: 1,
+        },
+
+        // Give icons a little more room
+        tabBarIconStyle: {
+          marginBottom: 0,
+        },
       }}
     >
+
+      {/* HOME */}
       <Tabs.Screen
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "home" : "home-outline"}
+              size={22}
+              color={color}
+            />
           ),
         }}
       />
 
-      <Tabs.Screen
-        name="careers"
-        options={{
-          title: "Careers",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="briefcase" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-  name="universities"
-  options={{
-    title: "Universities",
-    tabBarIcon: ({ color, size }) => (
-      <Ionicons name="school" size={size} color={color} />
-    ),
-  }}
-/>
-
-      <Tabs.Screen
-        name="bursaries"
-        options={{
-          title: "Bursaries",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="cash" size={size} color={color} />
-          ),
-        }}
-      />
-
+      {/* EXPLORE */}
       <Tabs.Screen
         name="explore"
         options={{
           title: "Explore",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="compass" size={size} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "compass" : "compass-outline"}
+              size={22}
+              color={color}
+            />
           ),
         }}
       />
+
+      {/* TASKS */}
+      <Tabs.Screen
+        name="Task"
+        options={{
+          title: "Tasks",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "checkmark-done" : "checkmark-done-outline"}
+              size={22}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      {/* NOTIFICATIONS */}
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: "Notifications",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "notifications" : "notifications-outline"}
+              size={22}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      {/* PROFILE */}
+      <Tabs.Screen
+        name="UserProfilePage"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "person" : "person-outline"}
+              size={22}
+              color={color}
+            />
+          ),
+        }}
+      />
+
     </Tabs>
   );
 }
