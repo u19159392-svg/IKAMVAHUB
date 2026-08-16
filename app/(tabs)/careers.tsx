@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { getCareers } from "../db/ReferenceDatabase";
-import {saveData, getData} from "../utils/Storage"
+import { getCareers } from "../db/Database";
+import { getData, saveData } from "../utils/Storage";
 
 export default function Careers() {
   const router = useRouter();

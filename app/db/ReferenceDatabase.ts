@@ -1,5 +1,5 @@
 import * as SQLite from "expo-sqlite";
-
+import { seedUniversities } from "./seeds.Universities";
 
 // Second database for reference data
 const refDb = SQLite.openDatabaseSync("reference.db");
@@ -782,75 +782,8 @@ export const seedReferenceDatabase = async () => {
 
     console.log("✅ Schools seeded");
 
-// ========================================================
-// SOUTH AFRICAN UNIVERSITIES
-// ========================================================
 
-const universities = [
-  [
-    "University of Cape Town",
-    "Western Cape",
-    "Cape Town",
-    "https://www.uct.ac.za",
-    "",
-    36,
-    "",
-  ],
-  [
-    "University of Pretoria",
-    "Gauteng",
-    "Pretoria",
-    "https://www.up.ac.za",
-    "",
-    30,
-    "",
-  ],
-  [
-    "Nelson Mandela University",
-    "Eastern Cape",
-    "Gqeberha",
-    "https://www.mandela.ac.za",
-    "",
-    25,
-    "",
-  ],
-  [
-    "University of Fort Hare",
-    "Eastern Cape",
-    "Alice",
-    "https://www.ufh.ac.za",
-    "",
-    25,
-    "",
-  ],
-  [
-    "Walter Sisulu University",
-    "Eastern Cape",
-    "Mthatha",
-    "https://www.wsu.ac.za",
-    "",
-    25,
-    "",
-  ],
-];
-
-for (const university of universities) {
-  const exists = await refDb.getFirstAsync<{ id: number }>(
-    "SELECT id FROM universities WHERE name = ?",
-    [university[0]],
-  );
-
-  if (!exists) {
-    await refDb.runAsync(
-      `INSERT INTO universities
-      (name, province, city, website, contact, minimum_aps, image_url)
-      VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      university,
-    );
-  }
-}
-
-console.log("✅ Universities seeded");
+await seedUniversities(refDb);
 
     // ========================================================
     // CAREERS
@@ -1165,7 +1098,7 @@ console.log("✅ Universities seeded");
       [
         "Sipho Dlamini",
         "Engineering",
-        "Experienced mechanical engineer mentoring students in STEM fields.",
+        "Experienced mechanicl engineer mentoring students in STEM fields.",
         "012 345 6789",
         "sipho.dlamini@example.com",
         "https://example.com/sipho.jpg",

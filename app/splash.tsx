@@ -1,6 +1,6 @@
+import { router } from "expo-router";
 import { useEffect } from "react";
 import { Image, StyleSheet, View } from "react-native";
-import { router } from "expo-router";
 
 export default function SplashScreen() {
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function SplashScreen() {
   return (
     <View style={styles.container}>
       <Image
-        source={require("../assets/images/splash.png")}
+        source={require("../assets/images/splash-icon.png")}
         style={styles.logo}
         resizeMode="contain"
       />
