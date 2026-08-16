@@ -6,110 +6,66 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-
-        // Bottom navigation colours
         tabBarActiveTintColor: "#14B8A6",
-        tabBarInactiveTintColor: "#777",
-
-        // Make the navigation comfortable to tap
+        tabBarInactiveTintColor: "#9CA3AF",
         tabBarStyle: {
-          height: 68,
-          paddingTop: 6,
+          height: 65,
           paddingBottom: 8,
-          backgroundColor: "#FFFFFF",
-          borderTopWidth: 1,
-          borderTopColor: "#E5E7EB",
         },
-
-        // Slightly smaller font
         tabBarLabelStyle: {
-          fontSize: 10,
-          fontWeight: "500",
-          marginTop: 1,
-        },
-
-        // Give icons a little more room
-        tabBarIconStyle: {
-          marginBottom: 0,
+          fontSize: 11,
         },
       }}
     >
-
-      {/* HOME */}
       <Tabs.Screen
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "home" : "home-outline"}
-              size={22}
-              color={color}
-            />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size} color={color} />
           ),
         }}
       />
 
-      {/* EXPLORE */}
       <Tabs.Screen
         name="explore"
         options={{
           title: "Explore",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "compass" : "compass-outline"}
-              size={22}
-              color={color}
-            />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="search" size={size} color={color} />
           ),
         }}
       />
 
-      {/* TASKS */}
       <Tabs.Screen
         name="Task"
         options={{
           title: "Tasks",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "checkmark-done" : "checkmark-done-outline"}
-              size={22}
-              color={color}
-            />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="checkmark-done" size={size} color={color} />
           ),
         }}
       />
 
-      {/* NOTIFICATIONS */}
       <Tabs.Screen
         name="notifications"
         options={{
           title: "Notifications",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "notifications" : "notifications-outline"}
-              size={22}
-              color={color}
-            />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="notifications" size={size} color={color} />
           ),
         }}
       />
 
-      {/* PROFILE */}
       <Tabs.Screen
-        name="UserProfilePage"
+        name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "person" : "person-outline"}
-              size={22}
-              color={color}
-            />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" size={size} color={color} />
           ),
         }}
       />
-
     </Tabs>
   );
 }
