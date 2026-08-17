@@ -5,7 +5,5 @@
 // Find each id by checking the id column in your universities table
 // (e.g. log getUniversities() once and note the ids).
 
-export const universityLogos: Record<number, any> = {
-  1: require("./NMU.jpg"),
-  
-};
+
+ 

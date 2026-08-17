@@ -1,99 +1,158 @@
-import React, { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-// User Interface
-interface User {
-  id: number;
-  username: string;
-  email: string;
-}
-
-// Profile Interface
-interface Profile {
-  id: number;
-  userId: number;
-  firstName: string;
-  lastName: string;
-  age: number;
-  school: string;
-  grade: string;
-}
-
-export default function UserProfilePage() {
-  const [profile, setprofile] = useState<Profile>({
-    id: 1,
-    userId: 1,
-    firstName: " ",
-    lastName: " ",
-    age: 0,
-    school: " ",
-    grade: " ",
-  });
-
-  const saveProfile = () => {
-    console.log("Profile saved:", profile);
-  };
-
+export default function ProfileScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>User Profile</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        onChangeText={(text) => setprofile({ ...profile, firstName: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        onChangeText={(text) => setprofile({ ...profile, lastName: text })}
-      />
+      {/* HEADER */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Profile</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Age"
-        keyboardType="numeric"
-        onChangeText={(text) =>
-          setprofile({ ...profile, age: parseInt(text) || 0 })
-        }
-      />
+        <TouchableOpacity onPress={() => router.push("/profile-details")}>
+          <Ionicons name="create-outline" size={22} color="#14B8A6" />
+        </TouchableOpacity>
+      </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="School"
-        onChangeText={(text) => setprofile({ ...profile, school: text })}
-      />
+      {/* PROFILE */}
+      <View style={styles.profileBox}>
+        <Image
+          source={{ uri: "https://i.pravatar.cc/150" }}
+          style={styles.avatar}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Grade"
-        onChangeText={(text) => setprofile({ ...profile, grade: text })}
-      />
+        <Text style={styles.name}>Name</Text>
+        <Text style={styles.email}>Name@gmail.com</Text>
+      </View>
 
-      <Button title="Save Profile" onPress={saveProfile} />
+      {/* OPTIONS */}
+      <View style={styles.card}>
+
+        <Option
+          icon="person-outline"
+          title="Personal Information"
+          onPress={() => router.push("/profile-details")}
+        />
+
+
+        <Option
+          icon="bookmark-outline"
+          title="Saved Items"
+          onPress={() => alert("Saved")}
+        />
+
+        <Option
+          icon="settings-outline"
+          title="Settings"
+          onPress={() => router.push("/settings")}
+        />
+
+        <Option
+          icon="help-circle-outline"
+          title="Help & Support"
+          onPress={() => router.push("/help")}
+        />
+
+      </View>
+
+      {/* LOGOUT */}
+      <TouchableOpacity
+        style={styles.logout}
+        onPress={() => alert("Logged out")}
+      >
+        <Ionicons name="log-out-outline" size={22} color="red" />
+        <Text style={styles.logoutText}>Logout</Text>
+      </TouchableOpacity>
+
     </View>
+  );
+}
+
+function Option({ icon, title, onPress }: any) {
+  return (
+    <TouchableOpacity style={styles.option} onPress={onPress}>
+      <Ionicons name={icon} size={22} color="#333" />
+      <Text style={styles.optionText}>{title}</Text>
+      <Ionicons name="chevron-forward" size={20} color="#999" />
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F7F8FA",
     padding: 20,
-    backgroundColor: "#fff",
-    justifyContent: "center",
   },
+
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#00B8B8",
-    marginBottom: 20,
-    textAlign: "center",
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#00B8B8",
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 15,
+
+  profileBox: {
+    alignItems: "center",
+    marginVertical: 20,
+  },
+
+  avatar: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    marginBottom: 10,
+  },
+
+  name: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+
+  email: {
+    color: "#777",
+  },
+
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    padding: 10,
+  },
+
+  option: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderColor: "#eee",
+  },
+
+  optionText: {
+    flex: 1,
+    marginLeft: 12,
+    fontSize: 15,
+  },
+
+  logout: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 20,
+  },
+
+  logoutText: {
+    marginLeft: 10,
+    color: "red",
+    fontWeight: "bold",
   },
 });

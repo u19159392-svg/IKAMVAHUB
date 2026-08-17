@@ -6357,5 +6357,17 @@ export const filterMentorsByField = async (field: string) => {
     return [];
   }
 };
+export const updateProfileDetails = async (user_id: number, name: string, email: string) => {
+  await db.runAsync(
+    "UPDATE users SET name = ?, email = ? WHERE id = ?",
+    [name, email, user_id]
+  );
+};
 
+export const getUserProfile = async (user_id: number) => {
+  return await db.getFirstAsync(
+    "SELECT * FROM users WHERE id = ?",
+    [user_id]
+  );
+};
 export default db;
