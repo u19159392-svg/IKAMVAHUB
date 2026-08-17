@@ -168,11 +168,8 @@ export const initDatabase = async () => {
       CREATE TABLE IF NOT EXISTS mentors (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        field TEXT,
-        bio TEXT,
         phone TEXT,
         email TEXT,
-        profile_pic TEXT,
         availability TEXT
       );
     `);
@@ -248,8 +245,8 @@ const mentors = [
 for (const mentor of mentors) {
   await db.runAsync(
     `INSERT INTO mentors
-    (name, field, bio, phone, email, profile_pic, availability)
-    VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    (name, phone, email, availability)
+    VALUES (?, ?, ?, ?)`,
     mentor,
   );
 }
