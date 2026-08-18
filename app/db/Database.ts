@@ -14,8 +14,7 @@ export const initDatabase = async () => {
       );
 
       -- PROFILES TABLE
-      DROP TABLE IF EXISTS profiles;
-      CREATE TABLE profiles (
+      CREATE TABLE IF NOT EXISTS profiles (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
         age TEXT,
@@ -170,77 +169,6 @@ export const initDatabase = async () => {
     await seedSchools();
     await seedCareers();
     await seedIndustries();
-    // ===== MENTORS =====
-const mentors = [
-  [
-    "Dr. Thabo Mbeki",
-    "Engineering",
-    "Senior lecturer in Civil Engineering with experience supporting students interested in engineering careers.",
-    "082 123 4567",
-    "thabo@mentor.co.za",
-    "https://i.pravatar.cc/150?img=1",
-    "Weekends",
-  ],
-
-  [
-    "Prof. Naledi Khumalo",
-    "Medicine",
-    "Medical professional who provides guidance to students interested in healthcare and medicine.",
-    "082 234 5678",
-    "naledi@mentor.co.za",
-    "https://i.pravatar.cc/150?img=2",
-    "Weekdays",
-  ],
-
-  [
-    "Ms. Zanele Ndlovu",
-    "Law",
-    "Human rights lawyer who provides guidance to students interested in law and legal careers.",
-    "082 345 6789",
-    "zanele@mentor.co.za",
-    "https://i.pravatar.cc/150?img=3",
-    "Evenings",
-  ],
-
-  [
-    "Mr. Sipho Dlamini",
-    "Information Technology",
-    "IT professional who helps students explore careers in software development and technology.",
-    "082 456 7890",
-    "sipho@mentor.co.za",
-    "https://i.pravatar.cc/150?img=4",
-    "Weekends",
-  ],
-
-  [
-    "Ms. Lerato Molefe",
-    "Education",
-    "Education professional who supports students interested in teaching and education careers.",
-    "082 567 8901",
-    "lerato@mentor.co.za",
-    "https://i.pravatar.cc/150?img=5",
-    "Weekdays",
-  ],
-
-  [
-    "Mr. Kabelo Mokoena",
-    "Business",
-    "Business professional who provides guidance on entrepreneurship, finance and business careers.",
-    "082 678 9012",
-    "kabelo@mentor.co.za",
-    "https://i.pravatar.cc/150?img=6",
-    "Evenings",
-  ],
-];
-
-for (const mentor of mentors) {
-  await db.runAsync(
-    `INSERT INTO mentors
-    (name, field, bio, phone, email, profile_pic, availability)
-    VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    mentor,
-  );
-}
 
     console.log("✅ Database initialized successfully");
   } catch (error) {

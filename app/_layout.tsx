@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
-import * as SplashScreen from "expo-splash-screen";
 import { ThemeProvider, useTheme } from "./theme/ThemeContext";
 
 SplashScreen.preventAutoHideAsync();
@@ -40,13 +40,11 @@ export default function Layout() {
 
       try {
         const db = await import("./db/Database");
-
         if (db?.initDatabase) {
           await db.initDatabase();
         }
 
         const refDb = await import("./db/ReferenceDatabase");
-
         if (refDb?.initReferenceDatabase) {
           await refDb.initReferenceDatabase();
         }
@@ -56,12 +54,9 @@ export default function Layout() {
         const elapsed = Date.now() - startTime;
         const remainingTime = Math.max(2000 - elapsed, 0);
 
-        await new Promise((resolve) =>
-          setTimeout(resolve, remainingTime)
-        );
+        await new Promise((resolve) => setTimeout(resolve, remainingTime));
 
         setDbReady(true);
-
         await SplashScreen.hideAsync();
       }
     };
@@ -78,7 +73,7 @@ export default function Layout() {
           alignItems: "center",
         }}
       >
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color="#0F8B8D" />
       </View>
     );
   }

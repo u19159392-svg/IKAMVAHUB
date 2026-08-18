@@ -117,6 +117,10 @@ export default function UserSetup() {
           location: "",
         });
 
+        // Mark that this device has a registered account.
+        // index.tsx reads this to skip UserSetup on future launches.
+        await saveData("hasAccount", true);
+
         console.log("✅ Profile saved successfully");
 
         Alert.alert(

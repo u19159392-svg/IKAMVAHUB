@@ -18,6 +18,29 @@ export const getData = async (key: string) => {
   }
 };
 
+export const removeData = async (key: string) => {
+  try {
+    await AsyncStorage.removeItem(key);
+  } catch (error) {
+    console.error(`Error removing ${key}:`, error);
+  }
+};
+
+/**
+ * Clears the persisted login session so the next app launch
+ * lands on the login screen instead of going straight to home.
+ * Does NOT clear `hasAccount`, so UserSetup is never shown again.
+ */
+export const logout = async () => {
+  try {
+    await AsyncStorage.removeItem("userLoggedIn");
+    (global as any).userLoggedIn = false;
+    (global as any).currentUserId = null;
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
+};
+
 
 
 

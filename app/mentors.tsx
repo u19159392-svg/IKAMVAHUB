@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -29,7 +29,7 @@ export default function Mentors() {
     "Law",
     "Education",
     "Business",
-    "Technology",
+    "Information Technology",
     "Science",
   ];
 
@@ -131,7 +131,7 @@ export default function Mentors() {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push(`/mentor-details?id=${item.id}` as any)}
+            onPress={() => router.push(`/mentordetails?id=${item.id}` as any)}
           >
             <View style={styles.cardHeader}>
               <Image
