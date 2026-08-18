@@ -125,7 +125,7 @@ export default function UserSetup() {
           [
             {
               text: "Get Started",
-              onPress: () => router.replace("/(tabs)"),
+              onPress: () => router.replace("/login"),
             },
           ]
         );
