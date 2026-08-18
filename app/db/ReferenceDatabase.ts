@@ -183,10 +183,11 @@ export const initReferenceDatabase = async () => {
       CREATE TABLE IF NOT EXISTS mentors (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
+        field TEXT NOT NULL,
         phone TEXT,
         email TEXT,
         availability TEXT,
-        course TEXT,
+        course TEXT
       );
 
       -- ======================================================
@@ -1354,122 +1355,153 @@ console.log("✅ Universities seeded");
     // ========================================================
 
     const mentors = [
-      [
-        "Naidia Mavika",
-        "Accounting Science",
-        "062 889 9560",
-        "email: naidiamavika663@gmail.com",
-        "availability: Weekend 10am-2pm",
-      ],
-      [
-        "Lesiba Pitseng",
-        "Bcom Accounting Science",
-        "071 299 4145",
-        "email: u23752379@tuks.co.za",
-        "availability: Weekends 10am-2pm",
-      ],
-      ["Georgia Ruthven",
-        "Bcom specilalising in Economics",
-        "067 708 0008",
-        "email: gruthven0410@gmail.com",
-        "availability: Weekends 10am-2pm"
-      ],
-      ["Celukwanda Mtshali",
-        "Bachelor of Education in Senior phase and FET",
-        "063 810 9315",
-        "email: u24828752@tuks.co.za",
-        "availability: Weekends 10am-2pm",
+  [
+    "Naidia Mavika",
+    "Accounting Science",
+    "062 889 9560",
+    "naidiamavika663@gmail.com",
+    "Weekends 10am-2pm",
+    "Accounting Science",
+  ],
 
-        ],
-        ["Mandla Curtis Chauke",
-          "Bachelor of Education in Senior phase and FET",
-          "068 772 9005",
-          "email: u25545389@tuks.co.za",
-          "availability: Weekends 10am-2pm",
-        ],
-        ["Morabusioluwa Abolarin",
-          "Mechanical Engineering",
-          "061 187 9226",
-          "email: abusi.abolarin@gmailcom",
-          "availability: Weekends 10am-2pm",
-          ],
-          ["Nomzi Phosa",
-            "Computer Science",
-            "081 098 5238",
-            "email: nomziphosa@gmail.com",
-            "availability: Weekend 10am-2pm",
-          ],
-          ["SiloThabo Chimboza",
-            "BSC Human Physiology",
-            "062 977 2580",
-            "email: chimbozasilothabo@gmail.com",
-            "availability: Weekend 10am-2pm",
-            ],
-            ["Bonolo Khuzwayo",
-              "BSC Honours Chemistry",
-              "066 089 0091",
-              "email: u21708968@tuks.co.za",
-              "availability:Weekend 10am-2pm",
-            ],
-            ["Kealeboga Moothai",
-              "BSC Medical Science",
-              "068 096 7003",
-              "email: Moothaikealeboga@gmail.com",
-              "availability: Weekend 10am-2pm",
-              ],
-              ["Skhosana Sbusiso",
-                "BA Humanities",
-                "076 500 5406",
-                "email: u23939100@tuks.co.za",
-                "availability: Weekend 10am-2pm",
-              ],
-              ["Kgaugelo Makgakga",
-                "LLB",
-                "067 778 1971",
-                "email: Makgakgakgaugelo@gmail.com",
-                "availability: Weekend 10am-2pm",
-                ],
-                ["Tebogo Cyprian Mathepe",
-                  "LLB",
-                  "075 122 2929",
-                  "email: u235900852@tuks.co.za",
-                  "availability: Weekend 10am-2pm",
-                ],
-                ["Rethabile Mosatupa",
-                  "LLB",
-                  "073 122 9018",
-                  "email: rethabilemosatupa42gmail.com",
-                  "availability: Weekend 10am-2pm",
-                  ],
-                  ["Simphiwe Nkosi",
-                    "BA Thelogy and Religion",
-                    "071 341 9332",
-                    "email: simphiwenkosi265@gmail.com",
-                    "availabilityi: Weekend 10am-2pm",
+  [
+    "Lesiba Pitseng",
+    "Bcom Accounting Science",
+    "071 299 4145",
+    "u23752379@tuks.co.za",
+    "Weekends 10am-2pm",
+    "Bcom Accounting Science",
+  ],
 
-              ]
+  [
+    "Georgia Ruthven",
+    "Bcom specilalising in Economics",
+    "067 708 0008",
+    "gruthven0410@gmail.com",
+    "Weekends 10am-2pm",
+    "Bcom specilalising in Economics",
+  ],
 
+  [
+    "Celukwanda Mtshali",
+    "Bachelor of Education in Senior phase and FET",
+    "063 810 9315",
+    "u24828752@tuks.co.za",
+    "Weekends 10am-2pm",
+    "Bachelor of Education in Senior phase and FET",
+  ],
 
-    ];
+  [
+    "Mandla Curtis Chauke",
+    "Bachelor of Education in Senior phase and FET",
+    "068 772 9005",
+    "u25545389@tuks.co.za",
+    "Weekends 10am-2pm",
+    "Bachelor of Education in Senior phase and FET",
+  ],
 
-    for (const mentor of mentors) {
-      const exists = await refDb.getFirstAsync<{ id: number }>(
-        "SELECT id FROM mentors WHERE name = ?",
-        [mentor[0]],
-      );
+  [
+    "Morabusioluwa Abolarin",
+    "Mechanical Engineering",
+    "061 187 9226",
+    "abusi.abolarin@gmail.com",
+    "Weekends 10am-2pm",
+    "Mechanical Engineering",
+  ],
 
-      if (!exists) {
-        await refDb.runAsync(
-          `INSERT INTO mentors
-          (name, phone, email, availability)
-          VALUES (?, ?, ?, ?)`,
-          mentor,
-        );
-      }
-    }
+  [
+    "Nomzi Phosa",
+    "Computer Science",
+    "081 098 5238",
+    "nomziphosa@gmail.com",
+    "Weekends 10am-2pm",
+    "Computer Science",
+  ],
 
-    console.log("✅ Mentors seeded");
+  [
+    "SiloThabo Chimboza",
+    "BSC Human Physiology",
+    "062 977 2580",
+    "chimbozasilothabo@gmail.com",
+    "Weekends 10am-2pm",
+    "BSC Human Physiology",
+  ],
 
+  [
+    "Bonolo Khuzwayo",
+    "BSC Honours Chemistry",
+    "066 089 0091",
+    "u21708968@tuks.co.za",
+    "Weekends 10am-2pm",
+    "BSC Honours Chemistry",
+  ],
+
+  [
+    "Kealeboga Moothai",
+    "BSC Medical Science",
+    "068 096 7003",
+    "Moothaikealeboga@gmail.com",
+    "Weekends 10am-2pm",
+    "BSC Medical Science",
+  ],
+
+  [
+    "Skhosana Sbusiso",
+    "BA Humanities",
+    "076 500 5406",
+    "u23939100@tuks.co.za",
+    "Weekends 10am-2pm",
+    "BA Humanities",
+  ],
+
+  [
+    "Kgaugelo Makgakga",
+    "LLB",
+    "067 778 1971",
+    "Makgakgakgaugelo@gmail.com",
+    "Weekends 10am-2pm",
+    "LLB",
+  ],
+
+  [
+    "Tebogo Cyprian Mathepe",
+    "LLB",
+    "075 122 2929",
+    "u235900852@tuks.co.za",
+    "Weekends 10am-2pm",
+    "LLB",
+  ],
+
+  [
+    "Rethabile Mosatupa",
+    "LLB",
+    "073 122 9018",
+    "rethabilemosatupa42gmail.com",
+    "Weekends 10am-2pm",
+    "LLB",
+  ],
+
+  [
+    "Simphiwe Nkosi",
+    "BA Theology and Religion",
+    "071 341 9332",
+    "simphiwenkosi265@gmail.com",
+    "Weekends 10am-2pm",
+    "BA Theology and Religion",
+  ],
+];
+  await refDb.runAsync("DELETE FROM mentors");
+
+for (const mentor of mentors) {
+  await refDb.runAsync(
+    `INSERT INTO mentors
+     (name, field, phone, email, availability, course)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    mentor,
+  );
+}
+
+console.log("✅ Mentors cleared and reseeded");
     console.log("🎉 Reference database seed complete");
   } catch (error) {
     console.error(

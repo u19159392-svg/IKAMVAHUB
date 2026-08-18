@@ -41,7 +41,7 @@ export default function Careers() {
       console.error("Could not load careers from database:", error);
 
       //Load cached careers when offline 
-      const cachedCareers = await getData("Careers");
+      const cachedCareers = await getData("careers");
       
       if (cachedCareers) {
       console.log("Using cached careers:", cachedCareers.length);

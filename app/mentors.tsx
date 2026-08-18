@@ -1,16 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  Image,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { getMentors } from "./db/ReferenceDatabase";
 
@@ -59,11 +58,11 @@ export default function Mentors() {
 
     if (text.trim() !== "") {
       filtered = filtered.filter(
-        (m) =>
-          m.name.toLowerCase().includes(text.toLowerCase()) ||
-          m.field.toLowerCase().includes(text.toLowerCase()) ||
-          m.bio?.toLowerCase().includes(text.toLowerCase()),
-      );
+  (m) =>
+    m.name?.toLowerCase().includes(text.toLowerCase()) ||
+    m.field?.toLowerCase().includes(text.toLowerCase()) ||
+    m.course?.toLowerCase().includes(text.toLowerCase()),
+);
     }
 
     if (field !== "All") {
@@ -134,22 +133,11 @@ export default function Mentors() {
             onPress={() => router.push(`/mentor-details?id=${item.id}` as any)}
           >
             <View style={styles.cardHeader}>
-              <Image
-                source={{
-                  uri: item.profile_pic || "https://i.pravatar.cc/150?img=1",
-                }}
-                style={styles.avatar}
-              />
               <View style={styles.cardInfo}>
                 <Text style={styles.mentorName}>{item.name}</Text>
                 <Text style={styles.mentorField}>{item.field}</Text>
               </View>
             </View>
-            {item.bio && (
-              <Text style={styles.mentorBio} numberOfLines={2}>
-                {item.bio}
-              </Text>
-            )}
             {item.availability && (
               <View style={styles.availabilityBadge}>
                 <Ionicons name="time-outline" size={14} color="#14B8A6" />
@@ -259,12 +247,6 @@ const styles = StyleSheet.create({
   mentorField: {
     fontSize: 14,
     color: "#555",
-  },
-  mentorBio: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 8,
-    lineHeight: 20,
   },
   availabilityBadge: {
     flexDirection: "row",

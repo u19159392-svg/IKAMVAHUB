@@ -168,9 +168,11 @@ export const initDatabase = async () => {
       CREATE TABLE IF NOT EXISTS mentors (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
+        field TEXT NOT NULL,
         phone TEXT,
         email TEXT,
-        availability TEXT
+        availability TEXT,
+        course TEXT,
       );
     `);
 
@@ -241,20 +243,21 @@ const mentors = [
     "Evenings",
   ],
 ];
-
+await db.runAsync("DELETE FROM mentors");
 for (const mentor of mentors) {
   await db.runAsync(
-    `INSERT INTO mentors
-    (name, phone, email, availability)
-    VALUES (?, ?, ?, ?)`,
-    mentor,
+    `
+    INSERT INTO mentors
+    (name, field, phone, email, availability, course)
+    VALUES (?, ?, ?, ?, ?, ?)
+    `,
+    mentor
   );
 }
-
-    console.log("✅ Database initialized successfully");
-  } catch (error) {
-    console.error("❌ Database init error:", error);
-  }
+console.log("✅ Database initialized successfully");
+} catch (error) {
+  console.error("❌ Database init error:", error);
+}
 };
 // ==================== USER CRUD (Person 3) ====================
 export const createUser = async (
@@ -538,7 +541,7 @@ export const markNotificationAsRead = async (id: number) => {
   }
 };
 
-export const clearDuplicateSchools = async () => {
+export async function clearDuplicateSchools() {
   try {
     await db.runAsync("DELETE FROM schools");
     await db.runAsync("DELETE FROM sqlite_sequence WHERE name='schools'");

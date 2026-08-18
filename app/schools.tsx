@@ -11,10 +11,9 @@ import {
 import { getData, saveData } from "../app/utils/Storage";
 import SchoolCard from "../components/SchoolCard";
 import {
-  checkTyelimhlophe,
   getSchools,
   searchSchools,
-} from "./db/ReferenceDatabase";
+} from "./db/Database";
 
 
 export default function Schools() {
@@ -67,7 +66,6 @@ export default function Schools() {
 
   useEffect(() => {
     loadSchools();
-    checkTyelimhlophe();
   }, []);
 
   // removed unused stream/subject related code

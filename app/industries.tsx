@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { getIndustries } from "./db/ReferenceDatabase";
+import { getIndustries } from "./db/Database";
 
 export default function Industries() {
   const [industries, setIndustries] = useState<any[]>([]);
